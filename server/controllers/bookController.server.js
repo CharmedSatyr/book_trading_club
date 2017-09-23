@@ -3,9 +3,17 @@
 /*** MODEL ***/
 import Book from '../models/Book.js'
 
-//Every book in the database
+//Find every book in the database
 export const library = (req, res) => {
   Book.find({}, (err, doc) => {
+    res.json(doc)
+  })
+}
+
+//Remove every book in the database
+export const curseOfAlexandria = (req, res) => {
+  Book.remove({}, (err, doc) => {
+    console.log('All books deleted...')
     res.json(doc)
   })
 }
