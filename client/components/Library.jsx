@@ -9,10 +9,10 @@ const Library = ({ location }) => {
   const library = location.map((item, index) => {
     return (
       <Book
-        author={item.author[0]}
+        author={item.author}
         title={item.title}
         publication={item.publication}
-        cover={item.cover ? item.cover : null}
+        cover={item.cover}
         key={index}
         fn={() => {
           console.log('I am in your library!')
