@@ -6,14 +6,15 @@ export const searchSubmit = (req, res) => {
     'https://openlibrary.org/search.json?q=' + req.params.s,
     response => {
       const books = []
-
       //Only sort through the first 20 responses
       for (let i = 0; i < 20; i++) {
         const b = response.docs[i]
 
         //Validate and Clean Author Entries
         let author
-        if (b.author_name.length === 1) {
+        if (!b.author_name) {
+          author = 'Unlisted'
+        } else if (b.author_name.length === 1) {
           author = b.author_name[0]
         } else if (b.author_name.length === 2) {
           author = b.author_name.join(' and ')
@@ -22,13 +23,28 @@ export const searchSubmit = (req, res) => {
         } else {
           author = 'Unlisted'
         }
+        //Validate and Clean Title
+        let title
+        if (!b.title) {
+          title = 'Unlisted Title'
+        } else {
+          title = b.title
+        }
+
+        //Validate and Clean Publication Date
+        let publication
+        if (!b.first_publish_year) {
+          publication = 0
+        } else {
+          publication = b.first_publish_year
+        }
 
         //Validate and Clean Cover Keys
         let cover
-        if (b.cover_edition_key) {
-          cover = b.cover_edition_key
+        if (!b.cover_edition_key) {
+          cover = null
         } else {
-          cover = null //'No cover image available'
+          cover = b.cover_edition_key
         }
 
         //Validate and Clean olkeys
@@ -43,8 +59,8 @@ export const searchSubmit = (req, res) => {
         //Assemble the book object
         const book = {
           author: author,
-          title: b.title,
-          publication: b.first_publish_year,
+          title: title,
+          publication: publication,
           cover: cover,
           olkey: k
         }
