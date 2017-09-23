@@ -25,7 +25,6 @@ export default class App extends Component {
     const query = document.getElementById('search').value
     console.log(query)
     f('POST', '/api/search/' + query, response => {
-      console.log(response)
       this.setState({ bookSearch: response })
     })
   }
@@ -43,8 +42,12 @@ export default class App extends Component {
       }
     })
   }
-
-  saveClick() {}
+  saveClick(item) {
+    const data = encodeURIComponent(JSON.stringify(item))
+    console.log('Saving ' + item.title + ' by ' + item.author)
+    f('POST', '/api/save/' + data, response => console.log(response))
+    this.setState({ bookSearch: [] })
+  }
   componentWillMount() {
     this.populateLibrary()
     this.checkLibrary()
@@ -56,12 +59,10 @@ export default class App extends Component {
           author={item.author[0]}
           title={item.title}
           publication={item.publication}
-          cover={item.cover ? item.cover : null}
+          cover={item.cover}
           key={index}
           fn={() => {
-            const data = encodeURIComponent(JSON.stringify(item))
-            console.log('Saving ' + item.title + ' by ' + item.author)
-            f('POST', '/api/save/' + data, response => console.log(response))
+            this.saveClick(item)
           }}
         />
       )
