@@ -18,34 +18,19 @@ const style = {
 const Book = ({ author, title, publication, cover, fn }) => {
   return (
     <span>
-      {cover ? (
-        <Paper
-          style={style}
-          zDepth={4}
-          rounded={false}
-          className="book"
-          onClick={fn}
-        >
-          <img
-            src={'http://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
-          />
-        </Paper>
-      ) : (
-        <Paper
-          style={style}
-          zDepth={4}
-          rounded={false}
-          className="book"
-          onClick={fn}
-        >
-          Title: {title}
-          <br />
-          Author: {author}
-          <br />
-          Published: {publication}
-          <br />
-        </Paper>
-      )}
+      <Paper
+        style={style}
+        zDepth={4}
+        rounded={false}
+        className="book"
+        onClick={fn}
+      >
+        <img src={'http://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'} />
+      </Paper>
+      <span hidden="true">
+        {/*For screen-readers*/}
+        {title} ({publication}) by {author}
+      </span>
     </span>
   )
 }
