@@ -53,6 +53,11 @@ export const searchSubmit = (req, res) => {
         if (book.cover) {
           books.push(book)
         }
+
+        //Handle short responses
+        if (i === response.docs.length - 1) {
+          break
+        }
       }
 
       //Send the array to the client
