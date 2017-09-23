@@ -5,6 +5,10 @@ import React, { Component } from 'react'
 import Input from './Input.jsx'
 import Book from './Book.jsx'
 import Divider from 'material-ui/Divider'
+import NavBar from './NavBar.jsx'
+import Library from './Library.jsx'
+import BookSearch from './BookSearch.jsx'
+import RaisedButton from 'material-ui/RaisedButton'
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
@@ -19,7 +23,6 @@ export default class App extends Component {
       library: []
     }
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.saveClick = this.saveClick.bind(this)
   }
   handleSubmit() {
     const query = document.getElementById('search').value
@@ -33,7 +36,6 @@ export default class App extends Component {
       this.setState({ library: response })
     })
   }
-
   /* Keeps library in sync among devices without refresh.                    */
   checkLibrary() {
     librarian(1000, result => {
@@ -42,62 +44,38 @@ export default class App extends Component {
       }
     })
   }
-  saveClick(item) {
-    const data = encodeURIComponent(JSON.stringify(item))
-    console.log('Saving ' + item.title + ' by ' + item.author)
-    f('POST', '/api/save/' + data, response => console.log(response))
-    setTimeout(() => {
-      this.setState({ bookSearch: [] })
-    }, 1500)
-  }
   componentWillMount() {
     this.populateLibrary()
     this.checkLibrary()
   }
   render() {
-    const results = this.state.bookSearch.map((item, index) => {
-      return (
-        <Book
-          author={item.author[0]}
-          title={item.title}
-          publication={item.publication}
-          cover={item.cover}
-          key={index}
-          fn={() => {
-            this.saveClick(item)
-          }}
-        />
-      )
-    })
-
-    const library = this.state.library.map((item, index) => {
-      return (
-        <Book
-          author={item.author[0]}
-          title={item.title}
-          publication={item.publication}
-          cover={item.cover ? item.cover : null}
-          key={index}
-          fn={() => {
-            console.log('I am in your library!')
-          }}
-        />
-      )
-    })
     return (
       <div>
+        <NavBar />
         <Input
           id="search"
           label="Search for a book here! Click the results to add them to your library."
           placeholder="Author, Title, or ISBN"
           btnText="Search"
           fn={this.handleSubmit}
-        />
+        />{' '}
+        {this.state.bookSearch.length > 0 ? (
+          <RaisedButton
+            label="Clear"
+            secondary={true}
+            style={{ marginLeft: -2 }}
+            onClick={() => {
+              this.setState({ bookSearch: [] })
+            }}
+          />
+        ) : (
+          <span />
+        )}
         <br />
-        <div className="books">{results}</div>
+        <BookSearch quest={this.state.bookSearch} fn={this.saveClick} />
         <Divider />
         <h3>Current Library:</h3>
-        <div className="books">{library}</div>
+        <Library location={this.state.library} />
       </div>
     )
   }
