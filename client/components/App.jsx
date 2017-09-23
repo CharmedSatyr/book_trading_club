@@ -46,7 +46,9 @@ export default class App extends Component {
     const data = encodeURIComponent(JSON.stringify(item))
     console.log('Saving ' + item.title + ' by ' + item.author)
     f('POST', '/api/save/' + data, response => console.log(response))
-    this.setState({ bookSearch: [] })
+    setTimeout(() => {
+      this.setState({ bookSearch: [] })
+    }, 1500)
   }
   componentWillMount() {
     this.populateLibrary()
