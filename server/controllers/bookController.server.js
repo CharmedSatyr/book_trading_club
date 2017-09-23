@@ -28,7 +28,7 @@ export const saveBook = (req, res) => {
 
   Book.findOne(
     {
-      tag: book.tag
+      olkey: book.olkey
     },
     (err, doc) => {
       if (err) {
@@ -42,7 +42,7 @@ export const saveBook = (req, res) => {
           title: book.title,
           publication: book.publication,
           cover: book.cover,
-          tag: book.tag
+          olkey: book.olkey
         })
         newBook.save((err, doc) => {
           if (err) {

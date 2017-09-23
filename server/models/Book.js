@@ -8,7 +8,7 @@ const Book = new Schema({
   title: String,
   publication: Number,
   cover: String,
-  tag: String
+  olkey: String
 })
 
 export default mongoose.model('Book', Book)
