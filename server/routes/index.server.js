@@ -5,6 +5,8 @@ import {
   saveBook,
   curseOfAlexandria
 } from '../controllers/bookController.server.js'
+
+import { saveUser } from '../controllers/userController.server.js'
 import { searchSubmit } from '../controllers/searchController.server.js'
 
 export const routes = app => {
@@ -18,4 +20,7 @@ export const routes = app => {
 
   //Remove all stored books (no client UI option)
   app.use('/api/purge', curseOfAlexandria)
+
+  app.route('/api/signup/:userData').post(saveUser)
+  app.route('/api/login/').post((req, res) => {})
 }

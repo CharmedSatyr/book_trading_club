@@ -22,11 +22,12 @@ const Logged = ({ fn }) => {
 export default class NavBar extends Component {
   constructor(props) {
     super(props)
-    this.state = { logged: true }
+    this.state = { logged: false }
     this.handleClick = this.handleClick.bind(this)
   }
   handleClick() {
     this.setState({ logged: !this.state.logged })
+    this.props.appfn()
   }
   render() {
     return (

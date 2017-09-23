@@ -1,14 +1,18 @@
 'use strict'
 
 /*** COMPONENTS ***/
+//React
 import React, { Component } from 'react'
-import Input from './Input.jsx'
-import Book from './Book.jsx'
+
+//Material UI
 import Divider from 'material-ui/Divider'
-import NavBar from './NavBar.jsx'
-import Library from './Library.jsx'
+
+//App
 import BookSearch from './BookSearch.jsx'
-import RaisedButton from 'material-ui/RaisedButton'
+import Input from './Input.jsx'
+import Library from './Library.jsx'
+import NavBar from './NavBar.jsx'
+import SignupLogin from './SignupLogin.jsx'
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
@@ -20,9 +24,11 @@ export default class App extends Component {
     super(props)
     this.state = {
       bookSearch: [],
-      library: []
+      library: [],
+      logged: false
     }
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.clearBooks = this.clearBooks.bind(this)
   }
   handleSubmit() {
     const query = document.getElementById('search').value
@@ -36,13 +42,17 @@ export default class App extends Component {
       this.setState({ library: response })
     })
   }
-  /* Keeps library in sync among devices without refresh.                    */
+  /* Keeps library in sync among devices without refresh using web sockets. */
   checkLibrary() {
     librarian(1000, result => {
       if (this.state.library !== result) {
         this.setState({ library: result })
       }
     })
+  }
+  clearBooks() {
+    this.setState({ bookSearch: [] })
+    document.getElementById('search').value = ''
   }
   componentWillMount() {
     this.populateLibrary()
@@ -51,32 +61,27 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <NavBar />
-        <Input
-          id="search"
-          label="Search for a book here! Click the results to add them to your library."
-          placeholder="Author, Title, or ISBN"
-          btnText="Search"
-          fn={this.handleSubmit}
-        />{' '}
-        {this.state.bookSearch.length > 0 ? (
-          <RaisedButton
-            label="Clear"
-            secondary={true}
-            style={{ marginLeft: -2 }}
-            onClick={() => {
-              this.setState({ bookSearch: [] })
-              document.getElementById('search').value = ''
-            }}
-          />
+        <NavBar
+          appfn={() => {
+            this.setState({ logged: !this.state.logged })
+          }}
+        />
+        {this.state.logged === false ? (
+          <SignupLogin />
         ) : (
-          <span />
+          <div>
+            <Input
+              fn0={this.handleSubmit}
+              fn1={this.clearBooks}
+              visible={this.state.bookSearch.length > 0}
+            />
+            <br />
+            <BookSearch quest={this.state.bookSearch} />
+            <Divider />
+            <h3>Current Library:</h3>
+            <Library location={this.state.library} />
+          </div>
         )}
-        <br />
-        <BookSearch quest={this.state.bookSearch} fn={this.saveClick} />
-        <Divider />
-        <h3>Current Library:</h3>
-        <Library location={this.state.library} />
       </div>
     )
   }
