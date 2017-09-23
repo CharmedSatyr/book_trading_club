@@ -66,6 +66,7 @@ export default class App extends Component {
             style={{ marginLeft: -2 }}
             onClick={() => {
               this.setState({ bookSearch: [] })
+              document.getElementById('search').value = ''
             }}
           />
         ) : (
