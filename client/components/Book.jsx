@@ -9,7 +9,7 @@ const style = {
   height: 260,
   itemAlign: 'center',
   justifyContent: 'center',
-  margin: 20,
+  margin: 16,
   textAlign: 'center',
   width: 180
 }

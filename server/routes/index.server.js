@@ -14,6 +14,10 @@ export const routes = app => {
     res.sendFile(path + '/dist/index.html')
   })
 
+  app.route('/login').get((req, res) => {
+    res.sendFile(path + '/dist/login.html')
+  })
+
   app.route('/api/search/:s').post(searchSubmit)
   app.route('/api/save/:data').post(saveBook)
   app.route('/api/library').get(library)
@@ -22,5 +26,4 @@ export const routes = app => {
   app.use('/api/purge', curseOfAlexandria)
 
   app.route('/api/signup/:userData').post(saveUser)
-  app.route('/api/login/').post((req, res) => {})
 }

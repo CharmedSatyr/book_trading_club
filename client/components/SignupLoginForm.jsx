@@ -4,6 +4,9 @@
 //React
 import React, { Component } from 'react'
 
+//App
+import NavBar from './NavBar.jsx'
+
 //Material UI
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -12,7 +15,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import { f } from '../../common/common.functions.js'
 
 /*** MAIN ***/
-export default class SignupLogin extends Component {
+export default class SignupLoginForm extends Component {
   constructor(props) {
     super(props)
     this.state = {}
@@ -22,12 +25,10 @@ export default class SignupLogin extends Component {
     console.log('You signin up?')
     const username = document.getElementById('username').value
     const password = document.getElementById('password').value
-    const location = document.getElementById('location').value
 
     const user = {
       username: username,
-      password: password,
-      location: location
+      password: password
     }
     const userData = encodeURIComponent(JSON.stringify(user))
 
@@ -36,27 +37,25 @@ export default class SignupLogin extends Component {
     })
     document.getElementById('username').value = ''
     document.getElementById('password').value = ''
-    document.getElementById('location').value = ''
   }
   render() {
     return (
-      <div>
+      <div className="userpass">
+        <h3 />
         <TextField
           hintText="Your username will be public."
           floatingLabelText="Username"
           id="username"
         />
+        <br />
         <TextField
-          hintText="Use 6-72 characters of any type."
+          hintText="Use 12-72 letters and numbers."
           floatingLabelText="Password"
           type="password"
           id="password"
         />
-        <TextField
-          hintText="Where would you like to trade?"
-          floatingLabelText="Location"
-          id="location"
-        />
+        <br />
+        <br />
         <RaisedButton
           label="Sign Up"
           primary={true}

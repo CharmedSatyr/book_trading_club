@@ -6,17 +6,22 @@ import React, { Component } from 'react'
 
 //Material UI
 import Divider from 'material-ui/Divider'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
 
 //App
 import BookSearch from './BookSearch.jsx'
 import Input from './Input.jsx'
 import Library from './Library.jsx'
 import NavBar from './NavBar.jsx'
-import SignupLogin from './SignupLogin.jsx'
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 import { librarian } from '../controllers/socket.client.jsx'
+
+const style = {
+  margin: 5
+}
 
 /*** MAIN ***/
 export default class App extends Component {
@@ -25,10 +30,13 @@ export default class App extends Component {
     this.state = {
       bookSearch: [],
       library: [],
-      logged: false
+      myBooks: false,
+      allBooks: true,
+      profile: false
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.clearBooks = this.clearBooks.bind(this)
+    this.allbooksfn = this.allbooksfn.bind(this)
   }
   handleSubmit() {
     const query = document.getElementById('search').value
@@ -58,30 +66,115 @@ export default class App extends Component {
     this.populateLibrary()
     this.checkLibrary()
   }
+  allbooksfn() {
+    this.setState({
+      myBooks: false,
+      allBooks: true,
+      profile: false
+    })
+  }
+  mybooksfn() {
+    this.setState({
+      myBooks: true,
+      allBooks: false,
+      profile: false
+    })
+  }
+  profilefn() {
+    this.setState({
+      myBooks: false,
+      allBooks: false,
+      profile: true
+    })
+  }
+  logoutfn() {
+    console.log('Logging out!')
+  }
   render() {
     return (
       <div>
         <NavBar
-          appfn={() => {
-            this.setState({ logged: !this.state.logged })
+          allbooksfn={() => {
+            this.allbooksfn()
+          }}
+          mybooksfn={() => {
+            this.mybooksfn()
+          }}
+          profilefn={() => {
+            this.profilefn()
+          }}
+          logoutfn={() => {
+            this.logoutfn()
           }}
         />
-        {this.state.logged === false ? (
-          <SignupLogin />
-        ) : (
-          <div>
-            <Input
-              fn0={this.handleSubmit}
-              fn1={this.clearBooks}
-              visible={this.state.bookSearch.length > 0}
-            />
-            <br />
-            <BookSearch quest={this.state.bookSearch} />
-            <Divider />
-            <h3>Current Library:</h3>
-            <Library location={this.state.library} />
-          </div>
-        )}
+        <div>
+          {/* ALL BOOKS */}
+          {this.state.allBooks === true ? (
+            <div>
+              <h3>Current Library</h3>
+              <Divider />
+              <Library location={this.state.library} />
+            </div>
+          ) : (
+            <span />
+          )}
+
+          {/*MY BOOKS*/}
+          {this.state.myBooks === true ? (
+            <div>
+              <Input
+                fn0={this.handleSubmit}
+                fn1={this.clearBooks}
+                visible={this.state.bookSearch.length > 0}
+              />
+              <br />
+              <Divider />
+              <BookSearch quest={this.state.bookSearch} />
+            </div>
+          ) : (
+            <span />
+          )}
+
+          {/* PROFILE */}
+          {this.state.profile === true ? (
+            <div>
+              <h3>Update your profile</h3>
+              <Divider />
+              <h3>Personal Details</h3>
+              <TextField
+                hintText="Your username will be public."
+                floatingLabelText="Username"
+              />
+              <br />
+              <TextField
+                hintText="City and state or province"
+                floatingLabelText="Location"
+              />
+              <br />
+              <RaisedButton label="Save Changes" primary={true} style={style} />
+              <br />
+              <br />
+              <Divider />
+              <h3>Change your password</h3>
+              <TextField
+                hintText="Use 12-72 letters and numbers."
+                floatingLabelText="Current Password"
+                type="password"
+              />
+              <br />
+              <TextField
+                hintText="Use 12-72 letters and numbers."
+                floatingLabelText="New Password"
+                type="password"
+              />
+              <br />
+              <RaisedButton label="Save Changes" primary={true} style={style} />
+              <br />
+            </div>
+          ) : (
+            <span />
+          )}
+        </div>
       </div>
     )
   }
