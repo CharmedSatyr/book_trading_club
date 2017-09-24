@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
 import FlatButton from 'material-ui/FlatButton'
-import ActionHome from 'material-ui/svg-icons/action/home'
+import AvLibraryBooks from 'material-ui/svg-icons/av/library-books'
 
 const style = {
   marginTop: 7
@@ -14,7 +14,7 @@ const NavBar = ({ allbooksfn, mybooksfn, profilefn, logoutfn }) => {
     <div>
       <AppBar
         title="Charmed Books"
-        iconElementLeft={<ActionHome style={{ marginTop: 12 }} />}
+        iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
         iconElementRight={
           <span>
             <FlatButton label="All Books" onClick={allbooksfn} style={style} />

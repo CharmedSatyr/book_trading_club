@@ -6,7 +6,7 @@ import React, { Component } from 'react'
 //Material UI
 import AppBar from 'material-ui/AppBar'
 import FlatButton from 'material-ui/FlatButton'
-import ActionHome from 'material-ui/svg-icons/action/home'
+import AvLibraryBooks from 'material-ui/svg-icons/av/library-books'
 
 //App
 import SignupLoginForm from './SignupLoginForm.jsx'
@@ -36,7 +36,7 @@ export default class LoginPage extends Component {
         <div>
           <AppBar
             title="Charmed Books"
-            iconElementLeft={<ActionHome style={{ marginTop: 12 }} />}
+            iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
             iconElementRight={
               this.state.form ? <span /> : <Login fn={this.handleClick} />
             }
