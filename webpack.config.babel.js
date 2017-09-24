@@ -39,7 +39,10 @@ const uglyConfig = new webpack.optimize.UglifyJsPlugin()
 
 /*** CLIENT CONFIG ***/
 const client = {
-  entry: ['babel-polyfill', __dirname + '/client/index.jsx'],
+  entry: {
+    index: [__dirname + '/client/index.jsx', 'babel-polyfill'],
+    login: [__dirname + '/client/login.jsx']
+  },
   devtool: PROD ? false : 'source-map',
   module: {
     rules: [
@@ -101,7 +104,7 @@ const client = {
   },
   output: {
     path: __dirname + '/dist',
-    filename: PROD ? 'js/client.[hash].min.js' : 'js/client.[hash].js'
+    filename: PROD ? 'js/client.[name].min.js' : 'js/client.[name].js'
   },
   target: 'web',
   node: nodeConfig,
@@ -111,10 +114,16 @@ const client = {
           title: 'Charmed Books',
           template: __dirname + '/client/' + 'index.html',
           filename: __dirname + '/dist/' + 'index.html',
-          inject: 'body'
+          inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
+        }),
+        new HTMLWebpackPlugin({
+          title: 'Test',
+          template: __dirname + '/client/' + 'login.html',
+          filename: __dirname + '/dist/' + 'login.html',
+          inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
         }),
         new ExtractTextPlugin({
-          filename: 'styles/[name]+[sha256:contenthash:base64:5].min.css'
+          filename: 'styles/[name].css'
         }),
         environmentConfig,
         uglyConfig,
@@ -125,10 +134,16 @@ const client = {
           title: 'Charmed Books',
           template: __dirname + '/client/' + 'index.html',
           filename: __dirname + '/dist/' + 'index.html',
-          inject: 'body'
+          inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
+        }),
+        new HTMLWebpackPlugin({
+          title: 'Test',
+          template: __dirname + '/client/' + 'login.html',
+          filename: __dirname + '/dist/' + 'login.html',
+          inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
         }),
         new ExtractTextPlugin({
-          filename: 'styles/[name]+[sha256:contenthash:base64:5].css'
+          filename: 'styles/[name].css'
         }),
         environmentConfig
       ]
@@ -139,7 +154,7 @@ const server = {
   entry: ['babel-polyfill', __dirname + '/server/server.js'],
   output: {
     path: __dirname + '/dist',
-    filename: PROD ? 'server.[hash].min.js' : 'server.[hash].js'
+    filename: PROD ? 'server.bundle.min.js' : 'server.bundle.js'
   },
   devtool: PROD ? false : 'source-map',
   module: {
