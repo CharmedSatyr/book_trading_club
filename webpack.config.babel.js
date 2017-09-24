@@ -101,7 +101,7 @@ const client = {
   },
   output: {
     path: __dirname + '/dist',
-    filename: PROD ? 'js/client.bundle.min.js' : 'js/client.bundle.js'
+    filename: PROD ? 'js/client.[hash].min.js' : 'js/client.[hash].js'
   },
   target: 'web',
   node: nodeConfig,
@@ -139,7 +139,7 @@ const server = {
   entry: ['babel-polyfill', __dirname + '/server/server.js'],
   output: {
     path: __dirname + '/dist',
-    filename: PROD ? 'server.bundle.min.js' : 'server.bundle.js'
+    filename: PROD ? 'server.[hash].min.js' : 'server.[hash].js'
   },
   devtool: PROD ? false : 'source-map',
   module: {
