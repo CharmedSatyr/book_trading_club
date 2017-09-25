@@ -1,11 +1,19 @@
-import React, { Component } from 'react'
+'use strict'
+
+/*** COMPONENTS ***/
+//React
+import React from 'react'
+
+//Material UI
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 
+/*** VARIABLES ***/
 const style = {
   margin: 12
 }
 
+/*** MAIN ***/
 const Input = ({ fn0, fn1, visible }) => {
   return (
     <label htmlFor="search">

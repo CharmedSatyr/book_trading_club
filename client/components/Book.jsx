@@ -1,9 +1,13 @@
 'use strict'
 
 /*** COMPONENTS ***/
-import React, { Component } from 'react'
+//React
+import React from 'react'
+
+//Material UI
 import Paper from 'material-ui/Paper'
 
+/*** VARIABLES ***/
 const style = {
   display: 'flex',
   height: 260,

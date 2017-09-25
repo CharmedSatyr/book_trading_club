@@ -1,14 +1,20 @@
 'use strict'
 
-import React, { Component } from 'react'
+/*** COMPONENTS ***/
+//React
+import React from 'react'
+
+//Material UI
 import AppBar from 'material-ui/AppBar'
 import FlatButton from 'material-ui/FlatButton'
 import AvLibraryBooks from 'material-ui/svg-icons/av/library-books'
 
+/*** VARIABLES ***/
 const style = {
   marginTop: 7
 }
 
+/*** MAIN ***/
 const NavBar = ({ allbooksfn, mybooksfn, profilefn, logoutfn }) => {
   return (
     <div>

@@ -3,6 +3,7 @@
 /*** MODEL ***/
 import User from '../models/User.js'
 
+/*** CONTROLLERS ***/
 //Find every user in the database
 export const allUsers = (req, res) => {
   User.find({}, (err, doc) => {

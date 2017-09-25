@@ -1,7 +1,7 @@
 'use strict'
 
 /*** COMPONENTS ***/
-import React, { Component } from 'react'
+import React from 'react'
 import Book from './Book.jsx'
 
 /*** MAIN ***/
