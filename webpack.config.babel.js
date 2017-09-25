@@ -41,7 +41,7 @@ const uglyConfig = new webpack.optimize.UglifyJsPlugin()
 const client = {
   entry: {
     index: [__dirname + '/client/index.jsx', 'babel-polyfill'],
-    login: [__dirname + '/client/login.jsx']
+    welcome: [__dirname + '/client/welcome.jsx']
   },
   devtool: PROD ? false : 'source-map',
   module: {
@@ -118,8 +118,8 @@ const client = {
         }),
         new HTMLWebpackPlugin({
           title: 'Test',
-          template: __dirname + '/client/' + 'login.html',
-          filename: __dirname + '/dist/' + 'login.html',
+          template: __dirname + '/client/' + 'welcome.html',
+          filename: __dirname + '/dist/' + 'welcome.html',
           inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
         }),
         new ExtractTextPlugin({
@@ -138,8 +138,8 @@ const client = {
         }),
         new HTMLWebpackPlugin({
           title: 'Test',
-          template: __dirname + '/client/' + 'login.html',
-          filename: __dirname + '/dist/' + 'login.html',
+          template: __dirname + '/client/' + 'welcome.html',
+          filename: __dirname + '/dist/' + 'welcome.html',
           inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
         }),
         new ExtractTextPlugin({
