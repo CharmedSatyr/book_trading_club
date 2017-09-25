@@ -5,11 +5,13 @@
 import React, { Component } from 'react'
 
 //Material UI
+import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
 import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 
 //App
+import BadgeExampleSimple from './Requests.jsx'
 import BookSearch from './BookSearch.jsx'
 import Input from './Input.jsx'
 import Library from './Library.jsx'
@@ -19,6 +21,7 @@ import NavBar from './NavBar.jsx'
 import { f } from '../../common/common.functions.js'
 import { librarian } from '../controllers/socket.client.jsx'
 
+/*** VARIABLES ***/
 const style = {
   margin: 5
 }
@@ -111,7 +114,15 @@ export default class App extends Component {
           {/* ALL BOOKS */}
           {this.state.allBooks === true ? (
             <div>
-              <h3>Current Library</h3>
+              <h3>All Books</h3>
+              <div className="allBooksHeader">
+                <div>
+                  Click the{' '}
+                  <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to
+                  request a trade!
+                </div>
+                <BadgeExampleSimple />
+              </div>
               <Divider />
               <Library location={this.state.library} />
             </div>

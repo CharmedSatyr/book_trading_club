@@ -10,3 +10,10 @@ body {
   display: flex;
   flex-wrap: wrap;
 }
+
+.allBooksHeader {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -37px;
+}
