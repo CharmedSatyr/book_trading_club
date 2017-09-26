@@ -6,12 +6,17 @@ import React from 'react'
 
 //Material UI
 import AppBar from 'material-ui/AppBar'
-import FlatButton from 'material-ui/FlatButton'
 import AvLibraryBooks from 'material-ui/svg-icons/av/library-books'
+import FlatButton from 'material-ui/FlatButton'
+import IconButton from 'material-ui/IconButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 /*** VARIABLES ***/
 const style = {
-  marginTop: 7
+  marginTop: 7,
+  textDecoration: 'none'
 }
 
 /*** MAIN ***/
@@ -23,13 +28,35 @@ const NavBar = ({ allbooksfn, mybooksfn, profilefn, loggedUser }) => {
         iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
         iconElementRight={
           <span>
-            <span className="welcomeName">Welcome, {loggedUser}</span>
-            <FlatButton label="All Books" onClick={allbooksfn} style={style} />
-            <FlatButton label="My Books" onClick={mybooksfn} style={style} />
-            <FlatButton label="Profile" onClick={profilefn} style={style} />
-            <a href="/logout">
-              <FlatButton label="Logout" style={style} />
-            </a>
+            <div className="welcomeName">Welcome, {loggedUser}</div>
+            <IconMenu
+              iconButtonElement={
+                <IconButton>
+                  <MoreVertIcon />
+                </IconButton>
+              }
+              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            >
+              <MenuItem
+                primaryText="All Books"
+                onClick={allbooksfn}
+                style={style}
+              />
+              <MenuItem
+                primaryText="My Books"
+                onClick={mybooksfn}
+                style={style}
+              />
+              <MenuItem
+                primaryText="Profile"
+                onClick={profilefn}
+                style={style}
+              />
+              <a href="/logout">
+                <MenuItem primaryText="Logout" style={style} />
+              </a>
+            </IconMenu>
           </span>
         }
       />

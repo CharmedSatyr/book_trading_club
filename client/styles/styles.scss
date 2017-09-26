@@ -24,7 +24,13 @@ body {
   letter-spacing: 0;
   padding-left: 16px;
   padding-right: 16px;
-  position: relative;
+  position: absolute;
   text-transform: uppercase;
-  vertical-align: middle;
+  top: 25px;
+  right: 58px;
+  vertical-align: inherit;
+}
+
+a {
+  text-decoration: none;
 }
