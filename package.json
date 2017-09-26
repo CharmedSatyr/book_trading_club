@@ -1,7 +1,8 @@
 {
   "name": "book_trading_club",
   "version": "0.0.1",
-  "description": "\"Manage a Book Trading Club\" is a project required for freeCodeCamp's Back End Development Certification.",
+  "description":
+    "\"Manage a Book Trading Club\" is a project required for freeCodeCamp's Back End Development Certification.",
   "main": "server.js",
   "repository": "https://github.com/CharmedSatyr/book_trading_club.git",
   "author": "CharmedSatyr <z@charmed.tech>",
@@ -19,7 +20,7 @@
     "Express",
     "React",
     "Node",
-    "ES2017"
+    "ES6"
   ],
   "scripts": {
     "start": "npm-run-all --parallel watch:client watch:server",
