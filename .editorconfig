@@ -20,3 +20,6 @@ trim_trailing_whitespace = true
 
 [*.md]
 trim_trailing_whitespace = false
+
+# editorconfig-tools is unable to ignore longs strings or urls
+max_line_length = null
