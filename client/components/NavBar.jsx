@@ -15,7 +15,7 @@ const style = {
 }
 
 /*** MAIN ***/
-const NavBar = ({ allbooksfn, mybooksfn, profilefn, logoutfn }) => {
+const NavBar = ({ allbooksfn, mybooksfn, profilefn }) => {
   return (
     <div>
       <AppBar
@@ -26,7 +26,9 @@ const NavBar = ({ allbooksfn, mybooksfn, profilefn, logoutfn }) => {
             <FlatButton label="All Books" onClick={allbooksfn} style={style} />
             <FlatButton label="My Books" onClick={mybooksfn} style={style} />
             <FlatButton label="Profile" onClick={profilefn} style={style} />
-            <FlatButton label="Logout" onClick={logoutfn} style={style} />
+            <a href="/logout">
+              <FlatButton label="Logout" style={style} />
+            </a>
           </span>
         }
       />

@@ -8,74 +8,80 @@ import React from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 
-/*** FUNCTIONS ***/
-import { f } from '../../common/common.functions.js'
-
-//Same submission function used for both login and signup
-const userSubmit = route => {
-  console.log('You signin up?')
-  const username = document.getElementById('username').value
-  const password = document.getElementById('password').value
-
-  const user = {
-    username: username,
-    password: password
-  }
-  const userData = encodeURIComponent(JSON.stringify(user))
-
-  f('POST', '/api/' + route + '/' + userData, response => {
-    console.log(response)
-  })
-  document.getElementById('username').value = ''
-  document.getElementById('password').value = ''
-}
-
 /*** MAIN ***/
 const SignupLoginForm = ({ signup, login }) => {
   return (
-    <div className="userpass">
-      <h3 />
-      <TextField
-        hintText="Your username will be public."
-        floatingLabelText="Username"
-        id="username"
-      />
-      <br />
-      <TextField
-        hintText="Use 12-72 letters and numbers."
-        floatingLabelText="Password"
-        type="password"
-        id="password"
-      />
-      <br />
-      <br />
-      {login ? (
-        <RaisedButton
-          label="Login"
-          primary={true}
-          style={{ margin: 12 }}
-          onClick={() => {
-            console.log('You loggin in?')
-            userSubmit('login')
-          }}
-        />
-      ) : (
-        <span />
-      )}
-      {signup ? (
-        <RaisedButton
-          label="Sign Up"
-          primary={true}
-          style={{ margin: 12 }}
-          onClick={() => {
-            console.log('You signin up?')
-            userSubmit('signup')
-          }}
-        />
-      ) : (
-        <span />
-      )}
-      <br />
+    <div>
+      <div className="userpass">
+        {login ? (
+          <form action="/welcome" method="post">
+            <TextField
+              hintText="Your username will be public."
+              floatingLabelText="Username"
+              type="text"
+              name="username"
+              id="username"
+            />
+            <br />
+            <TextField
+              hintText="Use 12-72 letters and numbers."
+              floatingLabelText="Password"
+              type="password"
+              name="password"
+              id="password"
+            />
+            <br />
+            <br />
+            <RaisedButton
+              label="Login"
+              primary={true}
+              style={{ margin: 12 }}
+              type="submit"
+            />
+          </form>
+        ) : (
+          <span />
+        )}
+        {signup ? (
+          <form action="/api/users" method="post">
+            <TextField
+              hintText="Your username will be public."
+              floatingLabelText="Username"
+              type="text"
+              name="username"
+              id="username"
+            />
+            <br />
+            <TextField
+              hintText="Use 12-72 letters and numbers."
+              floatingLabelText="Password"
+              type="password"
+              name="password"
+              id="password"
+            />
+            <br />
+            <TextField
+              hintText="Where do you want to swap books?"
+              floatingLabelText="Location"
+              type="text"
+              name="location"
+              id="location"
+            />
+            <br />
+            <br />
+
+            <RaisedButton
+              label="Sign Up"
+              primary={true}
+              style={{ margin: 12 }}
+              type="submit"
+            />
+          </form>
+        ) : (
+          <span />
+        )}
+        <br />
+      </div>
     </div>
   )
 }

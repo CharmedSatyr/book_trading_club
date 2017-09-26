@@ -1,10 +1,10 @@
 'use strict'
 
-/*** ES ***/
+/*** ES6+ ***/
 import 'babel-polyfill'
 import Promise from 'es6-promise'
 Promise.polyfill()
-require('isomorphic-fetch')
+import 'isomorphic-fetch'
 
 /*** EXPRESS ***/
 import express from 'express'
@@ -17,17 +17,11 @@ dotenv.load()
 
 /*** DEVELOPMENT TOOLS ***/
 const DEV = process.env.NODE_ENV === 'development'
+const PROD = process.env.NODE_ENV === 'production'
 import morgan from 'morgan'
-if (DEV) {
-  app.use(morgan('dev'))
-}
-
-/*** VIEW ENGINE ***/
-app.set('view engine', 'html')
-app.engine('html', (path, option, cb) => {})
+DEV ? app.use(morgan('dev')) : app.use(morgan('tiny'))
 
 /*** ENABLE COMPRESSION ***/
-const PROD = process.env.NODE_ENV === 'production'
 import compression from 'compression'
 if (PROD) {
   app.use(compression())
@@ -50,9 +44,41 @@ mongoose.connect(process.env.MONGO_URI, { useMongoClient: true }, (err, db) => {
   }
 })
 
+/*** AUTHENTICATION ***/
+import bodyParser from 'body-parser'
+app.use(bodyParser.urlencoded({ extended: false }))
+
+import session from 'express-session'
+import passport from 'passport'
+
+let sess = {
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false //true,
+  //  cookie: {
+  //    path: '/',
+  //    httpOnly: false,
+  //    maxAge: 1800000 //30 minutes
+  //  },
+  //  store: //defaults to MemoryStore instance
+  //  name: 'id'
+}
+
+if (PROD) {
+  //  app.set('trust proxy', 1) //trust first proxy - what does this mean
+  //  sess.cookie.secure = true //serve secure cookies in production
+  //  sess.cookie.httpOnly = true
+}
+
+app.use(session(sess))
+app.use(passport.initialize())
+app.use(passport.session())
+
 /*** ROUTES ***/
 import { routes } from './routes/index.server.js'
-routes(app)
+import { authConfig } from './config/authConfig.js'
+authConfig(passport)
+routes(app, passport)
 
 /*** WEB SOCKETS ***/
 import http from 'http'

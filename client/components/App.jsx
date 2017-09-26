@@ -90,9 +90,6 @@ export default class App extends Component {
       profile: true
     })
   }
-  logoutfn() {
-    console.log('Logging out!')
-  }
   render() {
     return (
       <div>
@@ -105,9 +102,6 @@ export default class App extends Component {
           }}
           profilefn={() => {
             this.profilefn()
-          }}
-          logoutfn={() => {
-            this.logoutfn()
           }}
         />
         <div>

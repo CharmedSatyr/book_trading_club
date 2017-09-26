@@ -90,6 +90,7 @@ export default class SignupLoginPage extends Component {
             }
           />
         </div>
+
         {this.state.form ? (
           <SignupLoginForm
             login={this.state.login}

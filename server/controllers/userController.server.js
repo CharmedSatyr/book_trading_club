@@ -19,10 +19,21 @@ export const genocide = (req, res) => {
   })
 }
 
-//Saves a new user to the database
-export const saveUser = (req, res) => {
-  const user = JSON.parse(decodeURIComponent(req.params.userData))
+//View all users in the database
+export const viewUsers = (req, res) => {
+  User.find({}, (err, results) => {
+    if (err) {
+      console.error(err)
+    }
+    if (results) {
+      res.json(results)
+    }
+  })
+}
 
+//Saves a new user to the database
+export const saveUser = (req, res, next) => {
+  const user = req.body
   User.findOne(
     {
       username: user.username
@@ -32,7 +43,7 @@ export const saveUser = (req, res) => {
         console.error(err)
       }
       if (doc) {
-        res.json('This user is already in the database!')
+        res.json('This username is taken. Please choose another.')
       } else {
         const newUser = new User({
           username: user.username,
@@ -43,11 +54,8 @@ export const saveUser = (req, res) => {
           if (err) {
             console.error(err)
           }
-          res.json(
-            'This User, our brothasista in Christ, ' +
-              user.username +
-              ', has been saved! Praise the Lord!'
-          )
+          console.log(user.username + ' successfully signed up. Logging in.')
+          return next()
         })
       }
     }
