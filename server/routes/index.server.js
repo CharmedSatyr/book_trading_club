@@ -15,9 +15,11 @@ import {
 import { searchSubmit } from '../controllers/searchController.server.js'
 
 export const routes = (app, passport) => {
+  let name_view
   //Auth check
   const permissions = (req, res, next) => {
     if (req.isAuthenticated()) {
+      name_view = req.user.username
       return next()
     } else {
       res.redirect('/welcome')
@@ -62,7 +64,9 @@ export const routes = (app, passport) => {
         failureRedirect: '/welcome'
       })
     )
-
+  app.route('/api/users/logged').get((req, res) => {
+    res.json(name_view)
+  })
   //Private (no client UI option)
   //Remove all stored books
   app.use('/api/burn', curseOfAlexandria)

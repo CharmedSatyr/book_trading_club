@@ -35,7 +35,8 @@ export default class App extends Component {
       library: [],
       myBooks: false,
       allBooks: true,
-      profile: false
+      profile: false,
+      loggedUser: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.clearBooks = this.clearBooks.bind(this)
@@ -46,6 +47,11 @@ export default class App extends Component {
     console.log(query)
     f('POST', '/api/search/' + query, response => {
       this.setState({ bookSearch: response })
+    })
+  }
+  loggedUser() {
+    f('GET', '/api/users/logged', response => {
+      this.setState({ loggedUser: response })
     })
   }
   populateLibrary() {
@@ -64,10 +70,6 @@ export default class App extends Component {
   clearBooks() {
     this.setState({ bookSearch: [] })
     document.getElementById('search').value = ''
-  }
-  componentWillMount() {
-    this.populateLibrary()
-    this.checkLibrary()
   }
   allbooksfn() {
     this.setState({
@@ -90,10 +92,16 @@ export default class App extends Component {
       profile: true
     })
   }
+  componentWillMount() {
+    this.populateLibrary()
+    this.checkLibrary()
+    this.loggedUser()
+  }
   render() {
     return (
       <div>
         <NavBar
+          loggedUser={this.state.loggedUser}
           allbooksfn={() => {
             this.allbooksfn()
           }}

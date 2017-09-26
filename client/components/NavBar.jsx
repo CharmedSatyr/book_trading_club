@@ -15,7 +15,7 @@ const style = {
 }
 
 /*** MAIN ***/
-const NavBar = ({ allbooksfn, mybooksfn, profilefn }) => {
+const NavBar = ({ allbooksfn, mybooksfn, profilefn, loggedUser }) => {
   return (
     <div>
       <AppBar
@@ -23,6 +23,7 @@ const NavBar = ({ allbooksfn, mybooksfn, profilefn }) => {
         iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
         iconElementRight={
           <span>
+            <span className="welcomeName">Welcome, {loggedUser}</span>
             <FlatButton label="All Books" onClick={allbooksfn} style={style} />
             <FlatButton label="My Books" onClick={mybooksfn} style={style} />
             <FlatButton label="Profile" onClick={profilefn} style={style} />
