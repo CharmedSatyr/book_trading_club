@@ -6,7 +6,27 @@ import Book from '../models/Book.js'
 //Find every book in the database
 export const library = (req, res) => {
   Book.find({}, (err, doc) => {
-    res.json(doc)
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      res.json(doc)
+    }
+  })
+}
+
+//Search for books owned by a particular user
+export const userShelves = (req, res) => {
+  const user = req.params.user
+  Book.find({ owner: user }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      res.json(doc)
+    } else {
+      res.json('Nope, nothing')
+    }
   })
 }
 
@@ -32,6 +52,7 @@ export const sternGaze = (message, socket) => {
 
 //Saves a new book to the database
 export const saveBook = (req, res) => {
+  const user = req.params.user
   const book = JSON.parse(decodeURIComponent(req.params.data))
 
   Book.findOne(
@@ -50,13 +71,18 @@ export const saveBook = (req, res) => {
           title: book.title,
           publication: book.publication,
           cover: book.cover,
-          olkey: book.olkey
+          olkey: book.olkey,
+          owner: user
         })
         newBook.save((err, doc) => {
           if (err) {
             console.error(err)
           }
-          res.json('This book has been saved! Praise Jesus!')
+          res.json(
+            'This book has been saved! Praise Jesus! It is owned by ' +
+              user +
+              '!'
+          )
         })
       }
     }

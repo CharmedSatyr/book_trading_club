@@ -33,25 +33,31 @@ export default class App extends Component {
     this.state = {
       bookSearch: [],
       library: [],
-      myBooks: false,
-      allBooks: true,
+      userShelves: [],
+      myBooks: true,
+      addBooks: false,
+      allBooks: false,
       profile: false,
       loggedUser: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.clearBooks = this.clearBooks.bind(this)
-    this.allbooksfn = this.allbooksfn.bind(this)
   }
   handleSubmit() {
     const query = document.getElementById('search').value
     console.log(query)
     f('POST', '/api/search/' + query, response => {
+      console.log('Search response', response)
       this.setState({ bookSearch: response })
     })
   }
   loggedUser() {
     f('GET', '/api/users/logged', response => {
       this.setState({ loggedUser: response })
+
+      //Call populateUserShelves and checkLibrary with loggedUser as argument
+      this.populateUserShelves(response)
+      this.checkLibrary(response)
     })
   }
   populateLibrary() {
@@ -59,11 +65,20 @@ export default class App extends Component {
       this.setState({ library: response })
     })
   }
-  /* Keeps library in sync among devices without refresh using web sockets. */
-  checkLibrary() {
-    librarian(1000, result => {
-      if (this.state.library !== result) {
-        this.setState({ library: result })
+  populateUserShelves(user) {
+    f('GET', '/api/' + user + '/library', response => {
+      this.setState({ userShelves: response })
+    })
+  }
+  /* Keeps personal and full library in sync among devices without *
+   * refresh using web sockets.                                    */
+  checkLibrary(user) {
+    librarian(1000, user, result => {
+      if (result[0] && this.state.library !== result[0]) {
+        this.setState({ library: result[0] })
+      }
+      if (result[1] && this.state.userShelves !== result[1]) {
+        this.setState({ userShelves: result[1] })
       }
     })
   }
@@ -71,15 +86,26 @@ export default class App extends Component {
     this.setState({ bookSearch: [] })
     document.getElementById('search').value = ''
   }
+  //Views
   allbooksfn() {
     this.setState({
+      addBooks: false,
       myBooks: false,
       allBooks: true,
       profile: false
     })
   }
+  addbooksfn() {
+    this.setState({
+      addBooks: true,
+      myBooks: false,
+      allBooks: false,
+      profile: false
+    })
+  }
   mybooksfn() {
     this.setState({
+      addBooks: false,
       myBooks: true,
       allBooks: false,
       profile: false
@@ -87,21 +113,25 @@ export default class App extends Component {
   }
   profilefn() {
     this.setState({
+      addBooks: false,
       myBooks: false,
       allBooks: false,
       profile: true
     })
   }
+  //Start Up
   componentWillMount() {
-    this.populateLibrary()
-    this.checkLibrary()
     this.loggedUser()
+    this.populateLibrary()
   }
   render() {
     return (
       <div>
         <NavBar
           loggedUser={this.state.loggedUser}
+          addbooksfn={() => {
+            this.addbooksfn()
+          }}
           allbooksfn={() => {
             this.allbooksfn()
           }}
@@ -113,8 +143,26 @@ export default class App extends Component {
           }}
         />
         <div>
+          {/* SEARCH */}
+          {this.state.addBooks ? (
+            <div>
+              <Input
+                fn0={this.handleSubmit}
+                fn1={this.clearBooks}
+                visible={this.state.bookSearch.length > 0}
+              />
+              <br />
+              <Divider />
+              <BookSearch
+                quest={this.state.bookSearch}
+                user={this.state.loggedUser}
+              />
+            </div>
+          ) : (
+            <span />
+          )}
           {/* ALL BOOKS */}
-          {this.state.allBooks === true ? (
+          {this.state.allBooks ? (
             <div>
               <h3>All Books</h3>
               <div className="allBooksHeader">
@@ -133,23 +181,18 @@ export default class App extends Component {
           )}
 
           {/*MY BOOKS*/}
-          {this.state.myBooks === true ? (
+          {this.state.myBooks ? (
             <div>
-              <Input
-                fn0={this.handleSubmit}
-                fn1={this.clearBooks}
-                visible={this.state.bookSearch.length > 0}
-              />
-              <br />
+              <h3>My Books Available to Swap</h3>
               <Divider />
-              <BookSearch quest={this.state.bookSearch} />
+              <Library location={this.state.userShelves} />
             </div>
           ) : (
             <span />
           )}
 
           {/* PROFILE */}
-          {this.state.profile === true ? (
+          {this.state.profile ? (
             <div>
               <h3>Update your profile</h3>
               <Divider />

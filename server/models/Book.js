@@ -8,7 +8,12 @@ const Book = new Schema({
   title: String,
   publication: Number,
   cover: String,
-  olkey: String
+  olkey: String,
+  requested: {
+    type: Boolean,
+    default: false
+  },
+  owner: String
 })
 
 export default mongoose.model('Book', Book)

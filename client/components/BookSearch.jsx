@@ -7,14 +7,14 @@ import Book from './Book.jsx'
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 
-const saveClick = item => {
+const saveClick = (item, user) => {
   const data = encodeURIComponent(JSON.stringify(item))
   console.log('Saving ' + item.title + ' by ' + item.author)
-  f('POST', '/api/save/' + data, response => console.log(response))
+  f('POST', '/api/' + user + '/save/' + data, response => console.log(response))
 }
 
 /*** MAIN ***/
-const BookSearch = ({ quest }) => {
+const BookSearch = ({ quest, user }) => {
   const results = quest.map((item, index) => {
     return (
       <Book
@@ -24,7 +24,7 @@ const BookSearch = ({ quest }) => {
         cover={item.cover}
         key={index}
         fn={() => {
-          saveClick(item)
+          saveClick(item, user)
         }}
       />
     )

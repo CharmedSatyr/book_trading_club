@@ -3,8 +3,8 @@
 import openSocket from 'socket.io-client'
 const clientSocket = openSocket()
 
-//Get tickers once per second
-export const librarian = (interval, cb) => {
+//Check the full and user's library for differences between client and db
+export const librarian = (interval, user, cb) => {
   clientSocket.on('librarian', cb)
-  clientSocket.emit('librarian', interval)
+  clientSocket.emit('librarian', [interval, user])
 }

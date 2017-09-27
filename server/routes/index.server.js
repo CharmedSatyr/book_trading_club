@@ -3,6 +3,7 @@ const path = process.cwd()
 import {
   library,
   saveBook,
+  userShelves,
   curseOfAlexandria
 } from '../controllers/bookController.server.js'
 
@@ -50,9 +51,11 @@ export const routes = (app, passport) => {
     res.redirect('/welcome')
   })
 
-  //API
-  app.route('/api/search/:s').post(permissions, searchSubmit)
-  app.route('/api/save/:data').post(permissions, saveBook)
+  //API - They stop working when I require permissions...
+  app.route('/api/search/:s').post(searchSubmit)
+
+  app.route('/api/:user/save/:data').post(saveBook)
+  app.route('/api/:user/library').get(userShelves)
   app.route('/api/library').get(library)
   app
     .route('/api/users')
@@ -64,6 +67,7 @@ export const routes = (app, passport) => {
         failureRedirect: '/welcome'
       })
     )
+
   app.route('/api/users/logged').get((req, res) => {
     res.json(name_view)
   })

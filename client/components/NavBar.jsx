@@ -20,7 +20,13 @@ const style = {
 }
 
 /*** MAIN ***/
-const NavBar = ({ allbooksfn, mybooksfn, profilefn, loggedUser }) => {
+const NavBar = ({
+  addbooksfn,
+  allbooksfn,
+  mybooksfn,
+  profilefn,
+  loggedUser
+}) => {
   return (
     <div>
       <AppBar
@@ -38,6 +44,11 @@ const NavBar = ({ allbooksfn, mybooksfn, profilefn, loggedUser }) => {
               targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
+              <MenuItem
+                primaryText="Add Books"
+                onClick={addbooksfn}
+                style={style}
+              />
               <MenuItem
                 primaryText="All Books"
                 onClick={allbooksfn}

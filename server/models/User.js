@@ -16,8 +16,7 @@ const User = new Schema({
     required: true,
     default: new Date()
   },
-  location: String,
-  shelves: []
+  location: String
 })
 
 export default mongoose.model('User', User)
