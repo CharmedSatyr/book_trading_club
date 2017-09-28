@@ -32,8 +32,8 @@ export default class App extends Component {
     super(props)
     this.state = {
       bookSearch: [],
-      library: [],
       userShelves: [],
+      otherShelves: [],
       myBooks: true,
       addBooks: false,
       allBooks: false,
@@ -55,18 +55,19 @@ export default class App extends Component {
     f('GET', '/api/users/logged', response => {
       this.setState({ loggedUser: response })
 
-      //Call populateUserShelves and checkLibrary with loggedUser as argument
+      //Call populate shelves fns and checkLibrary with loggedUser as argument
       this.populateUserShelves(response)
+      this.populateOtherShelves(response)
       this.checkLibrary(response)
     })
   }
-  populateLibrary() {
-    f('GET', '/api/library', response => {
-      this.setState({ library: response })
+  populateOtherShelves(user) {
+    f('GET', '/api/' + user + '/otherBooks', response => {
+      this.setState({ otherShelves: response })
     })
   }
   populateUserShelves(user) {
-    f('GET', '/api/' + user + '/library', response => {
+    f('GET', '/api/' + user + '/userBooks', response => {
       this.setState({ userShelves: response })
     })
   }
@@ -74,11 +75,11 @@ export default class App extends Component {
    * refresh using web sockets.                                    */
   checkLibrary(user) {
     librarian(1000, user, result => {
-      if (result[0] && this.state.library !== result[0]) {
-        this.setState({ library: result[0] })
-      }
       if (result[1] && this.state.userShelves !== result[1]) {
         this.setState({ userShelves: result[1] })
+      }
+      if (result[0] && this.state.otherShelves !== result[0]) {
+        this.setState({ otherShelves: result[0] })
       }
     })
   }
@@ -122,7 +123,6 @@ export default class App extends Component {
   //Start Up
   componentWillMount() {
     this.loggedUser()
-    this.populateLibrary()
   }
   render() {
     return (
@@ -164,7 +164,7 @@ export default class App extends Component {
         {/* ALL BOOKS */}
         {this.state.allBooks ? (
           <div>
-            <h3>All Books</h3>
+            <h3>Others' Books Available to Swap</h3>
             <div className="allBooksHeader">
               <div>
                 Click the{' '}
@@ -175,7 +175,7 @@ export default class App extends Component {
             </div>
             <Divider />
             <Library
-              location={this.state.library}
+              location={this.state.otherShelves}
               whichButton={this.state.myBooks ? 'delete' : 'swap'}
               user={this.state.loggedUser}
             />

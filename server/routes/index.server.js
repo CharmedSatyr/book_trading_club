@@ -5,6 +5,7 @@ import {
   saveBook,
   removeBook,
   userShelves,
+  otherShelves,
   curseOfAlexandria
 } from '../controllers/bookController.server.js'
 
@@ -63,9 +64,10 @@ export const routes = (app, passport) => {
     //Delete a user's book
     .delete(removeBook)
   //See a user's books
-  app.route('/api/:user/library').get(userShelves)
-  //See all books
-  app.route('/api/library').get(library)
+  app.route('/api/:user/userBooks').get(userShelves)
+  //See books that do NOT belong to a user
+  app.route('/api/:user/otherBooks').get(otherShelves)
+
   //Users
   app
     .route('/api/users')
@@ -89,4 +91,6 @@ export const routes = (app, passport) => {
   app.use('/api/burn', curseOfAlexandria)
   //Remove all users
   app.use('/api/purge', genocide)
+  //See all books
+  app.route('/api/library').get(library)
 }

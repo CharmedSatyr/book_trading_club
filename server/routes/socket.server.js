@@ -10,8 +10,8 @@ const ioEvents = io => {
 
     serverSocket.on('librarian', received => {
       setInterval(() => {
-        //Full library
-        Book.find({}, (err, doc) => {
+        //Other shelves
+        Book.find({ owner: { $ne: [received[1]] } }, (err, doc) => {
           if (err) {
             console.error(err)
           }
@@ -20,7 +20,7 @@ const ioEvents = io => {
           }
         })
 
-        //Personal library
+        //User shelves
         Book.find({ owner: [received[1]] }, (err, doc) => {
           if (err) {
             console.error(err)

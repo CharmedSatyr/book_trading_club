@@ -30,6 +30,24 @@ export const userShelves = (req, res) => {
   })
 }
 
+//Search for books NOT owned by a particular user
+export const otherShelves = (req, res) => {
+  console.log('Searching other shlves')
+  const user = req.params.user
+  Book.find({ owner: { $ne: !user } }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      console.log('Ohters have books', doc)
+
+      res.json(doc)
+    } else {
+      res.json('Nope, you own the whole library.')
+    }
+  })
+}
+
 //Remove every book in the database
 export const curseOfAlexandria = (req, res) => {
   Book.remove({}, (err, doc) => {
