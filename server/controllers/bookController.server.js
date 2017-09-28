@@ -38,8 +38,6 @@ export const otherShelves = (req, res) => {
       console.error(err)
     }
     if (doc) {
-      console.log('Ohters have books', doc)
-
       res.json(doc)
     } else {
       res.json('Nope, you own the whole library.')
