@@ -9,9 +9,9 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
-
 import { red500, yellow500, blue500 } from 'material-ui/styles/colors'
 
+/*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 
 /*** VARIABLES ***/
@@ -32,7 +32,7 @@ const Book = ({
   publication,
   cover,
   olkey,
-  user,
+  owner,
   fn
 }) => {
   return (
@@ -43,10 +43,10 @@ const Book = ({
             onClick={() => {
               const bookInfo = {
                 olkey: olkey,
-                owner: user
+                owner: owner
               }
               const data = encodeURIComponent(JSON.stringify(bookInfo))
-              f('DELETE', '/api/' + user + '/save/' + data)
+              f('DELETE', '/api/' + owner + '/save/' + data)
             }}
           >
             <NavigationClose color={red500} />
@@ -56,7 +56,7 @@ const Book = ({
             onClick={() => {
               const bookInfo = {
                 olkey: olkey,
-                owner: user
+                owner: owner
               }
               const data = encodeURIComponent(JSON.stringify(bookInfo))
               console.log('We should swap:', bookInfo)

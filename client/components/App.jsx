@@ -177,7 +177,6 @@ export default class App extends Component {
             <Library
               location={this.state.otherShelves}
               whichButton={this.state.myBooks ? 'delete' : 'swap'}
-              user={this.state.loggedUser}
             />
           </div>
         ) : (
@@ -192,7 +191,6 @@ export default class App extends Component {
             <Library
               location={this.state.userShelves}
               whichButton={this.state.myBooks ? 'delete' : 'swap'}
-              user={this.state.loggedUser}
             />
           </div>
         ) : (
