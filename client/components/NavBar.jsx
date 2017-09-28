@@ -45,18 +45,18 @@ const NavBar = ({
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
               <MenuItem
-                primaryText="Add Books"
-                onClick={addbooksfn}
+                primaryText="My Books"
+                onClick={mybooksfn}
                 style={style}
               />
               <MenuItem
-                primaryText="All Books"
+                primaryText="Other Books"
                 onClick={allbooksfn}
                 style={style}
               />
               <MenuItem
-                primaryText="My Books"
-                onClick={mybooksfn}
+                primaryText="Add Books"
+                onClick={addbooksfn}
                 style={style}
               />
               <MenuItem
