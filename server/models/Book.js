@@ -13,7 +13,8 @@ const Book = new Schema({
     type: Boolean,
     default: false
   },
-  owner: String
+  owner: String,
+  requestor: String
 })
 
 export default mongoose.model('Book', Book)
