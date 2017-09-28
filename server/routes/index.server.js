@@ -3,6 +3,7 @@ const path = process.cwd()
 import {
   library,
   saveBook,
+  removeBook,
   userShelves,
   curseOfAlexandria
 } from '../controllers/bookController.server.js'
@@ -52,14 +53,25 @@ export const routes = (app, passport) => {
   })
 
   //API - They stop working when I require permissions...
+  //Search for a book
   app.route('/api/search/:s').post(searchSubmit)
 
-  app.route('/api/:user/save/:data').post(saveBook)
+  app
+    .route('/api/:user/save/:data')
+    //Save a book to a user
+    .post(saveBook)
+    //Delete a user's book
+    .delete(removeBook)
+  //See a user's books
   app.route('/api/:user/library').get(userShelves)
+  //See all books
   app.route('/api/library').get(library)
+  //Users
   app
     .route('/api/users')
+    //See all users
     .get(viewUsers)
+    //Save a new user and log the user in
     .post(
       saveUser,
       passport.authenticate('local', {
@@ -68,6 +80,7 @@ export const routes = (app, passport) => {
       })
     )
 
+  //Get login name
   app.route('/api/users/logged').get((req, res) => {
     res.json(name_view)
   })

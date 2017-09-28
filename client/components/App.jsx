@@ -127,6 +127,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
+        {/* NAVBAR */}
         <NavBar
           loggedUser={this.state.loggedUser}
           addbooksfn={() => {
@@ -142,95 +143,97 @@ export default class App extends Component {
             this.profilefn()
           }}
         />
-        <div>
-          {/* SEARCH */}
-          {this.state.addBooks ? (
-            <div>
-              <Input
-                fn0={this.handleSubmit}
-                fn1={this.clearBooks}
-                visible={this.state.bookSearch.length > 0}
-              />
-              <br />
-              <Divider />
-              <BookSearch
-                quest={this.state.bookSearch}
-                user={this.state.loggedUser}
-              />
-            </div>
-          ) : (
-            <span />
-          )}
-          {/* ALL BOOKS */}
-          {this.state.allBooks ? (
-            <div>
-              <h3>All Books</h3>
-              <div className="allBooksHeader">
-                <div>
-                  Click the{' '}
-                  <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to
-                  request a trade!
-                </div>
-                <BadgeExampleSimple />
+        {/* SEARCH */}
+        {this.state.addBooks ? (
+          <div>
+            <Input
+              fn0={this.handleSubmit}
+              fn1={this.clearBooks}
+              visible={this.state.bookSearch.length > 0}
+            />
+            <br />
+            <Divider />
+            <BookSearch
+              quest={this.state.bookSearch}
+              user={this.state.loggedUser}
+            />
+          </div>
+        ) : (
+          <span />
+        )}
+        {/* ALL BOOKS */}
+        {this.state.allBooks ? (
+          <div>
+            <h3>All Books</h3>
+            <div className="allBooksHeader">
+              <div>
+                Click the{' '}
+                <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to
+                request a trade!
               </div>
-              <Divider />
-              <Library location={this.state.library} />
+              <BadgeExampleSimple />
             </div>
-          ) : (
-            <span />
-          )}
+            <Divider />
+            <Library location={this.state.library} />
+          </div>
+        ) : (
+          <span />
+        )}
 
-          {/*MY BOOKS*/}
-          {this.state.myBooks ? (
-            <div>
-              <h3>My Books Available to Swap</h3>
-              <Divider />
-              <Library location={this.state.userShelves} />
-            </div>
-          ) : (
-            <span />
-          )}
+        {/*MY BOOKS*/}
+        {this.state.myBooks ? (
+          <div>
+            <h3>My Books Available to Swap</h3>
+            <Divider />
+            <Library
+              location={this.state.userShelves}
+              whichButton={this.state.myBooks ? 'delete' : 'swap'}
+              user={this.state.loggedUser}
+            />
+          </div>
+        ) : (
+          <span />
+        )}
 
-          {/* PROFILE */}
-          {this.state.profile ? (
-            <div>
-              <h3>Update your profile</h3>
-              <Divider />
-              <h3>Personal Details</h3>
-              <TextField
-                hintText="Your username will be public."
-                floatingLabelText="Username"
-              />
-              <br />
-              <TextField
-                hintText="City and state or province"
-                floatingLabelText="Location"
-              />
-              <br />
-              <RaisedButton label="Save Changes" primary={true} style={style} />
-              <br />
-              <br />
-              <Divider />
-              <h3>Change your password</h3>
-              <TextField
-                hintText="Use 12-72 letters and numbers."
-                floatingLabelText="Current Password"
-                type="password"
-              />
-              <br />
-              <TextField
-                hintText="Use 12-72 letters and numbers."
-                floatingLabelText="New Password"
-                type="password"
-              />
-              <br />
-              <RaisedButton label="Save Changes" primary={true} style={style} />
-              <br />
-            </div>
-          ) : (
-            <span />
-          )}
-        </div>
+        {/* PROFILE */}
+        {this.state.profile ? (
+          <div>
+            <h3>Update your profile</h3>
+            <Divider />
+            <h3>Personal Details</h3>
+            <TextField
+              hintText="Your username will be public."
+              floatingLabelText="Username"
+            />
+            <br />
+            <TextField
+              hintText="City and state or province"
+              floatingLabelText="Location"
+            />
+            <br />
+            <RaisedButton label="Save Changes" primary={true} style={style} />
+            <br />
+            <br />
+            <Divider />
+            <h3>Change your password</h3>
+            <TextField
+              hintText="Use 12-72 letters and numbers."
+              floatingLabelText="Current Password"
+              type="password"
+            />
+            <br />
+            <TextField
+              hintText="Use 12-72 letters and numbers."
+              floatingLabelText="New Password"
+              type="password"
+            />
+            <br />
+            <RaisedButton label="Save Changes" primary={true} style={style} />
+            <br />
+          </div>
+        ) : (
+          <span />
+        )}
       </div>
     )
   }

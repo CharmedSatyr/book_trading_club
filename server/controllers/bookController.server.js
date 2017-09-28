@@ -88,3 +88,23 @@ export const saveBook = (req, res) => {
     }
   )
 }
+
+//Remove a user's book from the database
+export const removeBook = (req, res) => {
+  const user = req.params.user
+  const book = JSON.parse(decodeURIComponent(req.params.data))
+  Book.remove(
+    {
+      owner: user,
+      olkey: book.olkey
+    },
+    (err, doc) => {
+      if (err) {
+        console.error(err)
+      }
+      if (doc) {
+        console.log('It gone')
+      }
+    }
+  )
+}
