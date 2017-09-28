@@ -8,7 +8,10 @@ import React from 'react'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
+
 import { red500, yellow500, blue500 } from 'material-ui/styles/colors'
+
 import { f } from '../../common/common.functions.js'
 
 /*** VARIABLES ***/
@@ -49,7 +52,18 @@ const Book = ({
             <NavigationClose color={red500} />
           </IconButton>
         ) : (
-          <span />
+          <IconButton
+            onClick={() => {
+              const bookInfo = {
+                olkey: olkey,
+                owner: user
+              }
+              const data = encodeURIComponent(JSON.stringify(bookInfo))
+              console.log('We should swap:', bookInfo)
+            }}
+          >
+            <ActionSwapVerticalCircle />
+          </IconButton>
         )}
       </div>
       <Paper

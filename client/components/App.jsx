@@ -174,7 +174,11 @@ export default class App extends Component {
               <BadgeExampleSimple />
             </div>
             <Divider />
-            <Library location={this.state.library} />
+            <Library
+              location={this.state.library}
+              whichButton={this.state.myBooks ? 'delete' : 'swap'}
+              user={this.state.loggedUser}
+            />
           </div>
         ) : (
           <span />
