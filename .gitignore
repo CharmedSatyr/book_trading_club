@@ -1,6 +1,9 @@
 # Ignore dist folder during development
 dist
 
+# Ignore local To Do list
+TODOS
+
 # Logs
 logs
 *.log
