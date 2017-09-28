@@ -1,8 +1,7 @@
 {
   "name": "book_trading_club",
   "version": "0.0.1",
-  "description":
-    "\"Manage a Book Trading Club\" is a project required for freeCodeCamp's Back End Development Certification.",
+  "description": "\"Manage a Book Trading Club\" is a project required for freeCodeCamp's Back End Development Certification.",
   "main": "server.js",
   "repository": "https://github.com/CharmedSatyr/book_trading_club.git",
   "author": "CharmedSatyr <z@charmed.tech>",
@@ -67,6 +66,7 @@
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "style-loader": "^0.18.2",
+    "typeface-roboto": "^0.0.35",
     "webpack": "^3.6.0",
     "webpack-node-externals": "^1.6.0"
   }

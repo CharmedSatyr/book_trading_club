@@ -8,6 +8,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
+//import 'typeface-roboto'
 import sass from './styles/styles.scss'
 import App from './components/App.jsx'
 import './img/favicon.ico'
