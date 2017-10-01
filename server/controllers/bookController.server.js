@@ -70,9 +70,7 @@ export const requestBook = (req, res) => {
   const book = JSON.parse(decodeURIComponent(req.params.data))
 
   Book.findOneAndUpdate(
-    {
-      olkey: book.olkey
-    },
+    { olkey: book.olkey },
     { requested: true, requestor: user },
     (err, doc) => {
       if (err) {
