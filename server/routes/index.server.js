@@ -1,9 +1,13 @@
 'use strict'
 const path = process.cwd()
 import {
+  cancelRequest,
+  denyRequest,
+  approveRequest,
   library,
   saveBook,
   removeBook,
+  requestBook,
   userShelves,
   otherShelves,
   curseOfAlexandria
@@ -56,6 +60,15 @@ export const routes = (app, passport) => {
   //API - They stop working when I require permissions...
   //Search for a book
   app.route('/api/search/:s').post(searchSubmit)
+
+  //User requests a book
+  app.route('/api/:user/request/:data').post(requestBook)
+  //User cancels their own book request
+  app.route('/api/:user/cancelRequest/:data').post(cancelRequest)
+  //User denies request for their book
+  app.route('/api/:user/denyRequest/:data').post(denyRequest)
+  //User approves request for their book
+  app.route('/api/:user/approveRequest/:data').post(approveRequest)
 
   app
     .route('/api/:user/save/:data')

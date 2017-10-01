@@ -20,19 +20,20 @@ const badgeStyles = {
 }
 
 /*** MAIN ***/
-const BadgeExampleSimple = () => {
+const RequestsBadge = ({ myRequests, requestsForMe }) => {
   return (
     <div>
-      <Badge badgeContent={4} primary={true} badgeStyle={badgeStyles}>
-        <IconButton
-          tooltip="Your Outstanding Trade Requests"
-          style={iconStyles}
-        >
+      <Badge badgeContent={myRequests} primary={true} badgeStyle={badgeStyles}>
+        <IconButton tooltip="Requests You've Made" style={iconStyles}>
           <NotificationsIcon />
         </IconButton>
       </Badge>
-      <Badge badgeContent={0} secondary={true} badgeStyle={badgeStyles}>
-        <IconButton tooltip="Trade Requests for You" style={iconStyles}>
+      <Badge
+        badgeContent={requestsForMe}
+        secondary={true}
+        badgeStyle={badgeStyles}
+      >
+        <IconButton tooltip="Requests for You" style={iconStyles}>
           <NotificationsIcon />
         </IconButton>
       </Badge>
@@ -40,4 +41,4 @@ const BadgeExampleSimple = () => {
   )
 }
 
-export default BadgeExampleSimple
+export default RequestsBadge

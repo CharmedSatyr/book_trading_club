@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 
 //App
-import BadgeExampleSimple from './Requests.jsx'
+import RequestsBadge from './RequestsBadge.jsx'
 import BookSearch from './BookSearch.jsx'
 import Input from './Input.jsx'
 import Library from './Library.jsx'
@@ -32,8 +32,11 @@ export default class App extends Component {
     super(props)
     this.state = {
       bookSearch: [],
-      userShelves: [],
+      myShelves: [],
       otherShelves: [],
+      requestedBooks: [],
+      myRequests: [],
+      requestsForMe: [],
       myBooks: true,
       addBooks: false,
       allBooks: false,
@@ -56,7 +59,7 @@ export default class App extends Component {
       this.setState({ loggedUser: response })
 
       //Call populate shelves fns and checkLibrary with loggedUser as argument
-      this.populateUserShelves(response)
+      this.populateMyShelves(response)
       this.populateOtherShelves(response)
       this.checkLibrary(response)
     })
@@ -66,20 +69,34 @@ export default class App extends Component {
       this.setState({ otherShelves: response })
     })
   }
-  populateUserShelves(user) {
+  populateMyShelves(user) {
     f('GET', '/api/' + user + '/userBooks', response => {
-      this.setState({ userShelves: response })
+      this.setState({ myShelves: response })
     })
   }
   /* Keeps personal and full library in sync among devices without *
    * refresh using web sockets.                                    */
   checkLibrary(user) {
     librarian(1000, user, result => {
-      if (result[1] && this.state.userShelves !== result[1]) {
-        this.setState({ userShelves: result[1] })
+      //myBooks
+      if (result[0] && this.state.myShelves !== result[0]) {
+        this.setState({ myShelves: result[0] })
       }
-      if (result[0] && this.state.otherShelves !== result[0]) {
-        this.setState({ otherShelves: result[0] })
+      //otherBooks
+      if (result[1] && this.state.otherShelves !== result[1]) {
+        this.setState({ otherShelves: result[1] })
+      }
+      //All requested books
+      if (result[2] && this.state.requestedBooks !== result[2]) {
+        this.setState({ requestedBooks: result[2] })
+      }
+      //My requests
+      if (result[3] && this.state.myRequests !== result[3]) {
+        this.setState({ myRequests: result[3] })
+      }
+      //Requests for my books
+      if (result[4] && this.state.requestsForMe !== result[4]) {
+        this.setState({ requestsForMe: result[4] })
       }
     })
   }
@@ -171,13 +188,33 @@ export default class App extends Component {
                 <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to
                 request a trade!
               </div>
-              <BadgeExampleSimple />
+              <RequestsBadge
+                myRequests={this.state.myRequests.length}
+                requestsForMe={this.state.requestsForMe.length}
+              />
             </div>
             <Divider />
-            <Library
-              location={this.state.otherShelves}
-              whichButton={this.state.myBooks ? 'delete' : 'swap'}
-            />
+            <h3>Requested Books</h3>
+            {this.state.requestedBooks.length ? (
+              <Library
+                location={this.state.requestedBooks}
+                loggedUser={this.state.loggedUser}
+              />
+            ) : (
+              <div>Nobody has requested any books...</div>
+            )}
+            <Divider />
+            <h3>Others' Books...</h3>
+            {this.state.otherShelves.length ? (
+              <Library
+                location={this.state.otherShelves}
+                whichButton={'swap'}
+                requestor={this.state.loggedUser}
+                loggedUser={this.state.loggedUser}
+              />
+            ) : (
+              <div>Nothing to show here. Every book has been requested.</div>
+            )}
           </div>
         ) : (
           <span />
@@ -186,11 +223,27 @@ export default class App extends Component {
         {/*MY BOOKS*/}
         {this.state.myBooks ? (
           <div>
-            <h3>My Books Available to Swap</h3>
+            <h3>Your Books Available to Swap</h3>
+            <RequestsBadge
+              myRequests={this.state.myRequests.length}
+              requestsForMe={this.state.requestsForMe.length}
+            />
             <Divider />
+            <h3>Your Books...</h3>
+            <Library location={this.state.myShelves} whichButton={'delete'} />
+            <Divider />
+            <h3>Books You've Requested...</h3>
             <Library
-              location={this.state.userShelves}
-              whichButton={this.state.myBooks ? 'delete' : 'swap'}
+              location={this.state.myRequests}
+              whichButton={'cancelRequest'}
+              loggedUser={this.state.loggedUser}
+            />
+            <Divider />
+            <h3>Someone's Requested These...</h3>
+            <Library
+              location={this.state.requestsForMe}
+              whichButton="approveDeny"
+              loggedUser={this.state.loggedUser}
             />
           </div>
         ) : (

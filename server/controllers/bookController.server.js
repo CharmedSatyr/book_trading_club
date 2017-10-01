@@ -55,7 +55,6 @@ export const curseOfAlexandria = (req, res) => {
 
 //Constantly checking
 export const sternGaze = (message, socket) => {
-  console.log('hi')
   socket.on(message, interval => {
     setInterval(() => {
       Book.find({}, (err, doc) => {
@@ -63,6 +62,98 @@ export const sternGaze = (message, socket) => {
       })
     }, interval)
   })
+}
+
+//Mark a book as requested by a user
+export const requestBook = (req, res) => {
+  const user = req.params.user
+  const book = JSON.parse(decodeURIComponent(req.params.data))
+
+  Book.findOneAndUpdate(
+    {
+      olkey: book.olkey
+    },
+    { requested: true, requestor: user },
+    (err, doc) => {
+      if (err) {
+        console.error(err)
+      }
+      if (doc) {
+        //console.log(doc)
+      }
+    }
+  )
+}
+
+//Mark a book as NOT requested
+export const cancelRequest = (req, res) => {
+  const user = req.params.user
+  const book = JSON.parse(decodeURIComponent(req.params.data))
+
+  Book.findOneAndUpdate(
+    {
+      olkey: book.olkey,
+      requestor: user,
+      requested: true
+    },
+    { requested: false, requestor: '' },
+    (err, doc) => {
+      if (err) {
+        console.error(err)
+      }
+      if (doc) {
+        res.json('Request for book with olkey ' + book.olkey + ' cancelled.')
+      }
+    }
+  )
+}
+
+//Approve Request
+export const approveRequest = (req, res) => {
+  const user = req.params.user
+  const book = JSON.parse(decodeURIComponent(req.params.data))
+
+  Book.findOne(
+    { olkey: book.olkey, owner: user, requested: true },
+    (err, doc) => {
+      if (err) {
+        console.error(err)
+      }
+      if (doc) {
+        console.log('Before', doc)
+        doc.owner = doc.requestor
+        doc.requestor = ''
+        doc.requested = false
+        console.log('After', doc)
+        doc.save((err, result) => {
+          console.log('Saved', result)
+        })
+      }
+    }
+  )
+}
+
+//Deny request
+export const denyRequest = (req, res) => {
+  const user = req.params.user
+  const book = JSON.parse(decodeURIComponent(req.params.data))
+
+  Book.findOneAndUpdate(
+    {
+      olkey: book.olkey,
+      owner: user,
+      requested: true
+    },
+    { requested: false, requestor: '' },
+    (err, doc) => {
+      if (err) {
+        console.error(err)
+      }
+      if (doc) {
+        res.json('Request for book with olkey ' + book.olkey + ' denied.')
+      }
+    }
+  )
 }
 
 //Saves a new book to the database
@@ -118,7 +209,7 @@ export const removeBook = (req, res) => {
         console.error(err)
       }
       if (doc) {
-        console.log('It gone')
+        console.log(doc + ' has been deleted.')
       }
     }
   )

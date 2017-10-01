@@ -5,7 +5,7 @@ import React from 'react'
 import Book from './Book.jsx'
 
 /*** MAIN ***/
-const Library = ({ location, whichButton }) => {
+const Library = ({ location, whichButton, requestor, loggedUser }) => {
   const library = location.map((item, index) => {
     return (
       <Book
@@ -17,6 +17,8 @@ const Library = ({ location, whichButton }) => {
         cover={item.cover}
         olkey={item.olkey}
         owner={item.owner}
+        requestor={requestor}
+        loggedUser={loggedUser}
         fn={() => {
           console.log('This book is owned by', item.owner)
         }}

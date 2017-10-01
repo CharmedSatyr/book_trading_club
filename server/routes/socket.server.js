@@ -10,28 +10,60 @@ const ioEvents = io => {
 
     serverSocket.on('librarian', received => {
       setInterval(() => {
-        //Other shelves
-        Book.find({ owner: { $ne: [received[1]] } }, (err, doc) => {
-          if (err) {
-            console.error(err)
-          }
-          if (doc) {
-            serverSocket.emit('librarian', [doc, null])
-          }
-        })
-
         //User shelves
         Book.find({ owner: [received[1]] }, (err, doc) => {
           if (err) {
             console.error(err)
           }
           if (doc) {
-            serverSocket.emit('librarian', [null, doc])
+            serverSocket.emit('librarian', [doc, null, null, null, null])
+          }
+        })
+
+        //Other shelves
+        Book.find(
+          { owner: { $ne: [received[1]] }, requested: false },
+          (err, doc) => {
+            if (err) {
+              console.error(err)
+            }
+            if (doc) {
+              serverSocket.emit('librarian', [null, doc, null, null, null])
+            }
+          }
+        )
+
+        //Requested books
+        Book.find({ requested: true }, (err, doc) => {
+          if (err) {
+            console.error(err)
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, null, doc, null, null])
+          }
+        })
+
+        //Requested by user
+        Book.find({ requested: true, requestor: received[1] }, (err, doc) => {
+          if (err) {
+            console.error(err)
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, null, null, doc, null])
+          }
+        })
+
+        //Requests for user's books
+        Book.find({ requested: true, owner: received[1] }, (err, doc) => {
+          if (err) {
+            console.error(err)
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, null, null, null, doc])
           }
         })
       }, received[0])
     })
-
     //    sternGaze('librarian', serverSocket)
 
     io.on('disconnect', () => {
