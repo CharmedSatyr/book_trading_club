@@ -181,7 +181,7 @@ export default class App extends Component {
         {/* ALL BOOKS */}
         {this.state.allBooks ? (
           <div>
-            <h3>Others' Books Available to Swap</h3>
+            <h3>Community Books</h3>
             <div className="allBooksHeader">
               <div>
                 Click the{' '}
@@ -193,27 +193,35 @@ export default class App extends Component {
                 requestsForMe={this.state.requestsForMe.length}
               />
             </div>
-            <Divider />
-            <h3>Requested Books</h3>
             {this.state.requestedBooks.length ? (
-              <Library
-                location={this.state.requestedBooks}
-                loggedUser={this.state.loggedUser}
-              />
+              <span>
+                <Divider />
+                <h3>Requested</h3>
+                {this.state.requestedBooks.length ? (
+                  <Library
+                    location={this.state.requestedBooks}
+                    loggedUser={this.state.loggedUser}
+                  />
+                ) : (
+                  <div>Nobody has requested any books...</div>
+                )}
+              </span>
             ) : (
-              <div>Nobody has requested any books...</div>
+              <span />
             )}
             <Divider />
-            <h3>Others' Books...</h3>
             {this.state.otherShelves.length ? (
-              <Library
-                location={this.state.otherShelves}
-                whichButton={'swap'}
-                requestor={this.state.loggedUser}
-                loggedUser={this.state.loggedUser}
-              />
+              <span>
+                <h3>Available to Swap</h3>
+                <Library
+                  location={this.state.otherShelves}
+                  whichButton={'swap'}
+                  requestor={this.state.loggedUser}
+                  loggedUser={this.state.loggedUser}
+                />
+              </span>
             ) : (
-              <div>Nothing to show here. Every book has been requested.</div>
+              <div>Nothing to show here. Every book has been requested!</div>
             )}
           </div>
         ) : (
@@ -223,28 +231,48 @@ export default class App extends Component {
         {/*MY BOOKS*/}
         {this.state.myBooks ? (
           <div>
-            <h3>Your Books Available to Swap</h3>
+            {/* USER LIBRARY */}
+            <h3>Your Library</h3>
             <RequestsBadge
               myRequests={this.state.myRequests.length}
               requestsForMe={this.state.requestsForMe.length}
             />
             <Divider />
-            <h3>Your Books...</h3>
-            <Library location={this.state.myShelves} whichButton={'delete'} />
-            <Divider />
-            <h3>Books You've Requested...</h3>
-            <Library
-              location={this.state.myRequests}
-              whichButton={'cancelRequest'}
-              loggedUser={this.state.loggedUser}
-            />
-            <Divider />
-            <h3>Someone's Requested These...</h3>
-            <Library
-              location={this.state.requestsForMe}
-              whichButton="approveDeny"
-              loggedUser={this.state.loggedUser}
-            />
+            {/* REQUESTS FOR ME*/}
+            {this.state.requestsForMe.length ? (
+              <span>
+                <h3>Someone's Requested These...</h3>
+                <Library
+                  location={this.state.requestsForMe}
+                  whichButton="approveDeny"
+                  loggedUser={this.state.loggedUser}
+                />
+                <Divider />
+              </span>
+            ) : (
+              <span />
+            )}
+            {/* USER'S REQUESTS */}
+            {this.state.myRequests.length ? (
+              <span>
+                <Divider />
+                <h3>Books You've Requested</h3>
+                <Library
+                  location={this.state.myRequests}
+                  whichButton={'cancelRequest'}
+                  loggedUser={this.state.loggedUser}
+                />
+              </span>
+            ) : (
+              <span />
+            )}
+            {/* YOUR BOOKS */}
+            <h3>Your Books</h3>
+            {this.state.myShelves.length ? (
+              <Library location={this.state.myShelves} whichButton={'delete'} />
+            ) : (
+              <div>Add some books to your collection!</div>
+            )}
           </div>
         ) : (
           <span />

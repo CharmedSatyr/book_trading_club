@@ -41,8 +41,11 @@ const NavBar = ({
                   anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 >
                   <MenuItem primaryText="Add Books" onClick={addbooksfn} />
-                  <MenuItem primaryText="My Books" onClick={mybooksfn} />
-                  <MenuItem primaryText="Other Books" onClick={allbooksfn} />
+                  <MenuItem primaryText="Your Books" onClick={mybooksfn} />
+                  <MenuItem
+                    primaryText="Community Books"
+                    onClick={allbooksfn}
+                  />
                   <MenuItem primaryText="Profile" onClick={profilefn} />
                   <a href="/logout">
                     <MenuItem
@@ -70,7 +73,7 @@ const NavBar = ({
                   className="navButtons"
                 />
                 <FlatButton
-                  label="Other Books"
+                  label="Community Books"
                   onClick={allbooksfn}
                   className="navButtons"
                 />
