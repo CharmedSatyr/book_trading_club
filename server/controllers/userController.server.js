@@ -31,6 +31,58 @@ export const viewUsers = (req, res) => {
   })
 }
 
+//Update location or username
+export const updateProfile = (req, res) => {
+  const user = req.params.user
+  const update = JSON.parse(decodeURIComponent(req.params.data))
+
+  console.log(user)
+  console.log(update)
+
+  User.findOne({ username: user }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      if (update.username) {
+        doc.username = update.username
+      }
+      if (update.location) {
+        doc.location = update.location
+      }
+      doc.save((err, result) => {
+        res.json(
+          'Your information has been updated. \nNew username: ' +
+            doc.username +
+            '\nNew location: ' +
+            doc.location
+        )
+      })
+    }
+  })
+}
+
+//Update password
+export const updatePassword = (req, res) => {
+  const user = req.params.user
+  const update = JSON.parse(decodeURIComponent(req.params.data))
+
+  console.log('Update to this password: ', update)
+
+  User.findOneAndUpdate(
+    { username: user },
+    { password: update },
+    (err, doc) => {
+      if (err) {
+        console.error(err)
+      }
+      if (doc) {
+        res.json('Password successfully changed.')
+      }
+    }
+  )
+}
+
 //Saves a new user to the database
 export const saveUser = (req, res, next) => {
   const user = req.body

@@ -17,6 +17,8 @@ import { loginUser } from '../config/authConfig.js'
 import {
   saveUser,
   viewUsers,
+  updateProfile,
+  updatePassword,
   genocide
 } from '../controllers/userController.server.js'
 import { searchSubmit } from '../controllers/searchController.server.js'
@@ -69,6 +71,11 @@ export const routes = (app, passport) => {
   app.route('/api/:user/denyRequest/:data').post(denyRequest)
   //User approves request for their book
   app.route('/api/:user/approveRequest/:data').post(approveRequest)
+
+  //Update username and location
+  app.route('/api/:user/profile-update/:data').post(updateProfile)
+  //Update password
+  app.route('/api/:user/update-password/:data').post(updatePassword)
 
   app
     .route('/api/:user/save/:data')

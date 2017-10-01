@@ -7,24 +7,18 @@ import React, { Component } from 'react'
 //Material UI
 import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
 import Divider from 'material-ui/Divider'
-import RaisedButton from 'material-ui/RaisedButton'
-import TextField from 'material-ui/TextField'
 
 //App
 import RequestsBadge from './RequestsBadge.jsx'
 import BookSearch from './BookSearch.jsx'
 import Input from './Input.jsx'
 import Library from './Library.jsx'
+import Profile from './Profile.jsx'
 import NavBar from './NavBar.jsx'
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 import { librarian } from '../controllers/socket.client.jsx'
-
-/*** VARIABLES ***/
-const style = {
-  margin: 5
-}
 
 /*** MAIN ***/
 export default class App extends Component {
@@ -37,10 +31,10 @@ export default class App extends Component {
       requestedBooks: [],
       myRequests: [],
       requestsForMe: [],
-      myBooks: true,
+      myBooks: false,
       addBooks: false,
       allBooks: false,
-      profile: false,
+      profile: true,
       loggedUser: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -280,40 +274,7 @@ export default class App extends Component {
 
         {/* PROFILE */}
         {this.state.profile ? (
-          <div>
-            <h3>Update your profile</h3>
-            <Divider />
-            <h3>Personal Details</h3>
-            <TextField
-              hintText="Your username will be public."
-              floatingLabelText="Username"
-            />
-            <br />
-            <TextField
-              hintText="City and state or province"
-              floatingLabelText="Location"
-            />
-            <br />
-            <RaisedButton label="Save Changes" primary={true} style={style} />
-            <br />
-            <br />
-            <Divider />
-            <h3>Change your password</h3>
-            <TextField
-              hintText="Use 12-72 letters and numbers."
-              floatingLabelText="Current Password"
-              type="password"
-            />
-            <br />
-            <TextField
-              hintText="Use 12-72 letters and numbers."
-              floatingLabelText="New Password"
-              type="password"
-            />
-            <br />
-            <RaisedButton label="Save Changes" primary={true} style={style} />
-            <br />
-          </div>
+          <Profile loggedUser={this.state.loggedUser} />
         ) : (
           <span />
         )}
