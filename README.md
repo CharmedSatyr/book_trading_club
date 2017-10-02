@@ -4,9 +4,9 @@ https://www.freecodecamp.org/challenges/manage-a-book-trading-club
 
 ***
 
-**Date Completed:** N/A
+**Date Completed:** October 2, 2017
 
-**See the project on Heroku at:** N/A
+**See the project on Heroku at:** https://charmed-books.herokuapp.com/
 
 ***
 
