@@ -45,29 +45,36 @@ mongoose.connect(process.env.MONGO_URI, { useMongoClient: true }, (err, db) => {
 })
 
 /*** AUTHENTICATION ***/
-import bodyParser from 'body-parser'
-app.use(bodyParser.urlencoded({ extended: false }))
-
 import session from 'express-session'
 import passport from 'passport'
+
+var MongoStore = require('connect-mongo')(session)
+
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser())
 
 let sess = {
   secret: process.env.SECRET,
   resave: false,
-  saveUninitialized: false //true,
-  //  cookie: {
-  //    path: '/',
-  //    httpOnly: false,
-  //    maxAge: 1800000 //30 minutes
-  //  },
-  //  store: //defaults to MemoryStore instance
-  //  name: 'id'
+  saveUninitialized: false,
+  cookie: {
+    path: '/',
+    httpOnly: false,
+    maxAge: 1800000 //30 minutes
+  },
+  store: new MongoStore({ mongooseConnection: db }, err => {
+    console.log(err)
+  }), //defaults to MemoryStore instance, which can cause memory leaks
+  name: 'id'
 }
 
 if (PROD) {
-  //  app.set('trust proxy', 1) //trust first proxy - what does this mean
-  //  sess.cookie.secure = true //serve secure cookies in production
-  //  sess.cookie.httpOnly = true
+  app.set('trust proxy', 1)
+  sess.cookie.secure = true //serve secure cookies in production
+  sess.cookie.httpOnly = true
 }
 
 app.use(session(sess))
