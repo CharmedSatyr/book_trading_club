@@ -31,10 +31,10 @@ export default class App extends Component {
       requestedBooks: [],
       myRequests: [],
       requestsForMe: [],
-      myBooks: false,
+      myBooks: true,
       addBooks: false,
       allBooks: false,
-      profile: true,
+      profile: false,
       loggedUser: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -268,16 +268,12 @@ export default class App extends Component {
               <div>Add some books to your collection!</div>
             )}
           </div>
-        ) : (
-          <span />
-        )}
+        ) : null}
 
         {/* PROFILE */}
         {this.state.profile ? (
           <Profile loggedUser={this.state.loggedUser} />
-        ) : (
-          <span />
-        )}
+        ) : null}
       </div>
     )
   }
