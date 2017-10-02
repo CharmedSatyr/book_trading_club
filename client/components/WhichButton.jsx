@@ -78,6 +78,9 @@ const WhichButton = ({ loggedUser, olkey, owner, requestor, whichButton }) => {
               '/api/' + loggedUser + '/approveRequest/' + data,
               request => {
                 console.log('Approve Request', request)
+                alert(
+                  'You have approved a request! In a completed app, you would now be able to send a message via a simple app integration (e.g., https://agile-oasis-2124.herokuapp.com/) to the other user to coordinate the swap.'
+                )
               }
             )
           }}
