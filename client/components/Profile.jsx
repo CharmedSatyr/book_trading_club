@@ -81,20 +81,20 @@ const Profile = ({ loggedUser }) => {
           const password1 = document.getElementById('password1').value
           const password2 = document.getElementById('password2').value
 
-          let data
-          if (password1 === password2) {
-            data = encodeURIComponent(JSON.stringify(password1))
-            console.log('Attempting to use password:', data)
-            f(
-              'POST',
-              '/api/' + loggedUser + '/update-password/' + data,
-              response => {
-                console.log(response)
-              }
-            )
-          } else {
-            console.log('Your passwords do not match!')
+          const bothPasswords = {
+            currentPassword: password1,
+            newPassword: password2
           }
+
+          const data = encodeURIComponent(JSON.stringify(bothPasswords))
+          console.log('Sending current and new passwords:', data)
+          f(
+            'POST',
+            '/api/' + loggedUser + '/update-password/' + data,
+            response => {
+              console.log(response)
+            }
+          )
         }}
       />
       <br />

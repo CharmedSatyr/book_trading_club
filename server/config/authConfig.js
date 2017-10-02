@@ -1,10 +1,16 @@
 'use strict'
 
+/*** MODEL ***/
+import User from '../models/User.js'
+
+/*** PASSPORT ***/
 import passport from 'passport'
 import { Strategy } from 'passport-local'
 
-import User from '../models/User.js'
+/*** BCRYPT ***/
+import bcrypt from 'bcrypt'
 
+/*** CONTROLLERS ***/
 export const authConfig = passport => {
   /*** Configure the local strategy for use by Passport.                      *
    * The local strategy require a `verify` function which receives the        *
@@ -21,11 +27,16 @@ export const authConfig = passport => {
         if (!user) {
           return done(null, false)
         }
-        if (user.password !== password) {
-          console.log('Bad password')
-          return done(null, false)
-        }
-        return done(null, user)
+
+        //Compare the stored hash to a hash of the submitted password
+        bcrypt.compare(password, user.password, (err, res) => {
+          //res === true if they match
+          if (!res) {
+            console.log('Bad password')
+            return done(null, false)
+          }
+          return done(null, user)
+        })
       })
     })
   )
