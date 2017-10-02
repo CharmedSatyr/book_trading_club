@@ -35,7 +35,7 @@ const compConfig = new CompressionPlugin({
   deleteOriginalAssets: false
 })
 
-const uglyConfig = new webpack.optimize.UglifyJsPlugin()
+const uglyConfig = new webpack.optimize.UglifyJsPlugin({ ie8: false, ecma: 8 })
 
 /*** CLIENT CONFIG ***/
 const client = {
@@ -47,13 +47,11 @@ const client = {
   module: {
     rules: [
       {
-        test: /\.e?jsx?$/i,
-        include: __dirname + '/client',
+        test: /\.jsx?$/i,
+        include: [/common/, /client/],
         exclude: [/node_modules/, /server/],
         loader: 'babel-loader',
-        options: {
-          presets: ['env', 'react']
-        }
+        options: { presets: ['env', 'react'] }
       },
       {
         test: /\.(css|sass|scss)$/,
@@ -161,7 +159,8 @@ const server = {
     rules: [
       {
         test: /\.jsx?$/i,
-        exclude: /node_modules/,
+        include: [/common/, /server/],
+        exclude: [/node_modules/, /client/],
         loader: 'babel-loader',
         options: {
           presets: ['env']
