@@ -50,7 +50,9 @@ const Book = ({
         className="book"
         onClick={fn}
       >
-        <img src={'http://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'} />
+        <img
+          src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
+        />
       </Paper>
       <span hidden="true">
         {/*For screen-readers*/}
