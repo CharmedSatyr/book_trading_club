@@ -7,6 +7,7 @@ import React from 'react'
 //Material UI
 import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
+import Subheader from 'material-ui/Subheader'
 import TextField from 'material-ui/TextField'
 
 /*** FUNCTIONS ***/
@@ -21,20 +22,16 @@ const style = {
 const Profile = ({ loggedUser }) => {
   return (
     <div>
-      <h3>Update your profile</h3>
+      <Subheader>Update your profile</Subheader>
       <Divider />
-      <h3>Personal Details</h3>
+      <Subheader>Personal Details</Subheader>
       <TextField
         hintText="Your username will be public."
         floatingLabelText="Username"
         id="username"
       />
       <br />
-      <TextField
-        hintText="City and state or province"
-        floatingLabelText="Location"
-        id="location"
-      />
+      <TextField hintText="City and state or province" floatingLabelText="Location" id="location" />
       <br />
       <RaisedButton
         label="Save Changes"
@@ -46,19 +43,15 @@ const Profile = ({ loggedUser }) => {
           const update = { username: username, location: location }
           const data = encodeURIComponent(JSON.stringify(update))
 
-          f(
-            'POST',
-            '/api/' + loggedUser + '/profile-update/' + data,
-            response => {
-              console.log(response)
-            }
-          )
+          f('POST', '/api/' + loggedUser + '/profile-update/' + data, response => {
+            console.log(response)
+          })
         }}
       />
       <br />
       <br />
       <Divider />
-      <h3>Change your password</h3>
+      <Subheader>Change your password</Subheader>
       <TextField
         hintText="Use 12-72 letters and numbers."
         floatingLabelText="Current Password"
@@ -88,13 +81,9 @@ const Profile = ({ loggedUser }) => {
 
           const data = encodeURIComponent(JSON.stringify(bothPasswords))
           console.log('Sending current and new passwords:', data)
-          f(
-            'POST',
-            '/api/' + loggedUser + '/update-password/' + data,
-            response => {
-              console.log(response)
-            }
-          )
+          f('POST', '/api/' + loggedUser + '/update-password/' + data, response => {
+            console.log(response)
+          })
         }}
       />
       <br />

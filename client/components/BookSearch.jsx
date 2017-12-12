@@ -23,7 +23,7 @@ const BookSearch = ({ quest, user }) => {
         publication={item.publication}
         cover={item.cover}
         key={index}
-        fn={() => {
+        saveBook={() => {
           saveClick(item, user)
         }}
       />

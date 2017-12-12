@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 //Material UI
 import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
 import Divider from 'material-ui/Divider'
+import Subheader from 'material-ui/Subheader'
 
 //App
 import RequestsBadge from './RequestsBadge.jsx'
@@ -37,10 +38,10 @@ export default class App extends Component {
       profile: false,
       loggedUser: ''
     }
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.searchBooks = this.searchBooks.bind(this)
     this.clearBooks = this.clearBooks.bind(this)
   }
-  handleSubmit() {
+  searchBooks() {
     const query = document.getElementById('search').value
     console.log(query)
     f('POST', '/api/search/' + query, response => {
@@ -158,16 +159,13 @@ export default class App extends Component {
         {this.state.addBooks ? (
           <div>
             <Input
-              fn0={this.handleSubmit}
-              fn1={this.clearBooks}
+              searchBooks={this.searchBooks}
+              clearBooks={this.clearBooks}
               visible={this.state.bookSearch.length > 0}
             />
             <br />
             <Divider />
-            <BookSearch
-              quest={this.state.bookSearch}
-              user={this.state.loggedUser}
-            />
+            <BookSearch quest={this.state.bookSearch} user={this.state.loggedUser} />
           </div>
         ) : (
           <span />
@@ -175,12 +173,11 @@ export default class App extends Component {
         {/* ALL BOOKS */}
         {this.state.allBooks ? (
           <div>
-            <h3>Community Books</h3>
+            <Subheader>Community Books</Subheader>
             <div className="allBooksHeader">
               <div>
-                Click the{' '}
-                <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to
-                request a trade!
+                Click the <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to request a
+                trade!
               </div>
               <RequestsBadge
                 myRequests={this.state.myRequests.length}
@@ -190,7 +187,7 @@ export default class App extends Component {
             {this.state.requestedBooks.length ? (
               <span>
                 <Divider />
-                <h3>Requested</h3>
+                <Subheader>Requested</Subheader>
                 {this.state.requestedBooks.length ? (
                   <Library
                     location={this.state.requestedBooks}
@@ -206,7 +203,7 @@ export default class App extends Component {
             <Divider />
             {this.state.otherShelves.length ? (
               <span>
-                <h3>Available to Swap</h3>
+                <Subheader>Available to Swap</Subheader>
                 <Library
                   location={this.state.otherShelves}
                   whichButton={'swap'}
@@ -226,7 +223,7 @@ export default class App extends Component {
         {this.state.myBooks ? (
           <div>
             {/* USER LIBRARY */}
-            <h3>Your Library</h3>
+            <Subheader>Your Library</Subheader>
             <RequestsBadge
               myRequests={this.state.myRequests.length}
               requestsForMe={this.state.requestsForMe.length}
@@ -235,7 +232,7 @@ export default class App extends Component {
             {/* REQUESTS FOR ME*/}
             {this.state.requestsForMe.length ? (
               <span>
-                <h3>Someone's Requested These...</h3>
+                <Subheader>Someone's Requested These...</Subheader>
                 <Library
                   location={this.state.requestsForMe}
                   whichButton="approveDeny"
@@ -250,7 +247,7 @@ export default class App extends Component {
             {this.state.myRequests.length ? (
               <span>
                 <Divider />
-                <h3>Books You've Requested</h3>
+                <Subheader>Books You've Requested</Subheader>
                 <Library
                   location={this.state.myRequests}
                   whichButton={'cancelRequest'}
@@ -261,7 +258,7 @@ export default class App extends Component {
               <span />
             )}
             {/* YOUR BOOKS */}
-            <h3>Your Books</h3>
+            <Subheader>Your Books</Subheader>
             {this.state.myShelves.length ? (
               <Library location={this.state.myShelves} whichButton={'delete'} />
             ) : (
@@ -271,9 +268,7 @@ export default class App extends Component {
         ) : null}
 
         {/* PROFILE */}
-        {this.state.profile ? (
-          <Profile loggedUser={this.state.loggedUser} />
-        ) : null}
+        {this.state.profile ? <Profile loggedUser={this.state.loggedUser} /> : null}
       </div>
     )
   }

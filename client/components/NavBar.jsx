@@ -14,13 +14,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 /*** MAIN ***/
-const NavBar = ({
-  addbooksfn,
-  allbooksfn,
-  mybooksfn,
-  profilefn,
-  loggedUser
-}) => {
+const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) => {
   return (
     <div>
       <AppBar
@@ -28,7 +22,7 @@ const NavBar = ({
         iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
         iconElementRight={
           <span>
-            {window.innerWidth < 900 ? (
+            {window.innerWidth < 955 ? (
               <span>
                 <div className="welcomeName">Welcome, {loggedUser}</div>
                 <IconMenu
@@ -42,10 +36,7 @@ const NavBar = ({
                 >
                   <MenuItem primaryText="Add Books" onClick={addbooksfn} />
                   <MenuItem primaryText="Your Books" onClick={mybooksfn} />
-                  <MenuItem
-                    primaryText="Community Books"
-                    onClick={allbooksfn}
-                  />
+                  <MenuItem primaryText="Community Books" onClick={allbooksfn} />
                   <MenuItem primaryText="Profile" onClick={profilefn} />
                   <a href="/logout">
                     <MenuItem
@@ -59,29 +50,11 @@ const NavBar = ({
               </span>
             ) : (
               <span>
-                <div className="welcomeName expanded">
-                  Welcome, {loggedUser}
-                </div>
-                <FlatButton
-                  label="Add Books"
-                  onClick={addbooksfn}
-                  className="navButtons"
-                />
-                <FlatButton
-                  label="My Books"
-                  onClick={mybooksfn}
-                  className="navButtons"
-                />
-                <FlatButton
-                  label="Community Books"
-                  onClick={allbooksfn}
-                  className="navButtons"
-                />
-                <FlatButton
-                  label="Profile"
-                  onClick={profilefn}
-                  className="navButtons"
-                />
+                <div className="welcomeName expanded">Welcome, {loggedUser}</div>
+                <FlatButton label="Add Books" onClick={addbooksfn} className="navButtons" />
+                <FlatButton label="My Books" onClick={mybooksfn} className="navButtons" />
+                <FlatButton label="Community Books" onClick={allbooksfn} className="navButtons" />
+                <FlatButton label="Profile" onClick={profilefn} className="navButtons" />
                 <a href="/logout">
                   <FlatButton label="Logout" className="navButtons" />
                 </a>

@@ -7,6 +7,7 @@ import React from 'react'
 //Material UI
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+import Subheader from 'material-ui/Subheader'
 
 /*** VARIABLES ***/
 const style = {
@@ -14,24 +15,15 @@ const style = {
 }
 
 /*** MAIN ***/
-const Input = ({ fn0, fn1, visible }) => {
+const Input = ({ clearBooks, searchBooks, visible }) => {
   return (
     <label htmlFor="search">
-      <h3>
-        Search for a book here! Click the results to add them to your library.
-      </h3>
+      <Subheader>Search for a book here! Click the results to add them to your library.</Subheader>
       <TextField id="search" hintText="Author, Title, or ISBN" />
-      <RaisedButton label="Search" primary={true} style={style} onClick={fn0} />
+      <RaisedButton label="Search" primary={true} style={style} onClick={searchBooks} />
       {visible ? (
-        <RaisedButton
-          label="Clear"
-          secondary={true}
-          style={style}
-          onClick={fn1}
-        />
-      ) : (
-        <span />
-      )}
+        <RaisedButton label="Clear" secondary={true} style={style} onClick={clearBooks} />
+      ) : null}
     </label>
   )
 }
