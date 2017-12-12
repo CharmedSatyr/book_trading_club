@@ -34,7 +34,6 @@ export default class Book extends Component {
     this.handleRequestClose = this.handleRequestClose.bind(this)
     this.timer = undefined
   }
-
   componentWillMount() {
     clearTimeout(this.timer)
   }
@@ -46,7 +45,7 @@ export default class Book extends Component {
     saveBook() //Save the book
     this.timer = setTimeout(() => {
       this.setState({
-        message: `${title} by ${author} has been added to your collection.`
+        message: `${title} by ${author} has been added to Your Books.`
       })
     }, 1500)
   }
@@ -87,7 +86,7 @@ export default class Book extends Component {
           {title} ({publication}) by {author}
         </span>
         <Snackbar
-          action="undo"
+          action=""
           autoHideDuration={3000}
           onRequestClose={this.handleRequestClose}
           open={open}
