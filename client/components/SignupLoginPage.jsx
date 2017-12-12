@@ -24,11 +24,7 @@ const Login = ({ fn }) => {
 const Signup = ({ signupfn }) => {
   return (
     <span>
-      <FlatButton
-        label="Sign up"
-        onClick={signupfn}
-        style={{ color: '#ffffff', marginTop: 7 }}
-      />
+      <FlatButton label="Sign up" onClick={signupfn} style={{ color: '#ffffff', marginTop: 7 }} />
     </span>
   )
 }
@@ -92,12 +88,31 @@ export default class SignupLoginPage extends Component {
         </div>
 
         {this.state.form ? (
-          <SignupLoginForm
-            login={this.state.login}
-            signup={this.state.signup}
-          />
+          <SignupLoginForm login={this.state.login} signup={this.state.signup} />
         ) : (
-          <h3>Log in to swap your favorite reads with people in your city.</h3>
+          <p>
+            <a
+              href="https://www.facebook.com/Beached-Bar-Busan-1443416879026404/?rf=128554993919144"
+              target="_blank"
+            >
+              Beached Bar&nbsp;
+            </a>
+            in Busan, South Korea hosts a book swap every Tuesday evening at 8:30pm.
+            <br />
+            <br />
+            Koreans and ex-pats alike are encouraged to bring books they have and swap them for
+            books they want.
+            <br />
+            <br />
+            This app helps facilitate trades.
+            <br />
+            <br />
+            Log in to try it out, or fork this site's&nbsp;
+            <a href="https://github.com/CharmedSatyr/book_trading_club" target="_blank">
+              source code&nbsp;
+            </a>
+            to customize Charmed Books for readers in your city.
+          </p>
         )}
       </div>
     )
