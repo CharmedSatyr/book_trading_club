@@ -7,8 +7,8 @@ const User = new Schema({
   username: String, //{ type: String, index: { unique: true } },
   password: {
     type: String,
-    required: true
-    //  match: /(?=.*[a-zA-Z])(?=.*[0-9]+).*/,
+    required: true,
+    match: /(?=.*[a-zA-Z])(?=.*[0-9]+).*/,
     //  minlength: 12
   },
   created: {
