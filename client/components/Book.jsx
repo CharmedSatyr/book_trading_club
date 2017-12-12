@@ -2,10 +2,11 @@
 
 /*** COMPONENTS ***/
 //React
-import React from 'react'
+import React, { Component } from 'react'
 
 //Material UI
 import Paper from 'material-ui/Paper'
+import Snackbar from 'material-ui/Snackbar'
 
 //App
 import WhichButton from './WhichButton.jsx'
@@ -22,44 +23,77 @@ const style = {
 }
 
 /*** MAIN ***/
-const Book = ({
-  whichButton,
-  author,
-  title,
-  publication,
-  cover,
-  olkey,
-  loggedUser,
-  owner,
-  requestor,
-  fn
-}) => {
-  return (
-    <span>
-      <WhichButton
-        olkey={olkey}
-        owner={owner}
-        requestor={requestor}
-        whichButton={whichButton}
-        loggedUser={loggedUser}
-      />
-      <Paper
-        style={style}
-        zDepth={4}
-        rounded={false}
-        className="book"
-        onClick={fn}
-      >
-        <img
-          src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
-        />
-      </Paper>
-      <span hidden="true">
-        {/*For screen-readers*/}
-        {title} ({publication}) by {author}
-      </span>
-    </span>
-  )
-}
+export default class Book extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      message: 'Saving book...',
+      open: false
+    }
+    this.handleClick = this.handleClick.bind(this)
+    this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.timer = undefined
+  }
 
-export default Book
+  componentWillMount() {
+    clearTimeout(this.timer)
+  }
+  handleClick() {
+    const { author, saveBook, title } = this.props
+    this.setState({
+      open: true
+    })
+    saveBook() //Save the book
+    this.timer = setTimeout(() => {
+      this.setState({
+        message: `${title} by ${author} has been added to your collection.`
+      })
+    }, 1500)
+  }
+  handleRequestClose() {
+    this.setState({
+      open: false
+    })
+  }
+  render() {
+    const {
+      author,
+      cover,
+      olkey,
+      loggedUser,
+      owner,
+      publication,
+      requestor,
+      title,
+      whichButton
+    } = this.props
+
+    const { message, open } = this.state
+
+    return (
+      <span>
+        <WhichButton
+          loggedUser={loggedUser}
+          olkey={olkey}
+          owner={owner}
+          requestor={requestor}
+          whichButton={whichButton}
+        />
+        <Paper className="book" onClick={this.handleClick} rounded={false} style={style} zDepth={4}>
+          <img src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'} />
+        </Paper>
+        <span hidden="true">
+          {/*For screen-readers*/}
+          {title} ({publication}) by {author}
+        </span>
+        <Snackbar
+          action="undo"
+          autoHideDuration={3000}
+          onRequestClose={this.handleRequestClose}
+          open={open}
+          message={message}
+        />
+      </span>
+    )
+  }
+}
