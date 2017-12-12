@@ -74,23 +74,23 @@ export default class App extends Component {
   checkLibrary(user) {
     librarian(1000, user, result => {
       //myBooks
-      if (result[0] && this.state.myShelves !== result[0]) {
+      if (result[0] && JSON.stringify(this.state.myShelves) !== JSON.stringify(result[0])) {
         this.setState({ myShelves: result[0] })
       }
       //otherBooks
-      if (result[1] && this.state.otherShelves !== result[1]) {
+      if (result[1] && JSON.stringify(this.state.otherShelves) !== JSON.stringify(result[1])) {
         this.setState({ otherShelves: result[1] })
       }
       //All requested books
-      if (result[2] && this.state.requestedBooks !== result[2]) {
+      if (result[2] && JSON.stringify(this.state.requestedBooks) !== JSON.stringify(result[2])) {
         this.setState({ requestedBooks: result[2] })
       }
       //My requests
-      if (result[3] && this.state.myRequests !== result[3]) {
+      if (result[3] && JSON.stringify(this.state.myRequests) !== JSON.stringify(result[3])) {
         this.setState({ myRequests: result[3] })
       }
       //Requests for my books
-      if (result[4] && this.state.requestsForMe !== result[4]) {
+      if (result[4] && JSON.stringify(this.state.requestsForMe) !== JSON.stringify(result[4])) {
         this.setState({ requestsForMe: result[4] })
       }
     })
@@ -137,11 +137,12 @@ export default class App extends Component {
     this.loggedUser()
   }
   render() {
+    const { loggedUser } = this.state
     return (
       <div>
         {/* NAVBAR */}
         <NavBar
-          loggedUser={this.state.loggedUser}
+          loggedUser={loggedUser}
           addbooksfn={() => {
             this.addbooksfn()
           }}
@@ -165,7 +166,7 @@ export default class App extends Component {
             />
             <br />
             <Divider />
-            <BookSearch quest={this.state.bookSearch} user={this.state.loggedUser} />
+            <BookSearch quest={this.state.bookSearch} user={loggedUser} />
           </div>
         ) : (
           <span />
@@ -189,17 +190,12 @@ export default class App extends Component {
                 <Divider />
                 <Subheader>Requested</Subheader>
                 {this.state.requestedBooks.length ? (
-                  <Library
-                    location={this.state.requestedBooks}
-                    loggedUser={this.state.loggedUser}
-                  />
+                  <Library location={this.state.requestedBooks} loggedUser={loggedUser} />
                 ) : (
                   <div>Nobody has requested any books...</div>
                 )}
               </span>
-            ) : (
-              <span />
-            )}
+            ) : null}
             <Divider />
             {this.state.otherShelves.length ? (
               <span>
@@ -207,17 +203,15 @@ export default class App extends Component {
                 <Library
                   location={this.state.otherShelves}
                   whichButton={'swap'}
-                  requestor={this.state.loggedUser}
-                  loggedUser={this.state.loggedUser}
+                  requestor={loggedUser}
+                  loggedUser={loggedUser}
                 />
               </span>
             ) : (
               <div>Nothing to show here. Every book has been requested!</div>
             )}
           </div>
-        ) : (
-          <span />
-        )}
+        ) : null}
 
         {/*MY BOOKS*/}
         {this.state.myBooks ? (
@@ -236,13 +230,11 @@ export default class App extends Component {
                 <Library
                   location={this.state.requestsForMe}
                   whichButton="approveDeny"
-                  loggedUser={this.state.loggedUser}
+                  loggedUser={loggedUser}
                 />
                 <Divider />
               </span>
-            ) : (
-              <span />
-            )}
+            ) : null}
             {/* USER'S REQUESTS */}
             {this.state.myRequests.length ? (
               <span>
@@ -251,12 +243,10 @@ export default class App extends Component {
                 <Library
                   location={this.state.myRequests}
                   whichButton={'cancelRequest'}
-                  loggedUser={this.state.loggedUser}
+                  loggedUser={loggedUser}
                 />
               </span>
-            ) : (
-              <span />
-            )}
+            ) : null}
             {/* YOUR BOOKS */}
             <Subheader>Your Books</Subheader>
             {this.state.myShelves.length ? (
@@ -268,7 +258,7 @@ export default class App extends Component {
         ) : null}
 
         {/* PROFILE */}
-        {this.state.profile ? <Profile loggedUser={this.state.loggedUser} /> : null}
+        {this.state.profile ? <Profile loggedUser={loggedUser} /> : null}
       </div>
     )
   }
