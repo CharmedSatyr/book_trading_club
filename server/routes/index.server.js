@@ -1,19 +1,30 @@
 'use strict'
+
+/*** ENVIRONMENT ***/
 const path = process.cwd()
+import dotenv from 'dotenv'
+dotenv.load()
+
+/*** DEVELOPMENT TOOLS ***/
+const DEV = process.env.NODE_ENV === 'development'
+const PROD = process.env.NODE_ENV === 'production'
+
+/*** CONTROLLERS ***/
 import {
-  cancelRequest,
-  denyRequest,
   approveRequest,
+  cancelRequest,
+  curseOfAlexandria,
+  denyRequest,
   library,
-  saveBook,
+  otherShelves,
   removeBook,
   requestBook,
-  userShelves,
-  otherShelves,
-  curseOfAlexandria
+  saveBook,
+  userShelves
 } from '../controllers/bookController.server.js'
 
-import { loginUser } from '../config/authConfig.js'
+import { loginUser, root } from '../config/authConfig.js'
+
 import {
   saveUser,
   viewUsers,
@@ -23,9 +34,24 @@ import {
 } from '../controllers/userController.server.js'
 import { searchSubmit } from '../controllers/searchController.server.js'
 
+/*** ROUTES ***/
 export const routes = (app, passport) => {
+  //Enforce HTTPS in production
+  if (PROD) {
+    app.use('*', (req, res, next) => {
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+        console.log('Redirecting to', process.env.APP_URL + req.url)
+        res.redirect(process.env.APP_URL + req.url)
+      } else {
+        next() /* Continue to other routes if we're not redirecting */
+      }
+    })
+  }
+
+  //This is the name that will display in the client view
   let name_view
-  //Auth check
+
+  //Authorization check
   const permissions = (req, res, next) => {
     if (req.isAuthenticated()) {
       name_view = req.user.username
@@ -48,10 +74,12 @@ export const routes = (app, passport) => {
       })
     )
 
-  //Main
-  app.route('/').get(permissions, (req, res) => {
-    res.sendFile(path + '/dist/index.html')
-  })
+  //Root
+  if (PROD) {
+    app.route('/').get(permissions, root)
+  } else if (DEV) {
+    app.route('/').get(root)
+  }
 
   //Logout
   app.route('/logout').get(permissions, (req, res) => {
@@ -104,13 +132,24 @@ export const routes = (app, passport) => {
 
   //Get login name
   app.route('/api/users/logged').get((req, res) => {
-    res.json(name_view)
+    if (DEV) {
+      console.log('Client requesting username...')
+    }
+    if (name_view) {
+      res.json(name_view)
+    } else if (DEV) {
+      console.log('Logging in as Developer...')
+      res.json('Developer')
+    }
   })
-  //Private (no client UI option)
-  //Remove all stored books
-  app.use('/api/burn', curseOfAlexandria)
-  //Remove all users
-  app.use('/api/purge', genocide)
-  //See all books
-  app.route('/api/library').get(library)
+
+  /*** DEBUGGING - No UI ***/
+  if (DEV) {
+    //Remove all stored books
+    app.use('/api/burn', curseOfAlexandria)
+    //Remove all users
+    app.use('/api/purge', genocide)
+    //See all books
+    app.route('/api/library').get(library)
+  }
 }

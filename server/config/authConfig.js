@@ -1,5 +1,8 @@
 'use strict'
 
+/*** ENVIRONMENT ***/
+const path = process.cwd()
+
 /*** MODEL ***/
 import User from '../models/User.js'
 
@@ -56,6 +59,9 @@ export const authConfig = passport => {
       done(err, user)
     })
   })
+}
 
-  //End of authConfig
+//Root is used with permissions dependent on NODE_ENV
+export const root = (req, res) => {
+  res.sendFile(path + '/dist/index.html')
 }
