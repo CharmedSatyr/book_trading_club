@@ -5,16 +5,16 @@ const Schema = mongoose.Schema
 
 const Book = new Schema({
   author: String,
-  title: String,
-  publication: Number,
   cover: String,
   olkey: String,
-  requested: {
-    type: Boolean,
-    default: false
-  },
   owner: String,
-  requestor: String
+  publication: Number,
+  requested: {
+    default: false,
+    type: Boolean
+  },
+  requestor: String,
+  title: String
 })
 
 export default mongoose.model('Book', Book)
