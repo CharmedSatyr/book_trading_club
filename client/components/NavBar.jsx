@@ -52,7 +52,7 @@ const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) =>
               <span>
                 <div className="welcomeName expanded">Welcome, {loggedUser}</div>
                 <FlatButton label="Add Books" onClick={addbooksfn} className="navButtons" />
-                <FlatButton label="My Books" onClick={mybooksfn} className="navButtons" />
+                <FlatButton label="Your Books" onClick={mybooksfn} className="navButtons" />
                 <FlatButton label="Community Books" onClick={allbooksfn} className="navButtons" />
                 <FlatButton label="Profile" onClick={profilefn} className="navButtons" />
                 <a href="/logout">
