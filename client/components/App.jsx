@@ -70,7 +70,7 @@ export default class App extends Component {
     })
   }
   /* Keeps personal and full library in sync among devices without *
-   * refresh using web sockets.                                    */
+   * refresh using web sockets. Preserves efficiency in state.     */
   checkLibrary(user) {
     librarian(1000, user, result => {
       //myBooks
@@ -202,7 +202,7 @@ export default class App extends Component {
                 <Subheader>Available to Swap</Subheader>
                 <Library
                   location={this.state.otherShelves}
-                  whichButton={'swap'}
+                  whichButton="swap"
                   requestor={loggedUser}
                   loggedUser={loggedUser}
                 />
@@ -242,7 +242,7 @@ export default class App extends Component {
                 <Subheader>Books You've Requested</Subheader>
                 <Library
                   location={this.state.myRequests}
-                  whichButton={'cancelRequest'}
+                  whichButton="cancelRequest"
                   loggedUser={loggedUser}
                 />
               </span>
@@ -250,7 +250,7 @@ export default class App extends Component {
             {/* YOUR BOOKS */}
             <Subheader>Your Books</Subheader>
             {this.state.myShelves.length ? (
-              <Library location={this.state.myShelves} whichButton={'delete'} />
+              <Library location={this.state.myShelves} whichButton="delete" />
             ) : (
               <div>Add some books to your collection!</div>
             )}
