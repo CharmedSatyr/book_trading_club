@@ -2,11 +2,10 @@
 
 /*** COMPONENTS ***/
 //React
-import React, { Component } from 'react'
+import React from 'react'
 
 //Material UI
 import Paper from 'material-ui/Paper'
-import Snackbar from 'material-ui/Snackbar'
 
 //App
 import WhichButton from './WhichButton.jsx'
@@ -23,76 +22,66 @@ const style = {
 }
 
 /*** MAIN ***/
-export default class Book extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      message: 'Saving book...',
-      open: false
-    }
-    this.handleClick = this.handleClick.bind(this)
-    this.handleRequestClose = this.handleRequestClose.bind(this)
-    this.timer = undefined
-  }
-  componentWillMount() {
-    clearTimeout(this.timer)
-  }
-  handleClick() {
-    const { author, saveBook, title } = this.props
-    this.setState({
-      open: true
-    })
-    saveBook() //Save the book
-    this.timer = setTimeout(() => {
-      this.setState({
-        message: `${title} by ${author} has been added to Your Books.`
-      })
-    }, 1500)
-  }
-  handleRequestClose() {
-    this.setState({
-      open: false
-    })
-  }
-  render() {
-    const {
-      author,
-      cover,
-      olkey,
-      loggedUser,
-      owner,
-      publication,
-      requestor,
-      title,
-      whichButton
-    } = this.props
-
-    const { message, open } = this.state
-
-    return (
-      <span>
-        <WhichButton
-          loggedUser={loggedUser}
-          olkey={olkey}
-          owner={owner}
-          requestor={requestor}
-          whichButton={whichButton}
+const Book = ({
+  author,
+  cover,
+  olkey,
+  loggedUser,
+  owner,
+  publication,
+  requestor,
+  title,
+  snackAdd,
+  snackApprove,
+  snackCancel,
+  snackDelete,
+  snackDeny,
+  snackSwap,
+  whichButton
+}) => {
+  return (
+    <span>
+      <WhichButton
+        author={author}
+        cover={cover}
+        loggedUser={loggedUser}
+        olkey={olkey}
+        owner={owner}
+        publication={publication}
+        requestor={requestor}
+        snackAdd={snackAdd}
+        snackApprove={snackApprove}
+        snackCancel={snackCancel}
+        snackDelete={snackDelete}
+        snackDeny={snackDeny}
+        snackSwap={snackSwap}
+        title={title}
+        whichButton={whichButton}
+      />
+      <Paper className="book" rounded={false} style={style} zDepth={4}>
+        <img
+          onClick={() => {
+            console.log(
+              'The book ' +
+                title +
+                ' (' +
+                publication +
+                ') by ' +
+                author +
+                ' is owned by ' +
+                owner +
+                '.'
+            )
+          }}
+          src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
         />
-        <Paper className="book" onClick={this.handleClick} rounded={false} style={style} zDepth={4}>
-          <img src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'} />
-        </Paper>
-        <span hidden="true">
-          {/*For screen-readers*/}
-          {title} ({publication}) by {author}
-        </span>
-        <Snackbar
-          action=""
-          autoHideDuration={3000}
-          onRequestClose={this.handleRequestClose}
-          open={open}
-          message={message}
-        />
+      </Paper>
+      <span hidden="true">
+        {/*For screen-readers*/}
+        {title} ({publication}) by {author}
       </span>
-    )
-  }
+    </span>
+  )
 }
+
+export default Book

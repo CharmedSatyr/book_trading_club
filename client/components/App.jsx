@@ -16,6 +16,7 @@ import Input from './Input.jsx'
 import Library from './Library.jsx'
 import Profile from './Profile.jsx'
 import NavBar from './NavBar.jsx'
+import Snack from './Snack.jsx'
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
@@ -26,20 +27,27 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      addBooks: false,
+      allBooks: true,
       bookSearch: [],
+      loggedUser: '',
+      message: '',
+      myBooks: false,
+      myRequests: [],
       myShelves: [],
       otherShelves: [],
-      requestedBooks: [],
-      myRequests: [],
-      requestsForMe: [],
-      myBooks: true,
-      addBooks: false,
-      allBooks: false,
       profile: false,
-      loggedUser: ''
+      requestedBooks: [],
+      requestsForMe: []
     }
     this.searchBooks = this.searchBooks.bind(this)
     this.clearBooks = this.clearBooks.bind(this)
+    this.snackApprove = this.snackApprove.bind(this)
+    this.snackCancel = this.snackCancel.bind(this)
+    this.snackDelete = this.snackDelete.bind(this)
+    this.snackDeny = this.snackDeny.bind(this)
+    this.snackAdd = this.snackAdd.bind(this)
+    this.snackSwap = this.snackSwap.bind(this)
   }
   searchBooks() {
     const query = document.getElementById('search').value
@@ -48,6 +56,43 @@ export default class App extends Component {
       console.log('Search response', response)
       this.setState({ bookSearch: response })
     })
+  }
+  //Snackbar functions have to stay in App so they don't dismount when App's children dismount
+  snackAdd() {
+    this.setState({ message: 'Adding book to your collection...' })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 3000)
+  }
+  snackApprove() {
+    this.setState({ message: 'Approving swap request...' })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 3000)
+  }
+  snackCancel() {
+    this.setState({ message: 'Canceling swap request...' })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 3000)
+  }
+  snackDelete() {
+    this.setState({ message: 'Removing book from your collection...' })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 3000)
+  }
+  snackDeny() {
+    this.setState({ message: 'Denying swap request...' })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 3000)
+  }
+  snackSwap() {
+    this.setState({ message: 'Requesting swap...\nThis request will appear in Your Books.' })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 3000)
   }
   loggedUser() {
     f('GET', '/api/users/logged', response => {
@@ -138,39 +183,49 @@ export default class App extends Component {
   }
   render() {
     const { loggedUser } = this.state
+
+    //navbar
+    const navbar = (
+      <NavBar
+        loggedUser={loggedUser}
+        addbooksfn={() => {
+          this.addbooksfn()
+        }}
+        allbooksfn={() => {
+          this.allbooksfn()
+        }}
+        mybooksfn={() => {
+          this.mybooksfn()
+        }}
+        profilefn={() => {
+          this.profilefn()
+        }}
+      />
+    )
+
+    //add books
+    const addbooks = (
+      <div>
+        <Input
+          searchBooks={this.searchBooks}
+          clearBooks={this.clearBooks}
+          visible={this.state.bookSearch.length > 0}
+        />
+        <br />
+        <Divider />
+        <BookSearch
+          quest={this.state.bookSearch}
+          snackAdd={this.snackAdd}
+          loggedUser={loggedUser}
+        />
+      </div>
+    )
+
     return (
       <div>
-        {/* NAVBAR */}
-        <NavBar
-          loggedUser={loggedUser}
-          addbooksfn={() => {
-            this.addbooksfn()
-          }}
-          allbooksfn={() => {
-            this.allbooksfn()
-          }}
-          mybooksfn={() => {
-            this.mybooksfn()
-          }}
-          profilefn={() => {
-            this.profilefn()
-          }}
-        />
+        {navbar}
         {/* SEARCH */}
-        {this.state.addBooks ? (
-          <div>
-            <Input
-              searchBooks={this.searchBooks}
-              clearBooks={this.clearBooks}
-              visible={this.state.bookSearch.length > 0}
-            />
-            <br />
-            <Divider />
-            <BookSearch quest={this.state.bookSearch} user={loggedUser} />
-          </div>
-        ) : (
-          <span />
-        )}
+        {this.state.addBooks ? addbooks : null}
         {/* ALL BOOKS */}
         {this.state.allBooks ? (
           <div>
@@ -202,9 +257,10 @@ export default class App extends Component {
                 <Subheader>Available to Swap</Subheader>
                 <Library
                   location={this.state.otherShelves}
-                  whichButton="swap"
-                  requestor={loggedUser}
                   loggedUser={loggedUser}
+                  requestor={loggedUser}
+                  snackSwap={this.snackSwap}
+                  whichButton="swap"
                 />
               </span>
             ) : (
@@ -217,7 +273,7 @@ export default class App extends Component {
         {this.state.myBooks ? (
           <div>
             {/* USER LIBRARY */}
-            <Subheader>Your Library</Subheader>
+            <Subheader>Your Books</Subheader>
             <RequestsBadge
               myRequests={this.state.myRequests.length}
               requestsForMe={this.state.requestsForMe.length}
@@ -229,8 +285,10 @@ export default class App extends Component {
                 <Subheader>Someone's Requested These...</Subheader>
                 <Library
                   location={this.state.requestsForMe}
-                  whichButton="approveDeny"
                   loggedUser={loggedUser}
+                  snackApprove={this.snackApprove}
+                  snackDeny={this.snackDeny}
+                  whichButton="approveDeny"
                 />
                 <Divider />
               </span>
@@ -242,15 +300,20 @@ export default class App extends Component {
                 <Subheader>Books You've Requested</Subheader>
                 <Library
                   location={this.state.myRequests}
-                  whichButton="cancelRequest"
                   loggedUser={loggedUser}
+                  snackCancel={this.snackCancel}
+                  whichButton="cancelRequest"
                 />
               </span>
             ) : null}
             {/* YOUR BOOKS */}
             <Subheader>Your Books</Subheader>
             {this.state.myShelves.length ? (
-              <Library location={this.state.myShelves} whichButton="delete" />
+              <Library
+                location={this.state.myShelves}
+                snackDelete={this.snackDelete}
+                whichButton="delete"
+              />
             ) : (
               <div>Add some books to your collection!</div>
             )}
@@ -259,6 +322,7 @@ export default class App extends Component {
 
         {/* PROFILE */}
         {this.state.profile ? <Profile loggedUser={loggedUser} /> : null}
+        <Snack message={this.state.message} />
       </div>
     )
   }

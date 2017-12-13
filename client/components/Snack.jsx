@@ -32,6 +32,7 @@ export default class Snack extends Component {
     })
   }
   shouldComponentUpdate(nextProps, nextState) {
+    //console.log('Snack nextState:', nextState)
     if (this.state === nextState) {
       return false
     } else {
@@ -42,9 +43,10 @@ export default class Snack extends Component {
     const { message, open } = this.state
     return (
       <Snackbar
-        action=""
+        action="close"
         autoHideDuration={3000}
         message={message}
+        onClick={this.handleRequestClose}
         onRequestClose={this.handleRequestClose}
         open={open}
       />
