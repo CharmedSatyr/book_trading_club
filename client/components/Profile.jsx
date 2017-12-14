@@ -13,11 +13,6 @@ import TextField from 'material-ui/TextField'
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 
-/*** VARIABLES ***/
-const style = {
-  margin: 5
-}
-
 /*** MAIN ***/
 const Profile = ({ loggedUser }) => {
   return (
@@ -41,7 +36,7 @@ const Profile = ({ loggedUser }) => {
         <RaisedButton
           label="Save Changes"
           primary={true}
-          style={style}
+          className="RaisedButtonProfile"
           onClick={() => {
             const username = document.getElementById('username').value
             const location = document.getElementById('location').value
@@ -76,7 +71,7 @@ const Profile = ({ loggedUser }) => {
         <RaisedButton
           label="Save Changes"
           primary={true}
-          style={style}
+          className="RaisedButtonProfile"
           onClick={() => {
             const password1 = document.getElementById('password1').value
             const password2 = document.getElementById('password2').value

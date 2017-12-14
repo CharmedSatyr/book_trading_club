@@ -10,17 +10,6 @@ import Paper from 'material-ui/Paper'
 //App
 import WhichButton from './WhichButton.jsx'
 
-/*** VARIABLES ***/
-const style = {
-  display: 'flex',
-  height: 260,
-  itemAlign: 'center',
-  justifyContent: 'center',
-  margin: 16,
-  textAlign: 'center',
-  width: 180
-}
-
 /*** MAIN ***/
 const Book = ({
   author,
@@ -58,7 +47,7 @@ const Book = ({
         title={title}
         whichButton={whichButton}
       />
-      <Paper className="book" rounded={false} style={style} zDepth={4}>
+      <Paper className="book" rounded={false} zDepth={4}>
         <img
           onClick={() => {
             //Every book will log basic information about it on click.

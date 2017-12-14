@@ -4,7 +4,7 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.books {
+.bookSearch {
   align-items: center;
   align-content: flex-start;
   display: flex;
@@ -57,4 +57,79 @@ a {
   width: 100px;
   display: flex;
   justify-content: center;
+}
+
+//App.jsx
+.ActionSwapVerticalCircle {
+  margin-bottom: -6px;
+}
+
+//Book.jsx
+.book {
+  display: 'flex' !important; //won't work unless inline style?
+  height: 260px;
+  align-items: 'center';
+  justify-content: 'center' !important; //won't work unless inline style?
+  margin: 16px;
+  text-align: 'center';
+  width: 180px;
+}
+
+//Input.jsx
+.RaisedButton {
+  margin: 12px;
+}
+
+//NavBar.jsx
+.AppBar {
+  margin-top: 12px;
+}
+
+.MenuItem {
+  text-decoration: none;
+}
+
+//Profile.jsx
+.RaisedButtonProfile {
+  margin: 5px;
+}
+
+//RequestsBadge
+.badgeStyle {
+  top: 16px;
+  right: 25px;
+}
+
+.iconStyle {
+  top: -21px;
+  right: -21px;
+}
+
+//SignupLoginForm.jsx
+.RaisedButtonSignupLoginForm {
+  margin: 12px;
+}
+
+//SignupLoginPage.jsx
+.loginFlatButton {
+  margin-top: 7px;
+}
+
+.signupFlatButton {
+  color: #ffffff;
+  margin-top: 7px;
+}
+
+.homeFlatButton {
+  margin-top: 7px;
+}
+
+.AvLibraryBooks {
+  margin-top: 12px;
+}
+
+//WhichButton.jsx
+.approveDenyStyle {
+  margin-left: -10px;
+  margin-right: -10px;
 }

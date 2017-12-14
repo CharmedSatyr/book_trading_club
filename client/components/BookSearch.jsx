@@ -24,7 +24,7 @@ const BookSearch = ({ quest, snackAdd, loggedUser }) => {
     )
   })
 
-  return <div className="books">{results}</div>
+  return <div className="bookSearch">{results}</div>
 }
 
 export default BookSearch

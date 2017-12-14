@@ -33,9 +33,9 @@ const SignupLoginForm = ({ signup, login }) => {
             <br />
             <br />
             <RaisedButton
+              className="RaisedButtonSignupLoginForm"
               label="Login"
               primary={true}
-              style={{ margin: 12 }}
               type="submit"
             />
           </form>
@@ -71,9 +71,9 @@ const SignupLoginForm = ({ signup, login }) => {
             <br />
 
             <RaisedButton
+              className="RaisedButtonSignupLoginForm"
               label="Sign Up"
               primary={true}
-              style={{ margin: 12 }}
               type="submit"
             />
           </form>

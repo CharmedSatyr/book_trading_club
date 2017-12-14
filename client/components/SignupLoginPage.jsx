@@ -16,7 +16,7 @@ import SignupLoginForm from './SignupLoginForm.jsx'
 const Login = ({ fn }) => {
   return (
     <span>
-      <FlatButton label="Login" onClick={fn} style={{ marginTop: 7 }} />
+      <FlatButton className="loginFlatButton" label="Login" onClick={fn} />
     </span>
   )
 }
@@ -24,7 +24,7 @@ const Login = ({ fn }) => {
 const Signup = ({ signupfn }) => {
   return (
     <span>
-      <FlatButton label="Sign up" onClick={signupfn} style={{ color: '#ffffff', marginTop: 7 }} />
+      <FlatButton className="signupFlatButton" label="Sign up" onClick={signupfn} />
     </span>
   )
 }
@@ -32,7 +32,7 @@ const Signup = ({ signupfn }) => {
 const Home = ({ homefn }) => {
   return (
     <span>
-      <FlatButton label="Home" onClick={homefn} style={{ marginTop: 7 }} />
+      <FlatButton className="homeFlatButton" label="Home" onClick={homefn} />
     </span>
   )
 }
@@ -61,7 +61,7 @@ export default class SignupLoginPage extends Component {
         <div>
           <AppBar
             title="Charmed Books"
-            iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
+            iconElementLeft={<AvLibraryBooks className="AvLibraryBooks" />}
             iconElementRight={
               this.state.form ? (
                 <Home

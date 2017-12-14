@@ -14,11 +14,6 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 //Styles
 import { red500, yellow500, blue500, greenA700 } from 'material-ui/styles/colors'
 
-const approveDenyStyle = {
-  marginLeft: -10,
-  marginRight: -10
-}
-
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 
@@ -153,7 +148,7 @@ const WhichButton = ({
           })
           snackApprove()
         }}
-        style={approveDenyStyle}
+        className="approveDenyStyle"
         tooltip={'Approve swap of ' + reference + ' with ' + requestor + '.'}
       >
         <NavigationCheck color={greenA700} />
@@ -171,7 +166,7 @@ const WhichButton = ({
           })
           snackDeny()
         }}
-        style={approveDenyStyle}
+        className="approveDenyStyle"
         tooltip={'Deny swap of ' + reference + ' with ' + requestor + '.'}
       >
         <NavigationClose color={red500} />

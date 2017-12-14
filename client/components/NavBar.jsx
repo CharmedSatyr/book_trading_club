@@ -19,7 +19,7 @@ const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) =>
     <div>
       <AppBar
         title="Charmed Books"
-        iconElementLeft={<AvLibraryBooks style={{ marginTop: 12 }} />}
+        iconElementLeft={<AvLibraryBooks className="AppBar" />}
         iconElementRight={
           <span>
             {window.innerWidth < 955 ? (
@@ -39,12 +39,7 @@ const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) =>
                   <MenuItem primaryText="Community Books" onClick={allbooksfn} />
                   <MenuItem primaryText="Profile" onClick={profilefn} />
                   <a href="/logout">
-                    <MenuItem
-                      primaryText="Logout"
-                      style={{
-                        textDecoration: 'none'
-                      }}
-                    />
+                    <MenuItem primaryText="Logout" className="MenuItem" />
                   </a>
                 </IconMenu>
               </span>

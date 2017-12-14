@@ -232,8 +232,8 @@ export default class App extends Component {
             <Subheader>Community Books</Subheader>
             <div className="allBooksHeader">
               <div>
-                Click the <ActionSwapVerticalCircle style={{ marginBottom: -6 }} /> to request a
-                trade!
+                Click the <ActionSwapVerticalCircle className="ActionSwapVerticalCircle" /> to
+                request a trade!
               </div>
               <RequestsBadge
                 myRequests={this.state.myRequests.length}
