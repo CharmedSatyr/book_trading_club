@@ -1,0 +1,5 @@
+*.md
+*.scss
+package.json
+!/*.js
+**/node_modules/**
