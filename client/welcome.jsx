@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-//import 'typeface-roboto'
+import 'typeface-roboto'
 import sass from './styles/styles.scss'
 import SignupLoginPage from './components/SignupLoginPage.jsx'
 import './img/favicon.ico'
