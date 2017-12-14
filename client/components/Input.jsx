@@ -17,14 +17,14 @@ const style = {
 /*** MAIN ***/
 const Input = ({ clearBooks, searchBooks, visible }) => {
   return (
-    <label htmlFor="search">
+    <form>
       <Subheader>Search for a book here! Click the results to add them to your library.</Subheader>
       <TextField id="search" hintText="Author, Title, or ISBN" />
       <RaisedButton label="Search" primary={true} style={style} onClick={searchBooks} />
       {visible ? (
         <RaisedButton label="Clear" secondary={true} style={style} onClick={clearBooks} />
       ) : null}
-    </label>
+    </form>
   )
 }
 

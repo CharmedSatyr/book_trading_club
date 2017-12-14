@@ -24,68 +24,76 @@ const Profile = ({ loggedUser }) => {
     <div>
       <Subheader>Update your profile</Subheader>
       <Divider />
-      <Subheader>Personal Details</Subheader>
-      <TextField
-        hintText="Your username will be public."
-        floatingLabelText="Username"
-        id="username"
-      />
-      <br />
-      <TextField hintText="City and state or province" floatingLabelText="Location" id="location" />
-      <br />
-      <RaisedButton
-        label="Save Changes"
-        primary={true}
-        style={style}
-        onClick={() => {
-          const username = document.getElementById('username').value
-          const location = document.getElementById('location').value
-          const update = { username: username, location: location }
-          const data = encodeURIComponent(JSON.stringify(update))
+      <form>
+        <Subheader>Personal Details</Subheader>
+        <TextField
+          hintText="Your username will be public."
+          floatingLabelText="Username"
+          id="username"
+        />
+        <br />
+        <TextField
+          hintText="City and state or province"
+          floatingLabelText="Location"
+          id="location"
+        />
+        <br />
+        <RaisedButton
+          label="Save Changes"
+          primary={true}
+          style={style}
+          onClick={() => {
+            const username = document.getElementById('username').value
+            const location = document.getElementById('location').value
+            const update = { username: username, location: location }
+            const data = encodeURIComponent(JSON.stringify(update))
 
-          f('POST', '/api/' + loggedUser + '/profile-update/' + data, response => {
-            console.log(response)
-          })
-        }}
-      />
+            f('POST', '/api/' + loggedUser + '/profile-update/' + data, response => {
+              console.log(response)
+            })
+          }}
+        />
+      </form>
       <br />
       <br />
       <Divider />
-      <Subheader>Change your password</Subheader>
-      <TextField
-        hintText="Use 12-72 letters and numbers."
-        floatingLabelText="Current Password"
-        type="password"
-        id="password1"
-      />
-      <br />
-      <TextField
-        hintText="Use 12-72 letters and numbers."
-        floatingLabelText="New Password"
-        type="password"
-        id="password2"
-      />
-      <br />
-      <RaisedButton
-        label="Save Changes"
-        primary={true}
-        style={style}
-        onClick={() => {
-          const password1 = document.getElementById('password1').value
-          const password2 = document.getElementById('password2').value
+      <form>
+        <Subheader>Change your password</Subheader>
+        <TextField
+          hintText="Use 12-72 letters and numbers."
+          floatingLabelText="Current Password"
+          type="password"
+          id="password1"
+        />
+        <br />
+        <TextField
+          hintText="Use 12-72 letters and numbers."
+          floatingLabelText="New Password"
+          type="password"
+          id="password2"
+        />
+        <br />
+        <RaisedButton
+          label="Save Changes"
+          primary={true}
+          style={style}
+          onClick={() => {
+            const password1 = document.getElementById('password1').value
+            const password2 = document.getElementById('password2').value
 
-          const bothPasswords = {
-            currentPassword: password1,
-            newPassword: password2
-          }
+            const bothPasswords = {
+              currentPassword: password1,
+              newPassword: password2
+            }
 
-          const data = encodeURIComponent(JSON.stringify(bothPasswords))
-          console.log('Sending current and new passwords:', data)
-          f('POST', '/api/' + loggedUser + '/update-password/' + data, response => {
-            console.log(response)
-          })
-        }}
-      />
+            const data = encodeURIComponent(JSON.stringify(bothPasswords))
+            console.log('Sending current and new passwords:', data)
+            f('POST', '/api/' + loggedUser + '/update-password/' + data, response => {
+              console.log(response)
+            })
+          }}
+        />
+      </form>
       <br />
     </div>
   )
