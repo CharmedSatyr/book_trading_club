@@ -61,16 +61,9 @@ const Book = ({
       <Paper className="book" rounded={false} style={style} zDepth={4}>
         <img
           onClick={() => {
+            //Every book will log basic information about it on click.
             console.log(
-              'The book ' +
-                title +
-                ' (' +
-                publication +
-                ') by ' +
-                author +
-                ' is owned by ' +
-                owner +
-                '.'
+              title + ' (' + publication + ') by ' + author + ' is owned by ' + owner + '.'
             )
           }}
           src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}

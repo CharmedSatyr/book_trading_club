@@ -40,6 +40,9 @@ const WhichButton = ({
   title,
   whichButton
 }) => {
+  //This is basic inforation about the book that is appears in Icon Button tooltips on hover.
+  const reference = title + ' (' + publication + ') by ' + author
+
   //add button
   const add = (
     <div className="bookOverlay">
@@ -58,6 +61,7 @@ const WhichButton = ({
           f('POST', '/api/' + loggedUser + '/save/' + data, response => console.log(response))
           snackAdd()
         }}
+        tooltip={'Add ' + reference + ' to Your Books.'}
       >
         <ContentAdd color={greenA700} />
       </IconButton>
@@ -79,6 +83,7 @@ const WhichButton = ({
           })
           snackCancel()
         }}
+        tooltip={'Cancel your request for ' + reference + ' from ' + owner + '.'}
       >
         <NavigationClose color={red500} />
       </IconButton>
@@ -100,6 +105,7 @@ const WhichButton = ({
           })
           snackDelete()
         }}
+        tooltip={'Delete ' + reference + ' from Your Books.'}
       >
         <NavigationClose color={red500} />
       </IconButton>
@@ -121,6 +127,7 @@ const WhichButton = ({
           })
           snackSwap()
         }}
+        tooltip={'Request ' + reference + ' from ' + owner + '.'}
       >
         <ActionSwapVerticalCircle />
       </IconButton>
@@ -147,6 +154,7 @@ const WhichButton = ({
           snackApprove()
         }}
         style={approveDenyStyle}
+        tooltip={'Approve swap of ' + reference + ' with ' + requestor + '.'}
       >
         <NavigationCheck color={greenA700} />
       </IconButton>
@@ -164,6 +172,7 @@ const WhichButton = ({
           snackDeny()
         }}
         style={approveDenyStyle}
+        tooltip={'Deny swap of ' + reference + ' with ' + requestor + '.'}
       >
         <NavigationClose color={red500} />
       </IconButton>
