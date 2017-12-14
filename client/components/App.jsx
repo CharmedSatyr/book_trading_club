@@ -114,8 +114,10 @@ export default class App extends Component {
       this.setState({ myShelves: response })
     })
   }
-  /* Keeps personal and full library in sync among devices without *
-   * refresh using web sockets. Preserves efficiency in state.     */
+  /* Keeps personal and full library in sync among devices without refresh
+   * using web sockets. Preserves efficiency in state. However, not constantly
+   * updating these causes the NavBar not to auto-resize on window resize. */
+
   checkLibrary(user) {
     librarian(1000, user, result => {
       //myBooks
