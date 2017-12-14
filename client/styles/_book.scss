@@ -1,0 +1,11 @@
+//Book.jsx
+
+.book {
+  align-items: 'center';
+  display: 'flex' !important; //won't work unless inline style?
+  height: 260px;
+  justify-content: 'center' !important; //won't work unless inline style?
+  margin: 16px;
+  text-align: 'center';
+  width: 180px;
+}
