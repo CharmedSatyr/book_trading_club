@@ -45,7 +45,7 @@ const WhichButton = ({
 
   //add button
   const add = (
-    <div className="bookOverlay">
+    <span className="bookOverlay">
       <IconButton
         onClick={() => {
           const obj = {
@@ -65,12 +65,12 @@ const WhichButton = ({
       >
         <ContentAdd color={greenA700} />
       </IconButton>
-    </div>
+    </span>
   )
 
   //cancelRequest button
   const cancelRequest = (
-    <div className="bookOverlay">
+    <span className="bookOverlay">
       <IconButton
         onClick={() => {
           const bookInfo = {
@@ -87,12 +87,12 @@ const WhichButton = ({
       >
         <NavigationClose color={red500} />
       </IconButton>
-    </div>
+    </span>
   )
 
   //delete button
   const del = (
-    <div className="bookOverlay">
+    <span className="bookOverlay">
       <IconButton
         onClick={() => {
           const bookInfo = {
@@ -109,12 +109,12 @@ const WhichButton = ({
       >
         <NavigationClose color={red500} />
       </IconButton>
-    </div>
+    </span>
   )
 
   //swap button
   const swap = (
-    <div className="bookOverlay">
+    <span className="bookOverlay">
       <IconButton
         onClick={() => {
           const bookInfo = {
@@ -131,12 +131,12 @@ const WhichButton = ({
       >
         <ActionSwapVerticalCircle />
       </IconButton>
-    </div>
+    </span>
   )
 
   //approveDeny button
   const approveDeny = (
-    <div className="approveDeny">
+    <span className="approveDeny">
       {/* APPROVE REQUEST */}
       <IconButton
         onClick={() => {
@@ -176,7 +176,7 @@ const WhichButton = ({
       >
         <NavigationClose color={red500} />
       </IconButton>
-    </div>
+    </span>
   )
 
   //return button based on whichButton prop
