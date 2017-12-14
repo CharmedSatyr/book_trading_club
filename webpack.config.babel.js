@@ -90,7 +90,7 @@ const client = {
         }
       },
       {
-        test: /\.(eot|ttf|svg|woff|woff2)$/i,
+        test: /\.(eot|otf|ttf|svg|woff|woff2)$/i,
         loader: 'url-loader',
         options: {
           limit: 10000,
@@ -171,9 +171,7 @@ const server = {
   target: 'node',
   //  node: nodeConfig,
   externals: [nodeExternals()],
-  plugins: PROD
-    ? [environmentConfig, compConfig, uglyConfig]
-    : [environmentConfig]
+  plugins: PROD ? [environmentConfig, compConfig, uglyConfig] : [environmentConfig]
 }
 
 export default [client, server]
