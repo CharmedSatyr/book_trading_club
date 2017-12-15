@@ -95,7 +95,7 @@ const client = {
         options: {
           limit: 10000,
           mimetype: 'application/font-woff',
-          name: 'fonts/[sha256:hash:5].[ext]' //must use full output path
+          name: 'styles/fonts/[sha256:hash:5].[ext]' //must use full output path
         }
       }
     ]
