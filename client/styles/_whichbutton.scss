@@ -1,22 +1,11 @@
 //WhichButton.jsx
 
 .bookOverlay {
-  left: 160px;
-  position: relative;
-  top: 52px;
-  width: 50px;
-}
+  width: 0;
 
-.approveDeny {
-  display: flex;
-  justify-content: center;
-  left: 118px;
-  position: relative;
-  top: 52px;
-  width: 100px;
-}
-
-.approveDenyStyle {
-  margin-left: -10px;
-  margin-right: -10px;
+  .iconBox {
+    display: flex;
+    margin-top: -24px;
+    margin-left: -14px;
+  }
 }

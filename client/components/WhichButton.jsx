@@ -6,13 +6,21 @@ import React from 'react'
 
 //Material UI
 import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
-import ContentAdd from 'material-ui/svg-icons/content/add'
+import ContentAddCircle from 'material-ui/svg-icons/content/add-circle'
 import IconButton from 'material-ui/IconButton'
-import NavigationCheck from 'material-ui/svg-icons/navigation/check'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
+import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
+import NavigationCancel from 'material-ui/svg-icons/navigation/cancel'
 
 //Styles
-import { red500, yellow500, blue500, greenA700 } from 'material-ui/styles/colors'
+import { pinkA200, amber400, greenA700 } from 'material-ui/styles/colors'
+
+const iconStyle = {
+  borderRadius: '100%',
+  backgroundColor: '#ffffff',
+  height: 24,
+  width: 24,
+  marginTop: 10
+}
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
@@ -41,136 +49,152 @@ const WhichButton = ({
   //add button
   const add = (
     <span className="bookOverlay">
-      <IconButton
-        onClick={() => {
-          const obj = {
-            author: author,
-            cover: cover,
-            olkey: olkey,
-            owner: loggedUser,
-            publication: publication,
-            title: title
-          }
-          const data = encodeURIComponent(JSON.stringify(obj))
-          console.log('Saving ' + title + ' by ' + author)
-          f('POST', '/api/' + loggedUser + '/save/' + data, response => console.log(response))
-          snackAdd()
-        }}
-        tooltip={'Add ' + reference + ' to Your Books.'}
-      >
-        <ContentAdd color={greenA700} />
-      </IconButton>
+      <span className="iconBox">
+        <IconButton
+          iconStyle={iconStyle}
+          onClick={() => {
+            const obj = {
+              author: author,
+              cover: cover,
+              olkey: olkey,
+              owner: loggedUser,
+              publication: publication,
+              title: title
+            }
+            const data = encodeURIComponent(JSON.stringify(obj))
+            console.log('Saving ' + title + ' by ' + author)
+            f('POST', '/api/' + loggedUser + '/save/' + data, response => console.log(response))
+            snackAdd()
+          }}
+          tooltip={'Add ' + reference + ' to Your Books.'}
+        >
+          <ContentAddCircle color={greenA700} />
+        </IconButton>
+      </span>
     </span>
   )
 
   //cancelRequest button
   const cancelRequest = (
     <span className="bookOverlay">
-      <IconButton
-        onClick={() => {
-          const bookInfo = {
-            olkey: olkey,
-            owner: owner
-          }
-          const data = encodeURIComponent(JSON.stringify(bookInfo))
-          f('POST', '/api/' + loggedUser + '/cancelRequest/' + data, response => {
-            console.log(response)
-          })
-          snackCancel()
-        }}
-        tooltip={'Cancel your request for ' + reference + ' from ' + owner + '.'}
-      >
-        <NavigationClose color={red500} />
-      </IconButton>
+      <span className="iconBox">
+        <IconButton
+          iconStyle={iconStyle}
+          onClick={() => {
+            const bookInfo = {
+              olkey: olkey,
+              owner: owner
+            }
+            const data = encodeURIComponent(JSON.stringify(bookInfo))
+            f('POST', '/api/' + loggedUser + '/cancelRequest/' + data, response => {
+              console.log(response)
+            })
+            snackCancel()
+          }}
+          tooltip={'Cancel your request for ' + reference + ' from ' + owner + '.'}
+        >
+          <NavigationCancel color={pinkA200} />
+        </IconButton>
+      </span>
     </span>
   )
-
   //delete button
   const del = (
     <span className="bookOverlay">
-      <IconButton
-        onClick={() => {
-          const bookInfo = {
-            olkey: olkey,
-            owner: owner
-          }
-          const data = encodeURIComponent(JSON.stringify(bookInfo))
-          f('DELETE', '/api/' + owner + '/save/' + data, response => {
-            console.log(response)
-          })
-          snackDelete()
-        }}
-        tooltip={'Delete ' + reference + ' from Your Books.'}
-      >
-        <NavigationClose color={red500} />
-      </IconButton>
+      <span className="iconBox">
+        <IconButton
+          className="icon"
+          iconStyle={iconStyle}
+          onClick={() => {
+            const bookInfo = {
+              olkey: olkey,
+              owner: owner
+            }
+            const data = encodeURIComponent(JSON.stringify(bookInfo))
+            f('DELETE', '/api/' + owner + '/save/' + data, response => {
+              console.log(response)
+            })
+            snackDelete()
+          }}
+          tooltip={'Delete ' + reference + ' from Your Books.'}
+        >
+          <NavigationCancel color={pinkA200} />
+        </IconButton>
+      </span>
     </span>
   )
 
   //swap button
   const swap = (
     <span className="bookOverlay">
-      <IconButton
-        onClick={() => {
-          const bookInfo = {
-            olkey: olkey,
-            owner: owner
-          }
-          const data = encodeURIComponent(JSON.stringify(bookInfo))
-          f('POST', '/api/' + requestor + '/request/' + data, response => {
-            console.log(response)
-          })
-          snackSwap()
-        }}
-        tooltip={'Request ' + reference + ' from ' + owner + '.'}
-      >
-        <ActionSwapVerticalCircle />
-      </IconButton>
+      <span className="iconBox">
+        <IconButton
+          iconStyle={iconStyle}
+          onClick={() => {
+            const bookInfo = {
+              olkey: olkey,
+              owner: owner
+            }
+            const data = encodeURIComponent(JSON.stringify(bookInfo))
+            f('POST', '/api/' + requestor + '/request/' + data, response => {
+              console.log(response)
+            })
+            snackSwap()
+          }}
+          tooltip={'Request ' + reference + ' from ' + owner + '.'}
+        >
+          <ActionSwapVerticalCircle color={amber400} />
+        </IconButton>
+      </span>
     </span>
   )
 
   //approveDeny button
   const approveDeny = (
-    <span className="approveDeny">
-      {/* APPROVE REQUEST */}
-      <IconButton
-        onClick={() => {
-          const bookInfo = {
-            olkey: olkey,
-            owner: owner
-          }
-          const data = encodeURIComponent(JSON.stringify(bookInfo))
-          f('POST', '/api/' + loggedUser + '/approveRequest/' + data, request => {
-            console.log('Approve Request', request)
-            alert(
-              'You have approved a request! See you at Beached Bar this Tuesday night at 8:30pm.'
-            )
-          })
-          snackApprove()
-        }}
-        className="approveDenyStyle"
-        tooltip={'Approve swap of ' + reference + ' with ' + requestor + '.'}
-      >
-        <NavigationCheck color={greenA700} />
-      </IconButton>
-      {/* DENY REQUEST */}
-      <IconButton
-        onClick={() => {
-          const bookInfo = {
-            olkey: olkey,
-            owner: owner
-          }
-          const data = encodeURIComponent(JSON.stringify(bookInfo))
-          f('POST', '/api/' + loggedUser + '/denyRequest/' + data, request => {
-            console.log(request)
-          })
-          snackDeny()
-        }}
-        className="approveDenyStyle"
-        tooltip={'Deny swap of ' + reference + ' with ' + requestor + '.'}
-      >
-        <NavigationClose color={red500} />
-      </IconButton>
+    <span className="bookOverlay">
+      <span className="iconBox">
+        {/* APPROVE REQUEST */}
+        <IconButton
+          iconStyle={iconStyle}
+          style={{ marginRight: -15 }}
+          onClick={() => {
+            const bookInfo = {
+              olkey: olkey,
+              owner: owner
+            }
+            const data = encodeURIComponent(JSON.stringify(bookInfo))
+            f('POST', '/api/' + loggedUser + '/approveRequest/' + data, request => {
+              console.log('Approve Request', request)
+              alert(
+                'You have approved a request! See you at Beached Bar this Tuesday night at 8:30pm.'
+              )
+            })
+            snackApprove()
+          }}
+          tooltip={'Approve swap of ' + reference + ' with ' + requestor + '.'}
+        >
+          <ActionCheckCircle color={greenA700} />
+        </IconButton>
+        {/* DENY REQUEST */}
+        <IconButton
+          iconStyle={iconStyle}
+          onClick={() => {
+            const bookInfo = {
+              olkey: olkey,
+              owner: owner
+            }
+            const data = encodeURIComponent(JSON.stringify(bookInfo))
+            f('POST', '/api/' + loggedUser + '/denyRequest/' + data, request => {
+              console.log(request)
+            })
+            snackDeny()
+          }}
+          className="approveDenyStyle"
+          tooltip={'Deny swap of ' + reference + ' with ' + requestor + '.'}
+        >
+          <NavigationCancel color={pinkA200} />
+        </IconButton>
+      </span>
     </span>
   )
 

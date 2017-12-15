@@ -29,26 +29,33 @@ const Book = ({
   whichButton
 }) => {
   return (
-    <span>
-      <WhichButton
-        author={author}
-        cover={cover}
-        loggedUser={loggedUser}
-        olkey={olkey}
-        owner={owner}
-        publication={publication}
-        requestor={requestor}
-        snackAdd={snackAdd}
-        snackApprove={snackApprove}
-        snackCancel={snackCancel}
-        snackDelete={snackDelete}
-        snackDeny={snackDeny}
-        snackSwap={snackSwap}
-        title={title}
-        whichButton={whichButton}
-      />
-      <Paper className="book" rounded={false} zDepth={4}>
+    <div className="book">
+      <Paper
+        style={{
+          display: 'flex'
+        }}
+        rounded={false}
+        zDepth={4}
+      >
+        <WhichButton
+          author={author}
+          cover={cover}
+          loggedUser={loggedUser}
+          olkey={olkey}
+          owner={owner}
+          publication={publication}
+          requestor={requestor}
+          snackAdd={snackAdd}
+          snackApprove={snackApprove}
+          snackCancel={snackCancel}
+          snackDelete={snackDelete}
+          snackDeny={snackDeny}
+          snackSwap={snackSwap}
+          title={title}
+          whichButton={whichButton}
+        />
         <img
+          alt={title + ' (' + { publication } + ') by ' + author}
           onClick={() => {
             //Every book will log basic information about it on click.
             console.log(
@@ -58,11 +65,7 @@ const Book = ({
           src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
         />
       </Paper>
-      <span hidden="true">
-        {/*For screen-readers*/}
-        {title} ({publication}) by {author}
-      </span>
-    </span>
+    </div>
   )
 }
 
