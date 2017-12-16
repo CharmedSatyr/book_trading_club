@@ -40,7 +40,7 @@ const Community = ({ loggedUser, otherShelves, requestedBooks, requestor, snackS
         requested
       ) : (
         <div className="infoBox">
-          <h4>Nobody has requested any books...</h4>
+          <h4>Nobody has requested any swaps...</h4>
         </div>
       )}
       <Divider />
