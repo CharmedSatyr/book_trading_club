@@ -43,7 +43,8 @@ const Dashboard = ({
         </h4>
       </div>
       <Divider />
-      {/* REQUESTS FOR YOU*/}
+
+      {/* REQUESTS FOR USER */}
       {requestsForYou.length ? (
         <span>
           <Subheader>
@@ -60,7 +61,8 @@ const Dashboard = ({
           <Divider />
         </span>
       ) : null}
-      {/* YOUR REQUESTS */}
+
+      {/* USER'S REQUESTS */}
       {yourRequests.length ? (
         <span>
           <Subheader>
@@ -76,9 +78,9 @@ const Dashboard = ({
           <Divider />
         </span>
       ) : null}
-      {/* YOUR BOOKS */}
+      {/* USER'S BOOKS */}
       <Subheader>
-        Available to others
+        Your books
         <RequestsBadge badgeContent={yourShelves.length} color="green" />
       </Subheader>
       {yourShelves.length ? (
