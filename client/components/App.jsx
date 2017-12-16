@@ -1,5 +1,14 @@
 'use strict'
 
+/*** ENVIRONMENT ***/
+const path = process.cwd()
+import dotenv from 'dotenv'
+dotenv.load()
+
+/*** DEVELOPMENT TOOLS ***/
+const DEV = process.env.NODE_ENV === 'development'
+const PROD = process.env.NODE_ENV === 'production'
+
 /*** COMPONENTS ***/
 //React
 import React, { Component } from 'react'
@@ -11,10 +20,11 @@ import Subheader from 'material-ui/Subheader'
 
 //App
 import AddBooks from './AddBooks.jsx'
+import Community from './Community.jsx'
+import Dashboard from './Dashboard.jsx'
 import Library from './Library.jsx'
 import NavBar from './NavBar.jsx'
 import Profile from './Profile.jsx'
-import RequestsBadge from './RequestsBadge.jsx'
 import Snack from './Snack.jsx'
 
 /*** FUNCTIONS ***/
@@ -26,19 +36,19 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      addBooks: true,
+      addBooks: false,
       allBooks: false,
       bookSearch: [],
       loggedLocation: '',
       loggedUser: '',
       message: '',
-      myBooks: false,
-      myRequests: [],
-      myShelves: [],
       otherShelves: [],
       profile: false,
       requestedBooks: [],
-      requestsForMe: []
+      requestsForYou: [],
+      yourBooks: true,
+      yourRequests: [],
+      yourShelves: []
     }
     this.searchBooks = this.searchBooks.bind(this)
     this.clearBooks = this.clearBooks.bind(this)
@@ -51,15 +61,21 @@ export default class App extends Component {
   }
   searchBooks() {
     const query = document.getElementById('search').value
-    console.log(query)
+    if (DEV) {
+      console.log('Search:', query)
+    }
     f('POST', '/api/search/' + query, response => {
-      console.log('Search response', response)
+      if (DEV) {
+        console.log('Search response:', response)
+      }
       this.setState({ bookSearch: response })
     })
   }
   //Snackbar functions have to stay in App so they don't dismount when App's children dismount
   snackAdd() {
-    this.setState({ message: 'Adding book to your collection...' })
+    this.setState({
+      message: 'Adding book to your collection... \nThis book will appear on your Dashboard.'
+    })
     setTimeout(() => {
       this.setState({ message: '' })
     }, 3000)
@@ -89,11 +105,12 @@ export default class App extends Component {
     }, 3000)
   }
   snackSwap() {
-    this.setState({ message: 'Requesting swap...\nThis request will appear in Your Books.' })
+    this.setState({ message: 'Requesting swap...\nThis request will appear on your Dashboard.' })
     setTimeout(() => {
       this.setState({ message: '' })
     }, 3000)
   }
+  //Get the user's login username
   loggedUser() {
     f('GET', '/api/users/logged', response => {
       this.setState({ loggedUser: response })
@@ -103,31 +120,34 @@ export default class App extends Component {
       this.populateOtherShelves(response)
       this.checkLibrary(response)
     })
+    //Get the user's location to show on their profile
     f('GET', '/api/users/location', response => {
       this.setState({ loggedLocation: response })
     })
   }
-  populateOtherShelves(user) {
-    f('GET', '/api/' + user + '/otherBooks', response => {
+  //Populates the Community tab
+  populateOtherShelves(loggedUser) {
+    f('GET', '/api/' + loggedUser + '/otherBooks', response => {
       this.setState({ otherShelves: response })
     })
   }
-  populateMyShelves(user) {
-    f('GET', '/api/' + user + '/userBooks', response => {
-      this.setState({ myShelves: response })
+  //Populates user's books in the Dashboard
+  populateMyShelves(loggedUser) {
+    f('GET', '/api/' + loggedUser + '/userBooks', response => {
+      this.setState({ yourShelves: response })
     })
   }
-  /* Keeps personal and full library in sync among devices without refresh
-   * using web sockets. Preserves efficiency in state. However, not constantly
-   * updating these causes the NavBar not to auto-resize on window resize. */
-
+  /* Keeps personal and full libraries in sync among devices without
+   * refresh using web sockets. Will update state every second without
+   * the `if` statements. However, not constantly updating state causes
+   * the NavBar not to auto-resize on window resize. */
   checkLibrary(user) {
     librarian(1000, user, result => {
-      //myBooks
-      if (result[0] && JSON.stringify(this.state.myShelves) !== JSON.stringify(result[0])) {
-        this.setState({ myShelves: result[0] })
+      //user's books
+      if (result[0] && JSON.stringify(this.state.yourShelves) !== JSON.stringify(result[0])) {
+        this.setState({ yourShelves: result[0] })
       }
-      //otherBooks
+      //other people's books
       if (result[1] && JSON.stringify(this.state.otherShelves) !== JSON.stringify(result[1])) {
         this.setState({ otherShelves: result[1] })
       }
@@ -135,13 +155,13 @@ export default class App extends Component {
       if (result[2] && JSON.stringify(this.state.requestedBooks) !== JSON.stringify(result[2])) {
         this.setState({ requestedBooks: result[2] })
       }
-      //My requests
-      if (result[3] && JSON.stringify(this.state.myRequests) !== JSON.stringify(result[3])) {
-        this.setState({ myRequests: result[3] })
+      //User's requests
+      if (result[3] && JSON.stringify(this.state.yourRequests) !== JSON.stringify(result[3])) {
+        this.setState({ yourRequests: result[3] })
       }
-      //Requests for my books
-      if (result[4] && JSON.stringify(this.state.requestsForMe) !== JSON.stringify(result[4])) {
-        this.setState({ requestsForMe: result[4] })
+      //Requests for user's books
+      if (result[4] && JSON.stringify(this.state.requestsForYou) !== JSON.stringify(result[4])) {
+        this.setState({ requestsForYou: result[4] })
       }
     })
   }
@@ -153,7 +173,7 @@ export default class App extends Component {
   allbooksfn() {
     this.setState({
       addBooks: false,
-      myBooks: false,
+      yourBooks: false,
       allBooks: true,
       profile: false
     })
@@ -161,15 +181,15 @@ export default class App extends Component {
   addbooksfn() {
     this.setState({
       addBooks: true,
-      myBooks: false,
+      yourBooks: false,
       allBooks: false,
       profile: false
     })
   }
-  mybooksfn() {
+  yourbooksfn() {
     this.setState({
       addBooks: false,
-      myBooks: true,
+      yourBooks: true,
       allBooks: false,
       profile: false
     })
@@ -177,7 +197,7 @@ export default class App extends Component {
   profilefn() {
     this.setState({
       addBooks: false,
-      myBooks: false,
+      yourBooks: false,
       allBooks: false,
       profile: true
     })
@@ -187,29 +207,66 @@ export default class App extends Component {
     this.loggedUser()
   }
   render() {
-    const { loggedLocation, loggedUser } = this.state
+    //constants
+    const { snackApprove, snackCancel, snackDelete, snackDeny, snackSwap } = this
 
-    //navbar
+    const {
+      addBooks,
+      allBooks,
+      loggedLocation,
+      loggedUser,
+      message,
+      otherShelves,
+      profile,
+      requestedBooks,
+      requestsForYou,
+      yourBooks,
+      yourRequests,
+      yourShelves
+    } = this.state
+
+    //NavBar.jsx
+    //Creates top toolbar that allows instant navigation among components
     const navbar = (
       <NavBar
-        loggedUser={loggedUser}
         addbooksfn={() => {
           this.addbooksfn()
         }}
         allbooksfn={() => {
           this.allbooksfn()
         }}
-        mybooksfn={() => {
-          this.mybooksfn()
-        }}
+        loggedUser={loggedUser}
         profilefn={() => {
           this.profilefn()
+        }}
+        yourbooksfn={() => {
+          this.yourbooksfn()
         }}
       />
     )
 
-    //add books
-    const addbooks = (
+    //Dashboard.jsx
+    //Displays your books
+    //Displays requests you've made
+    //Displays requests for your books
+    const dashboardComponent = (
+      <Dashboard
+        location={requestsForYou}
+        loggedUser={loggedUser}
+        requestsForYou={requestsForYou}
+        snackApprove={snackApprove}
+        snackCancel={snackCancel}
+        snackDelete={snackDelete}
+        snackDeny={snackDeny}
+        yourRequests={yourRequests}
+        yourShelves={yourShelves}
+      />
+    )
+
+    //AddBooks.jsx
+    //Search OpenLibrary.org for books you own
+    //Add them to your collection
+    const addBooksComponent = (
       <AddBooks
         clearBooks={this.clearBooks}
         loggedUser={loggedUser}
@@ -220,119 +277,38 @@ export default class App extends Component {
       />
     )
 
-    //Other users' books that are available for swap
-    const available = (
-      <span>
-        <Subheader>Available to Swap</Subheader>
-        <Library
-          location={this.state.otherShelves}
-          loggedUser={loggedUser}
-          requestor={loggedUser}
-          snackSwap={this.snackSwap}
-          whichButton="swap"
-        />
-      </span>
+    //Community.jsx
+    //Allows user to see other people's books
+    //Allows user to request swaps
+    const communityComponent = (
+      <Community
+        loggedUser={loggedUser}
+        otherShelves={otherShelves}
+        requestedBooks={requestedBooks}
+        requestor={loggedUser}
+        snackSwap={snackSwap}
+      />
     )
 
-    //Books that have been requested by *anyone*, if request not yet evaluated
-    const requested = (
-      <span>
-        <Divider />
-        <Subheader>Requested</Subheader>
-        {this.state.requestedBooks.length ? (
-          <Library location={this.state.requestedBooks} loggedUser={loggedUser} />
-        ) : (
-          <div>Nobody has requested any books...</div>
-        )}
-      </span>
-    )
+    //Profile.jsx
+    //Displays username and location
+    //Allows user to change password
+    const profileComponent = <Profile loggedLocation={loggedLocation} loggedUser={loggedUser} />
 
     return (
       <div>
+        {/* NavBar.jsx */}
         {navbar}
-        {/* SEARCH */}
-        {this.state.addBooks ? addbooks : null}
-        {/* ALL BOOKS */}
-        {this.state.allBooks ? (
-          <div>
-            <Subheader>Community Books</Subheader>
-            <div className="allBooksHeader">
-              <div>
-                Click the <ActionSwapVerticalCircle className="ActionSwapVerticalCircle" /> to
-                request a trade!
-              </div>
-              <RequestsBadge
-                myRequests={this.state.myRequests.length}
-                requestsForMe={this.state.requestsForMe.length}
-              />
-            </div>
-            {this.state.requestedBooks.length ? requested : null}
-            <Divider />
-            {this.state.otherShelves.length ? (
-              available
-            ) : (
-              <div>Nothing to show here. Every book has been requested!</div>
-            )}
-          </div>
-        ) : null}
-
-        {/*MY BOOKS*/}
-        {this.state.myBooks ? (
-          <div>
-            {/* USER LIBRARY */}
-            <Subheader>Your Books</Subheader>
-            <RequestsBadge
-              myRequests={this.state.myRequests.length}
-              requestsForMe={this.state.requestsForMe.length}
-            />
-            <Divider />
-            {/* REQUESTS FOR ME*/}
-            {this.state.requestsForMe.length ? (
-              <span>
-                <Subheader>Someone Wants to Swap!</Subheader>
-                <Library
-                  location={this.state.requestsForMe}
-                  loggedUser={loggedUser}
-                  snackApprove={this.snackApprove}
-                  snackDeny={this.snackDeny}
-                  whichButton="approveDeny"
-                />
-                <Divider />
-              </span>
-            ) : null}
-            {/* USER'S REQUESTS */}
-            {this.state.myRequests.length ? (
-              <span>
-                <Divider />
-                <Subheader>Your Requests</Subheader>
-                <Library
-                  location={this.state.myRequests}
-                  loggedUser={loggedUser}
-                  snackCancel={this.snackCancel}
-                  whichButton="cancel"
-                />
-              </span>
-            ) : null}
-            {/* YOUR BOOKS */}
-            <Divider />
-            <Subheader>Available to Others</Subheader>
-            {this.state.myShelves.length ? (
-              <Library
-                location={this.state.myShelves}
-                snackDelete={this.snackDelete}
-                whichButton="delete"
-              />
-            ) : (
-              <div>Add some books to your collection!</div>
-            )}
-          </div>
-        ) : null}
-
-        {/* PROFILE */}
-        {this.state.profile ? (
-          <Profile loggedLocation={loggedLocation} loggedUser={loggedUser} />
-        ) : null}
-        <Snack message={this.state.message} />
+        {/* AddBooks.jsx */}
+        {addBooks ? addBooksComponent : null}
+        {/* Community.jsx */}
+        {allBooks ? communityComponent : null}
+        {/* Dashboard.jsx */}
+        {yourBooks ? dashboardComponent : null}
+        {/* Profile.jsx */}
+        {profile ? profileComponent : null}
+        {/* Snack.jsx */}
+        <Snack message={message} />
       </div>
     )
   }
