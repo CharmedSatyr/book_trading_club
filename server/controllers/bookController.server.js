@@ -119,6 +119,7 @@ export const approveRequest = (req, res) => {
       console.log('After', doc)
       doc.save((err, result) => {
         console.log('Saved', result)
+        res.json('You have successfully swapped a book!')
       })
     }
   })
