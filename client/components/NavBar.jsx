@@ -14,7 +14,7 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 /*** MAIN ***/
-const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) => {
+const NavBar = ({ addbooksfn, allbooksfn, loggedUser, yourbooksfn, profilefn }) => {
   return (
     <div>
       <AppBar
@@ -34,9 +34,9 @@ const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) =>
                   targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                   anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 >
+                  <MenuItem primaryText="Dashboard" onClick={yourbooksfn} />
                   <MenuItem primaryText="Add Books" onClick={addbooksfn} />
-                  <MenuItem primaryText="Your Books" onClick={mybooksfn} />
-                  <MenuItem primaryText="Community Books" onClick={allbooksfn} />
+                  <MenuItem primaryText="Community" onClick={allbooksfn} />
                   <MenuItem primaryText="Profile" onClick={profilefn} />
                   <a href="/logout">
                     <MenuItem primaryText="Logout" className="MenuItem" />
@@ -46,9 +46,9 @@ const NavBar = ({ addbooksfn, allbooksfn, loggedUser, mybooksfn, profilefn }) =>
             ) : (
               <span>
                 <div className="welcomeName expanded">Welcome, {loggedUser}</div>
+                <FlatButton label="Dashboard" onClick={yourbooksfn} className="navButtons" />
                 <FlatButton label="Add Books" onClick={addbooksfn} className="navButtons" />
-                <FlatButton label="Your Books" onClick={mybooksfn} className="navButtons" />
-                <FlatButton label="Community Books" onClick={allbooksfn} className="navButtons" />
+                <FlatButton label="Community" onClick={allbooksfn} className="navButtons" />
                 <FlatButton label="Profile" onClick={profilefn} className="navButtons" />
                 <a href="/logout">
                   <FlatButton label="Logout" className="navButtons" />
