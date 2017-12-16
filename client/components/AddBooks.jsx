@@ -69,7 +69,10 @@ const AddBooks = ({ clearBooks, loggedUser, quest, snackAdd, searchBooks, visibl
       </div>
       <br />
       <Divider />
-      <div className="library">{results}</div>
+      <div className="library">
+        {visible ? <Subheader>Results</Subheader> : null}
+        {results}
+      </div>
     </span>
   )
 }
