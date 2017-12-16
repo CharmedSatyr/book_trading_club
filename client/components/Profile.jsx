@@ -5,6 +5,8 @@
 import React from 'react'
 
 //Material UI
+import ActionAccountCircle from 'material-ui/svg-icons/action/account-circle'
+import CommunicationLocationOn from 'material-ui/svg-icons/communication/location-on'
 import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
@@ -14,23 +16,31 @@ import TextField from 'material-ui/TextField'
 import { f } from '../../common/common.functions.js'
 
 /*** MAIN ***/
-const Profile = ({ loggedUser }) => {
+const Profile = ({ loggedLocation, loggedUser }) => {
   return (
     <span>
       <h2>Update your profile</h2>
+      <div className="userBox">
+        <h4>
+          <ActionAccountCircle /> {loggedUser}
+        </h4>
+        <h4>
+          <CommunicationLocationOn /> {loggedLocation}
+        </h4>
+      </div>
       <Divider />
       <div className="profileBox">
         <form>
           <Subheader>Personal details</Subheader>
           <TextField
-            fullWidth="true"
+            fullWidth={true}
             hintText="Your username will be public."
             floatingLabelText="Username"
             id="username"
           />
           <br />
           <TextField
-            fullWidth="true"
+            fullWidth={true}
             hintText="City and state or province"
             floatingLabelText="Location"
             id="location"
@@ -62,7 +72,7 @@ const Profile = ({ loggedUser }) => {
         <form>
           <Subheader>Change your password</Subheader>
           <TextField
-            fullWidth="true"
+            fullWidth={true}
             hintText="Use 12-72 letters and numbers."
             floatingLabelText="Current Password"
             type="password"
@@ -70,7 +80,7 @@ const Profile = ({ loggedUser }) => {
           />
           <br />
           <TextField
-            fullWidth="true"
+            fullWidth={true}
             hintText="Use 12-72 letters and numbers."
             floatingLabelText="New Password"
             type="password"

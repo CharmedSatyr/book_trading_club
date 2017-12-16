@@ -1,5 +1,14 @@
 'use strict'
 
+/*** ENVIRONMENT ***/
+const path = process.cwd()
+import dotenv from 'dotenv'
+dotenv.load()
+
+/*** DEVELOPMENT TOOLS ***/
+const DEV = process.env.NODE_ENV === 'development'
+const PROD = process.env.NODE_ENV === 'production'
+
 /*** MODEL ***/
 import User from '../models/User.js'
 
@@ -12,6 +21,22 @@ const saltRounds = 10
 export const allUsers = (req, res) => {
   User.find({}, (err, doc) => {
     res.json(doc)
+  })
+}
+
+export const getLocation = (req, res) => {
+  const { name_view, location } = res.locals
+  console.log('getLocation USER:', name_view)
+  if (DEV) {
+    res.json(location)
+  }
+  User.findOne({ username: name_view }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      res.json(doc.location)
+    }
   })
 }
 

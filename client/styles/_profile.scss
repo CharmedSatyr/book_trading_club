@@ -1,5 +1,28 @@
 //Profile.jsx
 
+.userBox {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+
+  h4 {
+    align-items: center;
+    color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    font-size: 14px;
+    font-weight: 500px;
+    margin: 2px;
+
+    svg {
+      color: rgba(0, 0, 0, 0.8) !important;
+      margin-right: 5px;
+    }
+  }
+}
+
 .profileBox {
   align-items: center;
   display: flex;
@@ -7,11 +30,6 @@
   justify-content: center;
   margin-top: 10px;
   width: 100%;
-
-  h2 {
-    font-size: 24px;
-    font-weight: 500;
-  }
 
   form {
     align-items: stretch;

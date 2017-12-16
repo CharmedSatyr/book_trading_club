@@ -26,11 +26,12 @@ import {
 import { loginUser, root } from '../config/authConfig.js'
 
 import {
+  genocide,
+  getLocation,
   saveUser,
   viewUsers,
   updateProfile,
-  updatePassword,
-  genocide
+  updatePassword
 } from '../controllers/userController.server.js'
 import { searchSubmit } from '../controllers/searchController.server.js'
 
@@ -47,10 +48,8 @@ export const routes = (app, passport) => {
       }
     })
   }
-
   //This is the name that will display in the client view
   let name_view
-
   //Authorization check
   const permissions = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -60,6 +59,17 @@ export const routes = (app, passport) => {
       res.redirect('/welcome')
     }
   }
+
+  //Allows session's name_view to be accessed by controllers
+  app.use((req, res, next) => {
+    if (DEV) {
+      name_view = 'Developer'
+      res.locals.location = 'The Cloud'
+    }
+
+    res.locals.name_view = name_view
+    next()
+  })
 
   //Login
   app
@@ -135,13 +145,11 @@ export const routes = (app, passport) => {
     if (DEV) {
       console.log('Client requesting username...')
     }
-    if (name_view) {
-      res.json(name_view)
-    } else if (DEV) {
-      console.log('Logging in as Developer...')
-      res.json('Developer')
-    }
+    res.json(res.locals.name_view)
   })
+
+  //Get user's location
+  app.route('/api/users/location').get(getLocation)
 
   /*** DEBUGGING - No UI ***/
   if (DEV) {
