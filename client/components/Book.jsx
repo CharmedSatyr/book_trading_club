@@ -54,16 +54,21 @@ const Book = ({
           title={title}
           whichButton={whichButton}
         />
-        <img
-          alt={title + ' (' + { publication } + ') by ' + author}
-          onClick={() => {
-            //Every book will log basic information about it on click.
-            console.log(
-              title + ' (' + publication + ') by ' + author + ' is owned by ' + owner + '.'
-            )
-          }}
-          src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
-        />
+        <div className="img__wrap">
+          <img
+            alt={title + ' (' + publication + ') by ' + author}
+            className="img__img"
+            src={'https://covers.openlibrary.org/b/OLID/' + cover + '-M.jpg'}
+            title={title + ' (' + publication + ') by ' + author}
+          />
+          <div className="img__description_layer">
+            <p className="img__description">
+              {whichButton === 'swap'
+                ? title + ' (' + publication + ') by ' + author + ' is owned by ' + owner + '.'
+                : title + ' (' + publication + ') by ' + author}
+            </p>
+          </div>
+        </div>
       </Paper>
     </div>
   )

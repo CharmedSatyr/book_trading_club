@@ -1,9 +1,60 @@
-//Book.jsx
-
-//.book[Paper] element includes inline style `display: "flex"`
-//It doesn't seem to work in css
-
 .book {
   margin: 16px;
-  text-align: 'center';
+}
+
+//Style classes preceded by img__ were inspired here:
+//https://stackoverflow.com/questions/14263594/how-to-show-text-on-image-when-hovering
+.img__wrap {
+  display: flex;
+  position: relative;
+
+  .img__description_layer {
+    align-items: center;
+    background: rgba(74, 20, 140, 0.6);
+    bottom: 0;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    // transition effect
+    transition: opacity 0.2s, visibility 0.2s;
+    visibility: hidden;
+
+  }
+
+  .img__description {
+    padding: 25px;
+    transform: translateY(1em);
+    transition: 0.2s;
+  }
+
+  &:hover {
+    .img__description_layer {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .img__description {
+      transform: translateY(0);
+    }
+  }
+}
+
+//These classes accompany inline styles (unable to modify MUI element otherwise)
+//They could do with some refactoring.
+.whichButton {
+  width: 0;
+
+  .iconBox {
+    display: flex;
+    margin-top: -28px;
+    margin-left: -18px;
+    height: 0;
+    width: 0;
+  }
 }
