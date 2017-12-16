@@ -10,12 +10,11 @@ import Divider from 'material-ui/Divider'
 import Subheader from 'material-ui/Subheader'
 
 //App
-import RequestsBadge from './RequestsBadge.jsx'
-import BookSearch from './BookSearch.jsx'
-import Input from './Input.jsx'
+import AddBooks from './AddBooks.jsx'
 import Library from './Library.jsx'
-import Profile from './Profile.jsx'
 import NavBar from './NavBar.jsx'
+import Profile from './Profile.jsx'
+import RequestsBadge from './RequestsBadge.jsx'
 import Snack from './Snack.jsx'
 
 /*** FUNCTIONS ***/
@@ -28,15 +27,16 @@ export default class App extends Component {
     super(props)
     this.state = {
       addBooks: false,
-      allBooks: true,
+      allBooks: false,
       bookSearch: [],
+      loggedLocation: '',
       loggedUser: '',
       message: '',
       myBooks: false,
       myRequests: [],
       myShelves: [],
       otherShelves: [],
-      profile: false,
+      profile: true,
       requestedBooks: [],
       requestsForMe: []
     }
@@ -102,6 +102,9 @@ export default class App extends Component {
       this.populateMyShelves(response)
       this.populateOtherShelves(response)
       this.checkLibrary(response)
+    })
+    f('GET', '/api/users/location', response => {
+      this.setState({ loggedLocation: response })
     })
   }
   populateOtherShelves(user) {
@@ -184,7 +187,7 @@ export default class App extends Component {
     this.loggedUser()
   }
   render() {
-    const { loggedUser } = this.state
+    const { loggedLocation, loggedUser } = this.state
 
     //navbar
     const navbar = (
@@ -207,20 +210,41 @@ export default class App extends Component {
 
     //add books
     const addbooks = (
-      <div>
-        <Input
-          searchBooks={this.searchBooks}
-          clearBooks={this.clearBooks}
-          visible={this.state.bookSearch.length > 0}
-        />
-        <br />
-        <Divider />
-        <BookSearch
-          quest={this.state.bookSearch}
-          snackAdd={this.snackAdd}
+      <AddBooks
+        clearBooks={this.clearBooks}
+        loggedUser={loggedUser}
+        quest={this.state.bookSearch}
+        searchBooks={this.searchBooks}
+        snackAdd={this.snackAdd}
+        visible={this.state.bookSearch.length > 0}
+      />
+    )
+
+    //Other users' books that are available for swap
+    const available = (
+      <span>
+        <Subheader>Available to Swap</Subheader>
+        <Library
+          location={this.state.otherShelves}
           loggedUser={loggedUser}
+          requestor={loggedUser}
+          snackSwap={this.snackSwap}
+          whichButton="swap"
         />
-      </div>
+      </span>
+    )
+
+    //Books that have been requested by *anyone*, if request not yet evaluated
+    const requested = (
+      <span>
+        <Divider />
+        <Subheader>Requested</Subheader>
+        {this.state.requestedBooks.length ? (
+          <Library location={this.state.requestedBooks} loggedUser={loggedUser} />
+        ) : (
+          <div>Nobody has requested any books...</div>
+        )}
+      </span>
     )
 
     return (
@@ -242,29 +266,10 @@ export default class App extends Component {
                 requestsForMe={this.state.requestsForMe.length}
               />
             </div>
-            {this.state.requestedBooks.length ? (
-              <span>
-                <Divider />
-                <Subheader>Requested</Subheader>
-                {this.state.requestedBooks.length ? (
-                  <Library location={this.state.requestedBooks} loggedUser={loggedUser} />
-                ) : (
-                  <div>Nobody has requested any books...</div>
-                )}
-              </span>
-            ) : null}
+            {this.state.requestedBooks.length ? requested : null}
             <Divider />
             {this.state.otherShelves.length ? (
-              <span>
-                <Subheader>Available to Swap</Subheader>
-                <Library
-                  location={this.state.otherShelves}
-                  loggedUser={loggedUser}
-                  requestor={loggedUser}
-                  snackSwap={this.snackSwap}
-                  whichButton="swap"
-                />
-              </span>
+              available
             ) : (
               <div>Nothing to show here. Every book has been requested!</div>
             )}
@@ -284,7 +289,7 @@ export default class App extends Component {
             {/* REQUESTS FOR ME*/}
             {this.state.requestsForMe.length ? (
               <span>
-                <Subheader>Someone's Requested These...</Subheader>
+                <Subheader>Someone Wants to Swap!</Subheader>
                 <Library
                   location={this.state.requestsForMe}
                   loggedUser={loggedUser}
@@ -299,7 +304,7 @@ export default class App extends Component {
             {this.state.myRequests.length ? (
               <span>
                 <Divider />
-                <Subheader>Books You've Requested</Subheader>
+                <Subheader>Your Requests</Subheader>
                 <Library
                   location={this.state.myRequests}
                   loggedUser={loggedUser}
@@ -309,7 +314,8 @@ export default class App extends Component {
               </span>
             ) : null}
             {/* YOUR BOOKS */}
-            <Subheader>Your Books</Subheader>
+            <Divider />
+            <Subheader>Available to Others</Subheader>
             {this.state.myShelves.length ? (
               <Library
                 location={this.state.myShelves}
@@ -323,7 +329,9 @@ export default class App extends Component {
         ) : null}
 
         {/* PROFILE */}
-        {this.state.profile ? <Profile loggedUser={loggedUser} /> : null}
+        {this.state.profile ? (
+          <Profile loggedLocation={loggedLocation} loggedUser={loggedUser} />
+        ) : null}
         <Snack message={this.state.message} />
       </div>
     )
