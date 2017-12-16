@@ -21,7 +21,7 @@ import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
 import NavigationCancel from 'material-ui/svg-icons/navigation/cancel'
 
 //Styles
-import { pinkA200, amber400, greenA700 } from 'material-ui/styles/colors'
+import { pinkA200, amber600, greenA700 } from 'material-ui/styles/colors'
 
 const iconStyle = {
   borderRadius: '100%',
@@ -158,7 +158,7 @@ const WhichButton = ({
           }}
           tooltip={'Request ' + reference + ' from ' + owner + '.'}
         >
-          <ActionSwapVerticalCircle color={amber400} />
+          <ActionSwapVerticalCircle color={amber600} />
         </IconButton>
       </span>
     </span>
