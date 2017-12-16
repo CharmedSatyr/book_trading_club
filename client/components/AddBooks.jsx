@@ -14,11 +14,8 @@ import TextField from 'material-ui/TextField'
 //App
 import Book from './Book.jsx'
 
-/*** FUNCTIONS ***/
-import { f } from '../../common/common.functions.js'
-
 /*** MAIN ***/
-const Input = ({ clearBooks, loggedUser, quest, snackAdd, searchBooks, visible }) => {
+const AddBooks = ({ clearBooks, loggedUser, quest, snackAdd, searchBooks, visible }) => {
   const results = quest.map((item, index) => {
     return (
       <Book
@@ -77,4 +74,4 @@ const Input = ({ clearBooks, loggedUser, quest, snackAdd, searchBooks, visible }
   )
 }
 
-export default Input
+export default AddBooks
