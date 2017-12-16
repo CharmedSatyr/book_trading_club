@@ -57,7 +57,7 @@ const WhichButton = ({
 
   //add button
   const add = (
-    <span className="bookOverlay">
+    <span className="whichButton">
       <span className="iconBox">
         <IconButton
           iconStyle={iconStyle}
@@ -85,7 +85,7 @@ const WhichButton = ({
 
   //cancel button
   const cancel = (
-    <span className="bookOverlay">
+    <span className="whichButton">
       <span className="iconBox">
         <IconButton
           iconStyle={iconStyle}
@@ -111,7 +111,7 @@ const WhichButton = ({
   )
   //delete button
   const del = (
-    <span className="bookOverlay">
+    <span className="whichButton">
       <span className="iconBox">
         <IconButton
           className="icon"
@@ -139,7 +139,7 @@ const WhichButton = ({
 
   //swap button
   const swap = (
-    <span className="bookOverlay">
+    <span className="whichButton">
       <span className="iconBox">
         <IconButton
           iconStyle={iconStyle}
@@ -166,7 +166,7 @@ const WhichButton = ({
 
   //approveDeny button
   const approveDeny = (
-    <span className="bookOverlay">
+    <span className="whichButton">
       <span className="iconBox">
         {/* APPROVE REQUEST */}
         <IconButton
