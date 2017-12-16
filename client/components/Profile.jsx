@@ -20,7 +20,7 @@ const Profile = ({ loggedLocation, loggedUser }) => {
   return (
     <span>
       <h2>Update your profile</h2>
-      <div className="userBox">
+      <div className="infoBox">
         <h4>
           <ActionAccountCircle /> {loggedUser}
         </h4>
@@ -29,7 +29,7 @@ const Profile = ({ loggedLocation, loggedUser }) => {
         </h4>
       </div>
       <Divider />
-      <div className="profileBox">
+      <div className="formBox">
         <form>
           <Subheader>Personal details</Subheader>
           <TextField
@@ -68,7 +68,7 @@ const Profile = ({ loggedLocation, loggedUser }) => {
       <br />
       <br />
       <Divider />
-      <div className="profileBox">
+      <div className="formBox">
         <form>
           <Subheader>Change your password</Subheader>
           <TextField

@@ -5,6 +5,7 @@
 import React from 'react'
 
 //Material UI
+import ActionSearch from 'material-ui/svg-icons/action/search'
 import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
@@ -25,6 +26,7 @@ const Input = ({ clearBooks, loggedUser, quest, snackAdd, searchBooks, visible }
         cover={item.cover}
         key={index}
         loggedUser={loggedUser}
+        olkey={item.olkey}
         publication={item.publication}
         snackAdd={snackAdd}
         title={item.title}
@@ -34,34 +36,44 @@ const Input = ({ clearBooks, loggedUser, quest, snackAdd, searchBooks, visible }
   })
 
   return (
-    <div
-      style={{ marginLeft: '10vw', marginRight: '10vw', marginBottom: '10px', marginTop: '10px' }}
-    >
+    <span>
       <h2>Add Books</h2>
+      <div className="infoBox">
+        <h4>
+          <ActionSearch />Show others what you have to swap!
+        </h4>
+      </div>
       <Divider />
-      <Subheader>Search for a book here! Click the results to add them to your library.</Subheader>
-
-      <form>
-        <TextField id="search" hintText="Author, Title, or ISBN" />
-        <RaisedButton
-          label="Search"
-          primary={true}
-          className="RaisedButton"
-          onClick={searchBooks}
-        />
-        {visible ? (
-          <RaisedButton
-            label="Clear"
-            secondary={true}
-            className="RaisedButton"
-            onClick={clearBooks}
+      <div className="formBox">
+        <form>
+          <TextField
+            fullWidth={true}
+            hintText="Author, Title, or ISBN"
+            floatingLabelText="Add a book to your collection"
+            id="search"
           />
-        ) : null}
-      </form>
+          <RaisedButton
+            buttonStyle={{ width: '100%' }}
+            className="RaisedButtonProfile"
+            label="Search"
+            onClick={searchBooks}
+            primary={true}
+          />
+          {visible ? (
+            <RaisedButton
+              className="RaisedButtonProfile"
+              buttonStyle={{ width: '100%' }}
+              label="Clear"
+              onClick={clearBooks}
+              secondary={true}
+            />
+          ) : null}
+        </form>
+      </div>
       <br />
       <Divider />
-      <div className="bookSearch">{results}</div>
-    </div>
+      <div className="library">{results}</div>
+    </span>
   )
 }
 

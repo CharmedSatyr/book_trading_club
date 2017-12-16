@@ -38,7 +38,7 @@ const Library = ({
     )
   })
 
-  return <div className="bookSearch">{library}</div>
+  return <div className="library">{library}</div>
 }
 
 export default Library

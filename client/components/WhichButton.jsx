@@ -1,5 +1,14 @@
 'use strict'
 
+/*** ENVIRONMENT ***/
+const path = process.cwd()
+import dotenv from 'dotenv'
+dotenv.load()
+
+/*** DEVELOPMENT TOOLS ***/
+const DEV = process.env.NODE_ENV === 'development'
+const PROD = process.env.NODE_ENV === 'production'
+
 /*** COMPONENTS ***/
 //React
 import React from 'react'
@@ -74,8 +83,8 @@ const WhichButton = ({
     </span>
   )
 
-  //cancelRequest button
-  const cancelRequest = (
+  //cancel button
+  const cancel = (
     <span className="bookOverlay">
       <span className="iconBox">
         <IconButton
@@ -86,8 +95,10 @@ const WhichButton = ({
               owner: owner
             }
             const data = encodeURIComponent(JSON.stringify(bookInfo))
-            f('POST', '/api/' + loggedUser + '/cancelRequest/' + data, response => {
-              console.log(response)
+            f('POST', '/api/' + loggedUser + '/cancel/' + data, response => {
+              if (DEV) {
+                console.log(response)
+              }
             })
             snackCancel()
           }}
@@ -112,7 +123,9 @@ const WhichButton = ({
             }
             const data = encodeURIComponent(JSON.stringify(bookInfo))
             f('DELETE', '/api/' + owner + '/save/' + data, response => {
-              console.log(response)
+              if (DEV) {
+                console.log(response)
+              }
             })
             snackDelete()
           }}
@@ -137,7 +150,9 @@ const WhichButton = ({
             }
             const data = encodeURIComponent(JSON.stringify(bookInfo))
             f('POST', '/api/' + requestor + '/request/' + data, response => {
-              console.log(response)
+              if (DEV) {
+                console.log(response)
+              }
             })
             snackSwap()
           }}
@@ -163,8 +178,10 @@ const WhichButton = ({
               owner: owner
             }
             const data = encodeURIComponent(JSON.stringify(bookInfo))
-            f('POST', '/api/' + loggedUser + '/approveRequest/' + data, request => {
-              console.log('Approve Request', request)
+            f('POST', '/api/' + loggedUser + '/approveRequest/' + data, response => {
+              if (DEV) {
+                console.log(response)
+              }
               alert(
                 'You have approved a request! See you at Beached Bar this Tuesday night at 8:30pm.'
               )
@@ -184,8 +201,10 @@ const WhichButton = ({
               owner: owner
             }
             const data = encodeURIComponent(JSON.stringify(bookInfo))
-            f('POST', '/api/' + loggedUser + '/denyRequest/' + data, request => {
-              console.log(request)
+            f('POST', '/api/' + loggedUser + '/denyRequest/' + data, response => {
+              if (DEV) {
+                console.log(response)
+              }
             })
             snackDeny()
           }}
@@ -212,8 +231,8 @@ const WhichButton = ({
     case 'approveDeny':
       return approveDeny
       break
-    case 'cancelRequest':
-      return cancelRequest
+    case 'cancel':
+      return cancel
       break
     default:
       return null

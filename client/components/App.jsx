@@ -26,7 +26,7 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      addBooks: false,
+      addBooks: true,
       allBooks: false,
       bookSearch: [],
       loggedLocation: '',
@@ -36,7 +36,7 @@ export default class App extends Component {
       myRequests: [],
       myShelves: [],
       otherShelves: [],
-      profile: true,
+      profile: false,
       requestedBooks: [],
       requestsForMe: []
     }
@@ -309,7 +309,7 @@ export default class App extends Component {
                   location={this.state.myRequests}
                   loggedUser={loggedUser}
                   snackCancel={this.snackCancel}
-                  whichButton="cancelRequest"
+                  whichButton="cancel"
                 />
               </span>
             ) : null}

@@ -12,7 +12,7 @@ const PROD = process.env.NODE_ENV === 'production'
 /*** CONTROLLERS ***/
 import {
   approveRequest,
-  cancelRequest,
+  cancel,
   curseOfAlexandria,
   denyRequest,
   library,
@@ -104,7 +104,7 @@ export const routes = (app, passport) => {
   //User requests a book
   app.route('/api/:user/request/:data').post(requestBook)
   //User cancels their own book request
-  app.route('/api/:user/cancelRequest/:data').post(cancelRequest)
+  app.route('/api/:user/cancel/:data').post(cancel)
   //User denies request for their book
   app.route('/api/:user/denyRequest/:data').post(denyRequest)
   //User approves request for their book
