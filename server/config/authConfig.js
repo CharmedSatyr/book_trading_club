@@ -61,7 +61,3 @@ export const authConfig = passport => {
   })
 }
 
-//Root is used with permissions dependent on NODE_ENV
-export const root = (req, res) => {
-  res.sendFile(path + '/dist/index.html')
-}
