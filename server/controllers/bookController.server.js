@@ -74,13 +74,13 @@ export const requestBook = (req, res) => {
       console.error(err)
     }
     if (doc) {
-      //console.log(doc)
+      res.json('Book requested.')
     }
   })
 }
 
 //Mark a book as NOT requested
-export const cancel = (req, res) => {
+export const cancelRequest = (req, res) => {
   const { user } = req.params
   const book = JSON.parse(decodeURIComponent(req.params.data))
 
@@ -200,7 +200,30 @@ export const removeBook = (req, res) => {
       }
       if (doc) {
         console.log(doc + ' has been deleted.')
+        res.json(doc + ' has been deleted.')
       }
     }
   )
+}
+
+//Update the user's book ownership to their new username
+//Invoked in userController
+export const changeBookOwner = (user, newName) => {
+  Book.find({ owner: user }, (err, doc) => {
+    console.log('Updating book ownership to new username...')
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      doc.map(item => {
+        item.owner = newName
+        item.save((err, ok) => {
+          if (err) {
+            console.error(err)
+          }
+          console.log('Book ownership updated:', ok)
+        })
+      })
+    }
+  })
 }

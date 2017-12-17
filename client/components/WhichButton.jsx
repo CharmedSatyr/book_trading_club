@@ -95,7 +95,7 @@ const WhichButton = ({
               owner: owner
             }
             const data = encodeURIComponent(JSON.stringify(bookInfo))
-            f('POST', '/api/' + loggedUser + '/cancel/' + data, response => {
+            f('POST', '/api/' + loggedUser + '/cancelRequest/' + data, response => {
               if (DEV) {
                 console.log(response)
               }

@@ -12,7 +12,7 @@ const PROD = process.env.NODE_ENV === 'production'
 /*** CONTROLLERS ***/
 import {
   approveRequest,
-  cancel,
+  cancelRequest,
   curseOfAlexandria,
   denyRequest,
   library,
@@ -56,20 +56,14 @@ export const routes = (app, passport) => {
       name_view = req.user.username
       return next()
     } else {
-      res.redirect('/welcome')
+      if (DEV) {
+        name_view = 'Developer'
+        return next()
+      } else {
+        res.redirect('/welcome')
+      }
     }
   }
-
-  //Allows session's name_view to be accessed by controllers
-  app.use((req, res, next) => {
-    if (DEV) {
-      name_view = 'Developer'
-      res.locals.location = 'The Cloud'
-    }
-
-    res.locals.name_view = name_view
-    next()
-  })
 
   //Login
   app
@@ -85,11 +79,9 @@ export const routes = (app, passport) => {
     )
 
   //Root
-  if (PROD) {
-    app.route('/').get(permissions, root)
-  } else if (DEV) {
-    app.route('/').get(root)
-  }
+  app.route('/').get(permissions, (req, res) => {
+    res.sendFile(path + '/dist/index.html')
+  })
 
   //Logout
   app.route('/logout').get(permissions, (req, res) => {
@@ -104,14 +96,14 @@ export const routes = (app, passport) => {
   //User requests a book
   app.route('/api/:user/request/:data').post(requestBook)
   //User cancels their own book request
-  app.route('/api/:user/cancel/:data').post(cancel)
+  app.route('/api/:user/cancelRequest/:data').post(cancelRequest)
   //User denies request for their book
   app.route('/api/:user/denyRequest/:data').post(denyRequest)
   //User approves request for their book
   app.route('/api/:user/approveRequest/:data').post(approveRequest)
 
   //Update username and location
-  app.route('/api/:user/profile-update/:data').post(updateProfile)
+  app.route('/api/:user/update-profile/:data').post(updateProfile)
   //Update password
   app.route('/api/:user/update-password/:data').post(updatePassword)
 
@@ -145,11 +137,11 @@ export const routes = (app, passport) => {
     if (DEV) {
       console.log('Client requesting username...')
     }
-    res.json(res.locals.name_view)
+    res.json(name_view)
   })
 
   //Get user's location
-  app.route('/api/users/location').get(getLocation)
+  app.route('/api/:user/location').get(getLocation)
 
   /*** DEBUGGING - No UI ***/
   if (DEV) {
