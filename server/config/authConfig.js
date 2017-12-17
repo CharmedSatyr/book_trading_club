@@ -1,8 +1,5 @@
 'use strict'
 
-/*** ENVIRONMENT ***/
-const path = process.cwd()
-
 /*** MODEL ***/
 import User from '../models/User.js'
 
@@ -28,6 +25,7 @@ export const authConfig = passport => {
           return done(err)
         }
         if (!user) {
+          console.log('No such user exists.')
           return done(null, false)
         }
 
@@ -60,4 +58,3 @@ export const authConfig = passport => {
     })
   })
 }
-
