@@ -16,7 +16,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 /*** MAIN ***/
 const NavBar = ({ addbooksfn, allbooksfn, loggedUser, yourbooksfn, profilefn }) => {
   return (
-    <div>
+    <header>
       <AppBar
         title="Charmed Books"
         iconElementLeft={<AvLibraryBooks className="AppBar" />}
@@ -58,7 +58,7 @@ const NavBar = ({ addbooksfn, allbooksfn, loggedUser, yourbooksfn, profilefn }) 
           </span>
         }
       />
-    </div>
+    </header>
   )
 }
 
