@@ -27,11 +27,9 @@ export const allUsers = (req, res) => {
   })
 }
 
+//Get user's location
 export const getLocation = (req, res) => {
   const { user } = req.params
-  if (DEV) {
-    console.log('getLocation function name_view:', user)
-  }
   User.findOne({ username: user }, (err, doc) => {
     if (err) {
       console.error(err)
