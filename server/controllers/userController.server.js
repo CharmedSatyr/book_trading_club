@@ -159,6 +159,8 @@ export const updatePassword = (req, res) => {
               res.json('Password successfully changed.')
             })
           })
+        } else {
+          res.json('There was a problem changing your password. Please try again.')
         }
       })
     } else {

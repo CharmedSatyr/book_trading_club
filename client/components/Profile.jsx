@@ -1,5 +1,13 @@
 'use strict'
 
+/*** ENVIRONMENT ***/
+import dotenv from 'dotenv'
+dotenv.load()
+
+/*** DEVELOPMENT TOOLS ***/
+const DEV = process.env.NODE_ENV === 'development'
+const PROD = process.env.NODE_ENV === 'production'
+
 /*** COMPONENTS ***/
 //React
 import React, { Component } from 'react'
@@ -21,11 +29,64 @@ import { f } from '../../common/common.functions.js'
 export default class Profile extends Component {
   constructor(props) {
     super(props)
-    this.state = { open: false }
+    this.state = { open: false, pwErr: false, userErr: false }
+    this.submitPasswordUpdate = this.submitPasswordUpdate.bind(this)
+    this.submitProfileUpdate = this.submitProfileUpdate.bind(this)
+  }
+
+  submitPasswordUpdate(loggedUser) {
+    const password1 = document.getElementById('password1').value
+    const password2 = document.getElementById('password2').value
+
+    const bothPasswords = {
+      currentPassword: password1,
+      newPassword: password2
+    }
+
+    const data = encodeURIComponent(JSON.stringify(bothPasswords))
+    if (DEV) {
+      console.log('Sending current and new passwords:', data)
+    }
+    f('POST', '/api/' + loggedUser + '/update-password/' + data, response => {
+      //Clear fields
+      document.getElementById('password1').value = ''
+      document.getElementById('password2').value = ''
+      if (DEV) {
+        console.log(response)
+      }
+      //Force re-login or error handling
+      if (response === 'Password successfully changed.') {
+        this.setState({ open: true })
+      } else if (response === 'There was a problem changing your password. Please try again.') {
+        this.setState({ pwErr: true })
+      }
+    })
+  }
+  submitProfileUpdate(loggedLocation, loggedUser) {
+    const username = document.getElementById('username').value
+    const location = document.getElementById('location').value
+    const update = { username: username, location: location }
+    const data = encodeURIComponent(JSON.stringify(update))
+    f('POST', '/api/' + loggedUser + '/update-profile/' + data, response => {
+      //Clear fields
+      document.getElementById('username').value = ''
+      document.getElementById('location').value = ''
+      if (DEV) {
+        console.log(response)
+      }
+      //Force re-login or error handling
+      if (response === 'Successfully updated username and associated book ownership.') {
+        this.setState({ open: true })
+      } else if (
+        response === 'A user by this name already exists. Please try a different username.'
+      ) {
+        this.setState({ userErr: true })
+      }
+    })
   }
   render() {
     const { loggedLocation, loggedUser } = this.props
-    const { open } = this.state
+    const { open, pwErr, userErr } = this.state
 
     //User will log out after changing location or password
     const logoutBtn = (
@@ -65,17 +126,28 @@ export default class Profile extends Component {
         <div className="formBox">
           <form>
             <Subheader>Personal details</Subheader>
-            <TextField
-              fullWidth={true}
-              hintText="Your username will be public."
-              floatingLabelText="Username"
-              id="username"
-            />
+            {/* Change username TextField with error handling */}
+            {userErr ? (
+              <TextField
+                floatingLabelText="Username"
+                fullWidth={true}
+                hintText="Your username will be public."
+                errorText="That username is already taken. Please choose another."
+                id="username"
+              />
+            ) : (
+              <TextField
+                floatingLabelText="Username"
+                fullWidth={true}
+                hintText="Your username will be public."
+                id="username"
+              />
+            )}
             <br />
             <TextField
+              floatingLabelText="Location"
               fullWidth={true}
               hintText="City and state or province"
-              floatingLabelText="Location"
               id="location"
             />
             <br />
@@ -84,43 +156,43 @@ export default class Profile extends Component {
               className="RaisedButtonProfile"
               label="Save Changes"
               onClick={() => {
-                console.log('Click...')
-                const username = document.getElementById('username').value
-                const location = document.getElementById('location').value
-                const update = { username: username, location: location }
-                const data = encodeURIComponent(JSON.stringify(update))
-                f('POST', '/api/' + loggedUser + '/update-profile/' + data, response => {
-                  console.log(response)
-                  if (response === 'Successfully updated username and associated book ownership.') {
-                    this.setState({ open: true })
-                  }
-                })
+                this.submitProfileUpdate(loggedUser, loggedLocation)
               }}
               primary={true}
             />
           </form>
         </div>
-
         <br />
         <br />
         <Divider />
         <div className="formBox">
           <form>
             <Subheader>Change your password</Subheader>
-            <TextField
-              fullWidth={true}
-              hintText="Use 12-72 letters and numbers."
-              floatingLabelText="Current Password"
-              type="password"
-              id="password1"
-            />
+            {pwErr ? (
+              <TextField
+                errorText="Something went wrong. Please try again."
+                floatingLabelText="Current Password"
+                fullWidth={true}
+                hintText="Use 12-72 letters and numbers."
+                id="password1"
+                type="password"
+              />
+            ) : (
+              <TextField
+                floatingLabelText="Current Password"
+                fullWidth={true}
+                hintText="Use 12-72 letters and numbers."
+                id="password1"
+                type="password"
+              />
+            )}
             <br />
             <TextField
+              floatingLabelText="New Password"
               fullWidth={true}
               hintText="Use 12-72 letters and numbers."
-              floatingLabelText="New Password"
-              type="password"
               id="password2"
+              type="password"
             />
             <br />
             <RaisedButton
@@ -128,22 +200,7 @@ export default class Profile extends Component {
               primary={true}
               className="RaisedButtonProfile"
               onClick={() => {
-                const password1 = document.getElementById('password1').value
-                const password2 = document.getElementById('password2').value
-
-                const bothPasswords = {
-                  currentPassword: password1,
-                  newPassword: password2
-                }
-
-                const data = encodeURIComponent(JSON.stringify(bothPasswords))
-                console.log('Sending current and new passwords:', data)
-                f('POST', '/api/' + loggedUser + '/update-password/' + data, response => {
-                  console.log(response)
-                  if (response === 'Password successfully changed.') {
-                    this.setState({ open: true })
-                  }
-                })
+                this.submitPasswordUpdate(loggedUser)
               }}
             />
           </form>
