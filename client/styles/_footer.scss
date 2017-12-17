@@ -1,0 +1,30 @@
+.footer {
+  color: $hLighter;
+  bottom: 0;
+  font-size: 14px;
+  margin: 0;
+  position: absolute;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+
+  a {
+    color: $hLighter;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      .a {
+        color: $themePrimary;
+      }
+
+      .b {
+        color: $themeSecondary;
+      }
+
+      .c {
+        color: $themeTertiary;
+      }
+    }
+  }
+}

@@ -22,7 +22,7 @@ import Subheader from 'material-ui/Subheader'
 import AddBooks from './AddBooks.jsx'
 import Community from './Community.jsx'
 import Dashboard from './Dashboard.jsx'
-import Library from './Library.jsx'
+import Footer from './Footer.jsx'
 import NavBar from './NavBar.jsx'
 import Profile from './Profile.jsx'
 import Snack from './Snack.jsx'
@@ -309,6 +309,8 @@ export default class App extends Component {
         {profile ? profileComponent : null}
         {/* Snack.jsx */}
         <Snack message={message} />
+        {/* Footer.jsx */}
+        <Footer />
       </div>
     )
   }

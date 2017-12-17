@@ -8,14 +8,14 @@
 
   h4 {
     align-items: center;
-    color: rgba(0, 0, 0, 0.8);
+    color: $hDarker;
     display: flex;
     font-size: 14px;
     font-weight: 500px;
     margin: 2px;
 
     svg {
-      color: rgba(0, 0, 0, 0.8) !important;
+      color: $hDarker !important;
       margin-right: 5px;
     }
   }
