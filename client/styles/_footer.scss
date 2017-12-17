@@ -1,10 +1,23 @@
-.footer {
+$footerHeight: 30px;
+
+//These app styles are built around the footer
+#app {
+  min-height: 100%;
+  margin-bottom: -1 * $footerHeight;
+
+  &:after {
+    content: '';
+    display: block;
+    height: $footerHeight * 2;
+  }
+}
+
+footer {
   color: $hLighter;
-  bottom: 0;
   font-size: 14px;
-  margin: 0;
-  position: absolute;
-  padding: 0;
+  height: $footerHeight;
+  margin-bottom: 0;
+  padding-bottom: 0;
   text-align: center;
   width: 100%;
 

@@ -10,7 +10,6 @@ import FlatButton from 'material-ui/FlatButton'
 import AvLibraryBooks from 'material-ui/svg-icons/av/library-books'
 
 //App
-import Footer from './Footer.jsx'
 import SignupLoginForm from './SignupLoginForm.jsx'
 
 //Button
@@ -115,7 +114,6 @@ export default class SignupLoginPage extends Component {
             to customize Charmed Books for readers in your city.
           </p>
         )}
-        <Footer />
       </div>
     )
   }

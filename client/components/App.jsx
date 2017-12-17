@@ -22,7 +22,6 @@ import Subheader from 'material-ui/Subheader'
 import AddBooks from './AddBooks.jsx'
 import Community from './Community.jsx'
 import Dashboard from './Dashboard.jsx'
-import Footer from './Footer.jsx'
 import NavBar from './NavBar.jsx'
 import Profile from './Profile.jsx'
 import Snack from './Snack.jsx'
@@ -74,7 +73,7 @@ export default class App extends Component {
   //Snackbar functions have to stay in App so they don't dismount when App's children dismount
   snackAdd() {
     this.setState({
-      message: 'Adding book to your collection... \nThis book will appear on your Dashboard.'
+      message: 'Adding book to your collection... This book will appear on your Dashboard.'
     })
     setTimeout(() => {
       this.setState({ message: '' })
@@ -105,7 +104,7 @@ export default class App extends Component {
     }, 3000)
   }
   snackSwap() {
-    this.setState({ message: 'Requesting swap...\nThis request will appear on your Dashboard.' })
+    this.setState({ message: 'Requesting swap... This request will appear on your Dashboard.' })
     setTimeout(() => {
       this.setState({ message: '' })
     }, 3000)
@@ -309,8 +308,6 @@ export default class App extends Component {
         {profile ? profileComponent : null}
         {/* Snack.jsx */}
         <Snack message={message} />
-        {/* Footer.jsx */}
-        <Footer />
       </div>
     )
   }
