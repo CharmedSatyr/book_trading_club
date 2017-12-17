@@ -14,6 +14,7 @@ const PROD = process.env.NODE_ENV === 'production'
 import React from 'react'
 
 //Material UI
+import { pinkA200, amber600, greenA700 } from 'material-ui/styles/colors'
 import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
 import ContentAddCircle from 'material-ui/svg-icons/content/add-circle'
 import IconButton from 'material-ui/IconButton'
@@ -21,8 +22,6 @@ import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
 import NavigationCancel from 'material-ui/svg-icons/navigation/cancel'
 
 //Styles
-import { pinkA200, amber600, greenA700 } from 'material-ui/styles/colors'
-
 const iconStyle = {
   borderRadius: '100%',
   backgroundColor: '#ffffff',
