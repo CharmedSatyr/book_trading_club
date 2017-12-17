@@ -37,7 +37,7 @@ export default class App extends Component {
     super(props)
     this.state = {
       addBooks: false,
-      allBooks: false,
+      allBooks: true,
       bookSearch: [],
       loggedLocation: '',
       loggedUser: '',
@@ -46,7 +46,7 @@ export default class App extends Component {
       profile: false,
       requestedBooks: [],
       requestsForYou: [],
-      yourBooks: true,
+      yourBooks: false,
       yourRequests: [],
       yourShelves: []
     }

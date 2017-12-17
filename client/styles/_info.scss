@@ -8,15 +8,11 @@
 
   h4 {
     align-items: center;
-    color: $hDarker;
     display: flex;
-    font-size: 14px;
-    font-weight: 500px;
-    margin: 2px;
 
     svg {
       color: $hDarker !important;
-      margin-right: 5px;
+      margin: auto 4px;
     }
   }
 }

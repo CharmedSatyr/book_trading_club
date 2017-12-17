@@ -32,7 +32,9 @@ const Community = ({ loggedUser, otherShelves, requestedBooks, requestor, snackS
     <span>
       <h2>Community Books</h2>
       <div className="infoBox">
-        Click the <ActionSwapVerticalCircle /> to request a swap!
+        <h4>
+          Click the <ActionSwapVerticalCircle />to request a swap!
+        </h4>
       </div>
       <Divider />
       <Subheader>Requested</Subheader>
