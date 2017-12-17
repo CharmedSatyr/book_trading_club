@@ -64,7 +64,7 @@ const Book = ({
           <div className="img__description_layer">
             <p className="img__description">
               {whichButton === 'swap'
-                ? title + ' (' + publication + ') by ' + author + ' is owned by ' + owner + '.'
+                ? title + ' (' + publication + ') by ' + author + ' is owned by ' + owner
                 : title + ' (' + publication + ') by ' + author}
             </p>
           </div>
