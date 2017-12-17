@@ -38,7 +38,7 @@ const Dashboard = ({
       <div className="infoBox">
         <h4>
           <ActionDashboard />
-          Monitor requests you've made, requests from others, and the books you've made available to
+          See requests you've made, requests from others, and the books you've made available to
           swap.
         </h4>
       </div>
