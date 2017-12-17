@@ -1,7 +1,8 @@
 $footerHeight: 30px;
 
 //These app styles are built around the footer
-#app {
+#app,
+#welcome {
   min-height: 100%;
   margin-bottom: -1 * $footerHeight;
 

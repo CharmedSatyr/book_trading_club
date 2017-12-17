@@ -12,5 +12,5 @@ ReactDOM.render(
   <MuiThemeProvider>
     <SignupLoginPage />
   </MuiThemeProvider>,
-  document.getElementById('login')
+  document.getElementById('welcome')
 )
