@@ -73,7 +73,7 @@ export default class App extends Component {
   //Snackbar functions have to stay in App so they don't dismount when App's children dismount
   snackAdd() {
     this.setState({
-      message: 'Adding book to your collection... This book will appear on your Dashboard.'
+      message: 'This book will appear on your Dashboard.'
     })
     setTimeout(() => {
       this.setState({ message: '' })
@@ -104,7 +104,7 @@ export default class App extends Component {
     }, 3000)
   }
   snackSwap() {
-    this.setState({ message: 'Requesting swap... This request will appear on your Dashboard.' })
+    this.setState({ message: 'This request will appear on your Dashboard.' })
     setTimeout(() => {
       this.setState({ message: '' })
     }, 3000)
@@ -115,12 +115,15 @@ export default class App extends Component {
       this.setState({ loggedUser: response })
 
       //Call populate shelves fns and checkLibrary with loggedUser as argument
+      this.getLocation(response)
       this.populateMyShelves(response)
       this.populateOtherShelves(response)
       this.checkLibrary(response)
     })
-    //Get the user's location to show on their profile
-    f('GET', '/api/users/location', response => {
+  }
+  //Get the user's location to show on their profile
+  getLocation(loggedUser) {
+    f('GET', '/api/' + loggedUser + '/location', response => {
       this.setState({ loggedLocation: response })
     })
   }
