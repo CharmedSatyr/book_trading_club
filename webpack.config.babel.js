@@ -65,6 +65,7 @@ const client = {
                 minimize: PROD ? true : false
               }
             },
+            'postcss-loader',
             {
               loader: 'sass-loader',
               options: {
