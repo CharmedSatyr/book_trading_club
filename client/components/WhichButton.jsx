@@ -42,12 +42,7 @@ const WhichButton = ({
   owner,
   publication,
   requestor,
-  snackAdd,
-  snackApprove,
-  snackCancel,
-  snackDelete,
-  snackDeny,
-  snackSwap,
+  snackBar,
   title,
   whichButton
 }) => {
@@ -72,7 +67,7 @@ const WhichButton = ({
             const data = encodeURIComponent(JSON.stringify(obj))
             console.log('Saving ' + title + ' by ' + author)
             f('POST', '/api/' + loggedUser + '/save/' + data, response => console.log(response))
-            snackAdd()
+            snackBar('add')
           }}
           tooltip={'Add ' + reference + ' to Your Books.'}
         >
@@ -99,9 +94,9 @@ const WhichButton = ({
                 console.log(response)
               }
             })
-            snackCancel()
+            snackBar('cancel')
           }}
-          tooltip={'Cancel your request for ' + reference + ' from ' + owner + '.'}
+          tooltip={'Cancel your request for ' + reference + ' from ' + owner}
         >
           <NavigationCancel color={pinkA200} />
         </IconButton>
@@ -126,7 +121,7 @@ const WhichButton = ({
                 console.log(response)
               }
             })
-            snackDelete()
+            snackBar('delete')
           }}
           tooltip={'Delete ' + reference + ' from Your Books.'}
         >
@@ -153,9 +148,9 @@ const WhichButton = ({
                 console.log(response)
               }
             })
-            snackSwap()
+            snackBar('swap')
           }}
-          tooltip={'Request ' + reference + ' from ' + owner + '.'}
+          tooltip={'Request ' + reference + ' from ' + owner}
         >
           <ActionSwapVerticalCircle color={amber600} />
         </IconButton>
@@ -185,9 +180,9 @@ const WhichButton = ({
                 'You have approved a request! See you at Beached Bar this Tuesday night at 8:30pm.'
               )
             })
-            snackApprove()
+            snackBar('approve')
           }}
-          tooltip={'Approve swap of ' + reference + ' with ' + requestor + '.'}
+          tooltip={'Approve swap of ' + reference + ' with ' + requestor}
         >
           <ActionCheckCircle color={greenA700} />
         </IconButton>
@@ -205,10 +200,10 @@ const WhichButton = ({
                 console.log(response)
               }
             })
-            snackDeny()
+            snackBar('deny')
           }}
           className="approveDenyStyle"
-          tooltip={'Deny swap of ' + reference + ' with ' + requestor + '.'}
+          tooltip={'Deny swap of ' + reference + ' with ' + requestor}
         >
           <NavigationCancel color={pinkA200} />
         </IconButton>

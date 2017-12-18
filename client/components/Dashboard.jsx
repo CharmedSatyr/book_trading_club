@@ -24,10 +24,7 @@ const Dashboard = ({
   location,
   loggedUser,
   requestsForYou,
-  snackApprove,
-  snackCancel,
-  snackDelete,
-  snackDeny,
+  snackBar,
   yourRequests,
   yourShelves
 }) => {
@@ -54,8 +51,7 @@ const Dashboard = ({
           <Library
             location={requestsForYou}
             loggedUser={loggedUser}
-            snackApprove={snackApprove}
-            snackDeny={snackDeny}
+            snackBar={snackBar}
             whichButton="approveDeny"
           />
           <Divider />
@@ -72,7 +68,7 @@ const Dashboard = ({
           <Library
             location={yourRequests}
             loggedUser={loggedUser}
-            snackCancel={snackCancel}
+            snackBar={snackBar}
             whichButton="cancel"
           />
           <Divider />
@@ -84,7 +80,7 @@ const Dashboard = ({
         <RequestsBadge badgeContent={yourShelves.length} color="green" />
       </Subheader>
       {yourShelves.length ? (
-        <Library location={yourShelves} snackDelete={snackDelete} whichButton="delete" />
+        <Library location={yourShelves} snackBar={snackBar} whichButton="delete" />
       ) : (
         <div className="infoBox">
           <h4>Add some books to your collection!</h4>

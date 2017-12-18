@@ -27,12 +27,7 @@ const Book = ({
   publication,
   requestor,
   title,
-  snackAdd,
-  snackApprove,
-  snackCancel,
-  snackDelete,
-  snackDeny,
-  snackSwap,
+  snackBar,
   whichButton
 }) => {
   const loader = (
@@ -67,12 +62,7 @@ const Book = ({
           owner={owner}
           publication={publication}
           requestor={requestor}
-          snackAdd={snackAdd}
-          snackApprove={snackApprove}
-          snackCancel={snackCancel}
-          snackDelete={snackDelete}
-          snackDeny={snackDeny}
-          snackSwap={snackSwap}
+          snackBar={snackBar}
           title={title}
           whichButton={whichButton}
         />

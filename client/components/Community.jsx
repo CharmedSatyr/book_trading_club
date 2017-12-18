@@ -13,7 +13,7 @@ import Subheader from 'material-ui/Subheader'
 import Library from './Library.jsx'
 
 /*** MAIN ***/
-const Community = ({ loggedUser, otherShelves, requestedBooks, requestor, snackSwap }) => {
+const Community = ({ loggedUser, otherShelves, requestedBooks, requestor, snackBar }) => {
   //Other users' books that are available for swap
   //If the user requests them, the user is the requestor
   const available = (
@@ -21,7 +21,7 @@ const Community = ({ loggedUser, otherShelves, requestedBooks, requestor, snackS
       location={otherShelves}
       loggedUser={loggedUser}
       requestor={loggedUser}
-      snackSwap={snackSwap}
+      snackBar={snackBar}
       whichButton="swap"
     />
   )

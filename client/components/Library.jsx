@@ -5,17 +5,7 @@ import React from 'react'
 import Book from './Book.jsx'
 
 /*** MAIN ***/
-const Library = ({
-  location,
-  whichButton,
-  requestor,
-  snackApprove,
-  snackCancel,
-  snackDelete,
-  snackDeny,
-  snackSwap,
-  loggedUser
-}) => {
+const Library = ({ location, whichButton, requestor, snackBar, loggedUser }) => {
   const library = location.map((item, index) => {
     return (
       <Book
@@ -27,11 +17,7 @@ const Library = ({
         owner={item.owner}
         publication={item.publication}
         requestor={requestor}
-        snackApprove={snackApprove}
-        snackCancel={snackCancel}
-        snackDelete={snackDelete}
-        snackDeny={snackDeny}
-        snackSwap={snackSwap}
+        snackBar={snackBar}
         title={item.title}
         whichButton={whichButton}
       />

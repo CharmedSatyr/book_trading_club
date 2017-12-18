@@ -1,7 +1,6 @@
 'use strict'
 
 /*** ENVIRONMENT ***/
-const path = process.cwd()
 import dotenv from 'dotenv'
 dotenv.load()
 
@@ -37,7 +36,6 @@ export default class App extends Component {
     this.state = {
       addBooks: false,
       allBooks: true,
-      bookSearch: [],
       loggedLocation: '',
       loggedUser: '',
       message: '',
@@ -49,62 +47,39 @@ export default class App extends Component {
       yourRequests: [],
       yourShelves: []
     }
-    this.searchBooks = this.searchBooks.bind(this)
-    this.clearBooks = this.clearBooks.bind(this)
-    this.snackApprove = this.snackApprove.bind(this)
-    this.snackCancel = this.snackCancel.bind(this)
-    this.snackDelete = this.snackDelete.bind(this)
-    this.snackDeny = this.snackDeny.bind(this)
-    this.snackAdd = this.snackAdd.bind(this)
-    this.snackSwap = this.snackSwap.bind(this)
-  }
-  searchBooks() {
-    const query = document.getElementById('search').value
-    if (DEV) {
-      console.log('Search:', query)
-    }
-    f('POST', '/api/search/' + query, response => {
-      if (DEV) {
-        console.log('Search response:', response)
-      }
-      this.setState({ bookSearch: response })
-    })
+    this.snackBar = this.snackBar.bind(this)
   }
   //Snackbar functions have to stay in App so they don't dismount when App's children dismount
-  snackAdd() {
+  //This function takes a prop from the child Component and renders the right message
+  snackBar(type) {
+    console.log('ABOUT TO SNACKKKKKKKK ON', type)
+    const message = type => {
+      switch (type) {
+        case 'add':
+          return 'This book will appear on your Dashboard.'
+          break
+        case 'approve':
+          return 'Approving swap request...'
+          break
+        case 'cancel':
+          return 'Canceling swap request...'
+          break
+        case 'delete':
+          return 'Removing book from your collection...'
+          break
+        case 'deny':
+          return 'Denying swap request...'
+          break
+        case 'swap':
+          return 'This request will appear on your Dashboard.'
+          break
+        default:
+          return ''
+      }
+    }
     this.setState({
-      message: 'This book will appear on your Dashboard.'
+      message: message(type)
     })
-    setTimeout(() => {
-      this.setState({ message: '' })
-    }, 3000)
-  }
-  snackApprove() {
-    this.setState({ message: 'Approving swap request...' })
-    setTimeout(() => {
-      this.setState({ message: '' })
-    }, 3000)
-  }
-  snackCancel() {
-    this.setState({ message: 'Canceling swap request...' })
-    setTimeout(() => {
-      this.setState({ message: '' })
-    }, 3000)
-  }
-  snackDelete() {
-    this.setState({ message: 'Removing book from your collection...' })
-    setTimeout(() => {
-      this.setState({ message: '' })
-    }, 3000)
-  }
-  snackDeny() {
-    this.setState({ message: 'Denying swap request...' })
-    setTimeout(() => {
-      this.setState({ message: '' })
-    }, 3000)
-  }
-  snackSwap() {
-    this.setState({ message: 'This request will appear on your Dashboard.' })
     setTimeout(() => {
       this.setState({ message: '' })
     }, 3000)
@@ -167,10 +142,6 @@ export default class App extends Component {
       }
     })
   }
-  clearBooks() {
-    this.setState({ bookSearch: [] })
-    document.getElementById('search').value = ''
-  }
   //Views
   allbooksfn() {
     this.setState({
@@ -210,7 +181,7 @@ export default class App extends Component {
   }
   render() {
     //constants
-    const { snackApprove, snackCancel, snackDelete, snackDeny, snackSwap } = this
+    const { snackBar } = this
 
     const {
       addBooks,
@@ -256,10 +227,7 @@ export default class App extends Component {
         location={requestsForYou}
         loggedUser={loggedUser}
         requestsForYou={requestsForYou}
-        snackApprove={snackApprove}
-        snackCancel={snackCancel}
-        snackDelete={snackDelete}
-        snackDeny={snackDeny}
+        snackBar={snackBar}
         yourRequests={yourRequests}
         yourShelves={yourShelves}
       />
@@ -268,16 +236,7 @@ export default class App extends Component {
     //AddBooks.jsx
     //Search OpenLibrary.org for books you own
     //Add them to your collection
-    const addBooksComponent = (
-      <AddBooks
-        clearBooks={this.clearBooks}
-        loggedUser={loggedUser}
-        quest={this.state.bookSearch}
-        searchBooks={this.searchBooks}
-        snackAdd={this.snackAdd}
-        visible={this.state.bookSearch.length > 0}
-      />
-    )
+    const addBooksComponent = <AddBooks loggedUser={loggedUser} snackBar={snackBar} />
 
     //Community.jsx
     //Allows user to see other people's books
@@ -288,7 +247,7 @@ export default class App extends Component {
         otherShelves={otherShelves}
         requestedBooks={requestedBooks}
         requestor={loggedUser}
-        snackSwap={snackSwap}
+        snackBar={snackBar}
       />
     )
 
