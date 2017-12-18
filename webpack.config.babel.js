@@ -66,7 +66,7 @@ const client = {
                 minimize: PROD ? true : false
               }
             },
-            'postcss-loader', //autoprefixer is bundled with cssnext; cssnano is bundled with css-loader, but we're requiring explicitly in .postcssrc
+            'postcss-loader', //autoprefixer is bundled with cssnext; cssnano is bundled with css-loader, though we could require it explicitly in .postcssrc
             {
               loader: 'sass-loader',
               options: {
