@@ -51,7 +51,7 @@ export default class AddBooks extends Component {
   }
   render() {
     const { clearBooks, searchBooks } = this
-    const { loggedUser, quest, snackBar, visible } = this.props
+    const { loggedUser, snackBar } = this.props
     const { bookSearch } = this.state
 
     const results = bookSearch.map((item, index) => {

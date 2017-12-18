@@ -16,6 +16,7 @@ import React, { Component } from 'react'
 import ActionSwapVerticalCircle from 'material-ui/svg-icons/action/swap-vertical-circle'
 import Divider from 'material-ui/Divider'
 import Subheader from 'material-ui/Subheader'
+import { Tabs, Tab } from 'material-ui/Tabs'
 
 //App
 import AddBooks from './AddBooks.jsx'
@@ -34,16 +35,12 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      addBooks: false,
-      allBooks: true,
       loggedLocation: '',
       loggedUser: '',
       message: '',
       otherShelves: [],
-      profile: false,
       requestedBooks: [],
       requestsForYou: [],
-      yourBooks: false,
       yourRequests: [],
       yourShelves: []
     }
@@ -53,7 +50,9 @@ export default class App extends Component {
   //children dismount. This function takes a prop from the child component
   //in WhichButton.jsx and renders the right message.
   snackBar(type) {
-    console.log('ABOUT TO SNACKKKKKKKK ON', type)
+    if (DEV) {
+      console.log('snackBar received:', type)
+    }
     const message = type => {
       switch (type) {
         case 'add':
@@ -143,39 +142,6 @@ export default class App extends Component {
       }
     })
   }
-  //Views
-  allbooksfn() {
-    this.setState({
-      addBooks: false,
-      yourBooks: false,
-      allBooks: true,
-      profile: false
-    })
-  }
-  addbooksfn() {
-    this.setState({
-      addBooks: true,
-      yourBooks: false,
-      allBooks: false,
-      profile: false
-    })
-  }
-  yourbooksfn() {
-    this.setState({
-      addBooks: false,
-      yourBooks: true,
-      allBooks: false,
-      profile: false
-    })
-  }
-  profilefn() {
-    this.setState({
-      addBooks: false,
-      yourBooks: false,
-      allBooks: false,
-      profile: true
-    })
-  }
   //Start Up
   componentWillMount() {
     this.loggedUser()
@@ -200,24 +166,8 @@ export default class App extends Component {
     } = this.state
 
     //NavBar.jsx
-    //Creates top toolbar that allows instant navigation among components
-    const navbar = (
-      <NavBar
-        addbooksfn={() => {
-          this.addbooksfn()
-        }}
-        allbooksfn={() => {
-          this.allbooksfn()
-        }}
-        loggedUser={loggedUser}
-        profilefn={() => {
-          this.profilefn()
-        }}
-        yourbooksfn={() => {
-          this.yourbooksfn()
-        }}
-      />
-    )
+    //Creates top toolbar that shows the username and controls Logout
+    const navbar = <NavBar loggedUser={loggedUser} />
 
     //Dashboard.jsx
     //Displays your books
@@ -261,14 +211,24 @@ export default class App extends Component {
       <div>
         {/* NavBar.jsx */}
         {navbar}
-        {/* AddBooks.jsx */}
-        {addBooks ? addBooksComponent : null}
-        {/* Community.jsx */}
-        {allBooks ? communityComponent : null}
-        {/* Dashboard.jsx */}
-        {yourBooks ? dashboardComponent : null}
-        {/* Profile.jsx */}
-        {profile ? profileComponent : null}
+        <Tabs>
+          <Tab label="Dashboard">
+            {/* Dashboard.jsx */}
+            {dashboardComponent}
+          </Tab>
+          <Tab label="Add Books">
+            {/* AddBooks.jsx */}
+            {addBooksComponent}
+          </Tab>
+          <Tab label="Community">
+            {/* Community.jsx */}
+            {communityComponent}
+          </Tab>
+          <Tab label="Profile">
+            {/* Profile.jsx */}
+            {profileComponent}
+          </Tab>
+        </Tabs>
         {/* Snack.jsx */}
         <Snack message={message} />
       </div>
