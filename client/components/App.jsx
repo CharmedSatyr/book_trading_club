@@ -49,8 +49,9 @@ export default class App extends Component {
     }
     this.snackBar = this.snackBar.bind(this)
   }
-  //Snackbar functions have to stay in App so they don't dismount when App's children dismount
-  //This function takes a prop from the child Component and renders the right message
+  //Snackbar functions have to stay in App so they don't dismount when App's
+  //children dismount. This function takes a prop from the child component
+  //in WhichButton.jsx and renders the right message.
   snackBar(type) {
     console.log('ABOUT TO SNACKKKKKKKK ON', type)
     const message = type => {
