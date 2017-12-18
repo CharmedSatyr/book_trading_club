@@ -62,10 +62,11 @@ const client = {
             {
               loader: 'css-loader',
               options: {
+                importLoaders: 1,
                 minimize: PROD ? true : false
               }
             },
-            'postcss-loader',
+            'postcss-loader', //autoprefixer is bundled with cssnext; cssnano is bundled with css-loader, but we're requiring explicitly in .postcssrc
             {
               loader: 'sass-loader',
               options: {
