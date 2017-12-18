@@ -1,16 +1,31 @@
+//ES6 polyfill
+import 'babel-polyfill'
+
+//high-level libraries
 import React from 'react'
 import ReactDOM from 'react-dom'
-
-import 'typeface-roboto'
-import sass from './styles/styles.scss'
-import SignupLoginPage from './components/SignupLogin.jsx'
-import './img/favicon.ico'
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
+//used by Material UI for screen tap events
+import injectTapEventPlugin from 'react-tap-event-plugin'
+injectTapEventPlugin()
+
+//favicon
+import './img/favicon.ico'
+
+//font
+import 'typeface-roboto'
+
+//styles
+import sass from './styles/styles.scss'
+
+//main component
+import Welcome from './components/Welcome.jsx'
+
+//render
 ReactDOM.render(
   <MuiThemeProvider>
-    <SignupLoginPage />
+    <Welcome />
   </MuiThemeProvider>,
   document.getElementById('welcome')
 )
