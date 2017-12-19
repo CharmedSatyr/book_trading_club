@@ -127,22 +127,13 @@ export default class Profile extends Component {
           <form>
             <Subheader>Personal details</Subheader>
             {/* Change username TextField with error handling */}
-            {userErr ? (
-              <TextField
-                floatingLabelText="Username"
-                fullWidth={true}
-                hintText="Your username will be public."
-                errorText="That username is already taken. Please choose another."
-                id="username"
-              />
-            ) : (
-              <TextField
-                floatingLabelText="Username"
-                fullWidth={true}
-                hintText="Your username will be public."
-                id="username"
-              />
-            )}
+            <TextField
+              floatingLabelText="Username"
+              fullWidth={true}
+              hintText="Your username will be public."
+              errorText={userErr ? 'That username is already taken. Please choose another.' : ''}
+              id="username"
+            />
             <br />
             <TextField
               floatingLabelText="Location"
@@ -168,26 +159,17 @@ export default class Profile extends Component {
         <div className="formBox">
           <form>
             <Subheader>Change your password</Subheader>
-            {pwErr ? (
-              <TextField
-                errorText="Something went wrong. Please try again."
-                floatingLabelText="Current Password"
-                fullWidth={true}
-                hintText="Use 12-72 letters and numbers."
-                id="password1"
-                type="password"
-              />
-            ) : (
-              <TextField
-                floatingLabelText="Current Password"
-                fullWidth={true}
-                hintText="Use 12-72 letters and numbers."
-                id="password1"
-                type="password"
-              />
-            )}
+            <TextField
+              errorText={pwErr ? ' ' : ''}
+              floatingLabelText="Current Password"
+              fullWidth={true}
+              hintText="Use 12-72 letters and numbers."
+              id="password1"
+              type="password"
+            />
             <br />
             <TextField
+              errorText={pwErr ? 'Something went wrong. Please try again.' : ''}
               floatingLabelText="New Password"
               fullWidth={true}
               hintText="Use 12-72 letters and numbers."
