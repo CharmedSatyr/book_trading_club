@@ -10,6 +10,8 @@ const DEV = process.env.NODE_ENV === 'development'
 const PROD = process.env.NODE_ENV === 'production'
 
 /*** CONTROLLERS ***/
+
+//Handle book additions, ownership updates, swap requests, and deletions
 import {
   approveRequest,
   cancelRequest,
@@ -25,14 +27,18 @@ import {
 
 import { loginUser, root } from '../config/authConfig.js'
 
+//Handle user updates and authentication
 import {
   genocide,
   getLocation,
+  jsValidate,
   saveUser,
   viewUsers,
   updateProfile,
   updatePassword
 } from '../controllers/userController.server.js'
+
+//Handle Add Book searches
 import { searchSubmit } from '../controllers/searchController.server.js'
 
 /*** ROUTES ***/
@@ -66,6 +72,11 @@ export const routes = (app, passport) => {
   }
 
   //Login
+  //This route exists because making it seems easier than convincing Passport.js
+  //to send a simple `json` response when there are login errors.
+  app.route('/welcome/jsValidate/:data').post(jsValidate)
+
+  //Main login page and validation routes
   app
     .route('/welcome')
     .get((req, res) => {

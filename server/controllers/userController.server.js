@@ -20,10 +20,60 @@ const saltRounds = 10
 //Used to update book ownership when invoking updateProfile function
 import { changeBookOwner } from './bookController.server.js'
 
-//Find every user in the database
-export const allUsers = (req, res) => {
-  User.find({}, (err, doc) => {
-    res.json(doc)
+//View all users in the database
+export const viewUsers = (req, res) => {
+  User.find({}, (err, results) => {
+    if (err) {
+      console.error(err)
+    }
+    if (results) {
+      res.json(results)
+    }
+  })
+}
+
+//Remove every user in the database
+export const genocide = (req, res) => {
+  User.remove({}, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      console.log('All users deleted...')
+      res.json(doc)
+    }
+  })
+}
+
+//Check if user exists - used for login and signup pre-passport validation
+export const jsValidate = (req, res) => {
+  const data = JSON.parse(decodeURIComponent(req.params.data))
+  const user = data.username
+  const pass = data.password
+  if (DEV) {
+    console.log('Validating username ' + user + ' with password ' + pass)
+  }
+
+  User.findOne({ username: user }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    //If that user exists
+    if (doc) {
+      //Check current password submission against what's in the database
+      bcrypt.compare(pass, doc.password, (err, verdict) => {
+        //If it works, validation complete
+        if (verdict) {
+          res.json('OK')
+        } else {
+          //If thse password doesn't work, there's a problem
+          res.json('NO')
+        }
+      })
+    } else {
+      //If there's no such user, there's a problem
+      res.json('NO')
+    }
   })
 }
 
@@ -44,22 +94,31 @@ export const getLocation = (req, res) => {
   })
 }
 
-//Remove every user in the database
-export const genocide = (req, res) => {
-  User.remove({}, (err, doc) => {
-    console.log('All users deleted...')
-    res.json(doc)
-  })
-}
-
-//View all users in the database
-export const viewUsers = (req, res) => {
-  User.find({}, (err, results) => {
+//Save a new user to the database
+export const saveUser = (req, res, next) => {
+  const user = req.body
+  User.findOne({ username: user.username }, (err, doc) => {
     if (err) {
       console.error(err)
     }
-    if (results) {
-      res.json(results)
+    if (doc) {
+      res.json('This username is taken. Please choose another.')
+    } else {
+      bcrypt.hash(user.password, saltRounds, (err, hash) => {
+        const newUser = new User({
+          username: user.username,
+          password: hash,
+          location: user.location
+        })
+
+        newUser.save((err, doc) => {
+          if (err) {
+            console.error(err)
+          }
+          console.log(user.username + ' successfully signed up. Logging in.')
+          return next()
+        })
+      })
     }
   })
 }
@@ -94,7 +153,7 @@ export const updateProfile = (req, res) => {
     })
   }
 
-  //Update user's location
+  //If user wants to update their location
   if (update.location) {
     User.findOneAndUpdate({ username: user }, { location: update.location }, (err, ok) => {
       if (err) {
@@ -106,35 +165,6 @@ export const updateProfile = (req, res) => {
       }
     })
   }
-}
-
-//Save a new user to the database
-export const saveUser = (req, res, next) => {
-  const user = req.body
-  User.findOne({ username: user.username }, (err, doc) => {
-    if (err) {
-      console.error(err)
-    }
-    if (doc) {
-      res.json('This username is taken. Please choose another.')
-    } else {
-      bcrypt.hash(user.password, saltRounds, (err, hash) => {
-        const newUser = new User({
-          username: user.username,
-          password: hash,
-          location: user.location
-        })
-
-        newUser.save((err, doc) => {
-          if (err) {
-            console.error(err)
-          }
-          console.log(user.username + ' successfully signed up. Logging in.')
-          return next()
-        })
-      })
-    }
-  })
 }
 
 //Update password
