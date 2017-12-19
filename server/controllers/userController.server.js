@@ -47,6 +47,9 @@ export const genocide = (req, res) => {
 
 //Check if user exists - used for login and signup pre-passport validation
 export const jsValidate = (req, res) => {
+  if (DEV) {
+    console.log('jsValidate')
+  }
   const data = JSON.parse(decodeURIComponent(req.params.data))
   const user = data.username
   const pass = data.password
@@ -58,21 +61,33 @@ export const jsValidate = (req, res) => {
     if (err) {
       console.error(err)
     }
-    //If that user exists
-    if (doc) {
-      //Check current password submission against what's in the database
-      bcrypt.compare(pass, doc.password, (err, verdict) => {
-        //If it works, validation complete
-        if (verdict) {
-          res.json('OK')
-        } else {
-          //If thse password doesn't work, there's a problem
-          res.json('NO')
-        }
-      })
+    //Signup validation
+    //signup validation does not check any password against the database;
+    //it only checks if the requested username is taken.
+    if (!pass) {
+      if (doc) {
+        res.json('NO')
+      } else {
+        res.json('OK')
+      }
     } else {
-      //If there's no such user, there's a problem
-      res.json('NO')
+      //Login validation
+      //If there is a password and that user exists
+      if (doc) {
+        //Check current password submission against what's in the database
+        bcrypt.compare(pass, doc.password, (err, verdict) => {
+          //If it works, validation complete
+          if (verdict) {
+            res.json('OK')
+          } else {
+            //If thse password doesn't work, there's a problem
+            res.json('NO')
+          }
+        })
+      } else {
+        //If there's no such user, there's a problem
+        res.json('NO')
+      }
     }
   })
 }

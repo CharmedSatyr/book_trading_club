@@ -33,16 +33,24 @@ const style = {
 export default class Welcome extends Component {
   constructor(props) {
     super(props)
-    this.state = { signup: false, login: false, loginErr: false }
+    this.state = {
+      locationErr: false,
+      login: false,
+      loginErr: false,
+      pwErr: '',
+      signup: false,
+      userErr: ''
+    }
     this.loginClick = this.loginClick.bind(this)
     this.signupClick = this.signupClick.bind(this)
     this.submitLogin = this.submitLogin.bind(this)
-  }
-  signupClick() {
-    this.setState({ login: false, signup: true })
+    this.submitSignup = this.submitSignup.bind(this)
   }
   loginClick() {
     this.setState({ login: true, signup: false })
+  }
+  signupClick() {
+    this.setState({ login: false, signup: true })
   }
   submitLogin() {
     const username = document.getElementById('username').value
@@ -77,24 +85,71 @@ export default class Welcome extends Component {
       })
     }
   }
+  submitSignup() {
+    if (DEV) {
+      console.log('submitSignup')
+    }
+    const username = document.getElementById('username').value
+    const password = document.getElementById('password').value
+    const location = document.getElementById('location').value
+    const signupInfo = {
+      username: username
+    }
+    //Basic client-side validation
+    if (!username) {
+      this.setState({ userErr: 'Please enter a username.' })
+    } else if (!password) {
+      this.setState({ passErr: 'Please enter a password.', userErr: '' })
+    } else if (!location) {
+      this.setState({ locationErr: true, passErr: '' })
+    } else if (username && password && location) {
+      this.setState({ locationErr: '', passErr: '', userErr: '' })
+      //More easily configured server-side validation will take place before
+      //the form is submitted to Passport. Passport.js documentation doesn't
+      //discuss sending or receiving json responses
+      const data = encodeURIComponent(JSON.stringify(signupInfo))
+      if (DEV) {
+        console.log('Validating signup...')
+      }
+      f('POST', '/welcome/jsValidate/' + data, response => {
+        if (DEV) {
+          console.log(response)
+        }
+        if (response === 'OK') {
+          if (DEV) {
+            console.log('Submitting signupForm...')
+          }
+          const signupForm = document.getElementById('signupForm')
+          signupForm.submit()
+        } else if (response === 'NO') {
+          this.setState({
+            userErr: 'This username is already in use. Please choose another one.'
+          })
+        }
+      })
+    }
+  }
   render() {
     //constants
-    const { loginErr } = this.state
+    const { locationErr, loginErr, passErr, userErr } = this.state
 
     //Sign Up button
     const signupButton = <FlatButton label="Sign up" onClick={this.signupClick} />
     //Popup on clicking Sign Up button
     const signupModal = (
-      <form action="/api/users" method="post">
+      <form action="/api/users" id="signupForm" method="post">
         <TextField
+          errorText={userErr}
           hintText="Your username will be public."
           floatingLabelText="Username"
+          fullWidth={true}
           type="text"
           name="username"
           id="username"
         />
         <br />
         <TextField
+          errorText={passErr}
           hintText="Use 12-72 letters and numbers."
           floatingLabelText="Password"
           fullWidth={true}
@@ -104,16 +159,17 @@ export default class Welcome extends Component {
         />
         <br />
         <TextField
-          hintText="Where do you want to swap books?"
+          errorText={locationErr ? 'Please enter your location.' : ''}
           floatingLabelText="Location"
           fullWidth={true}
+          hintText="Where do you want to swap books?"
           id="location"
           name="location"
           type="text"
         />
         <br />
         <br />
-        <RaisedButton label="Sign Up" primary={true} type="submit" />
+        <RaisedButton label="Sign Up" onClick={this.submitSignup} primary={true} />
         <RaisedButton label="Cancel" secondary={true} type="cancel" />
       </form>
     )
