@@ -96,7 +96,7 @@ export const cancelRequest = (req, res) => {
         console.error(err)
       }
       if (doc) {
-        res.json('Request for book with olkey ' + book.olkey + ' cancelled.')
+        res.json('Request for book with olkey ' + book.olkey + ' canceled.')
       }
     }
   )
@@ -163,7 +163,7 @@ export const saveBook = (req, res) => {
         console.error(err)
       }
       if (doc) {
-        res.json('This book is already in the database')
+        res.json('This book is already in the database.')
       } else {
         const newBook = new Book({
           author: book.author,
@@ -209,21 +209,73 @@ export const removeBook = (req, res) => {
 //Update the user's book ownership to their new username
 //Invoked in userController
 export const changeBookOwner = (user, newName) => {
-  Book.find({ owner: user }, (err, doc) => {
-    console.log('Updating book ownership to new username...')
+  Book.find({}, (err, doc) => {
     if (err) {
       console.error(err)
     }
     if (doc) {
       doc.map(item => {
-        item.owner = newName
+        //Update book ownership to newName
+        if (item.owner === user) {
+          item.owner = newName
+        }
+
+        //Update user requests to newName
+        if (item.requestor === user && item.requested === true) {
+          item.requestor = newName
+        }
+
+        //Save changes
         item.save((err, ok) => {
           if (err) {
             console.error(err)
           }
           console.log('Book ownership updated:', ok)
+          res.json('Book ownership updated.')
         })
       })
+    }
+  })
+}
+
+//Purge user's books
+//Invoked when deleting a user's account
+export const purgeUserBooks = user => {
+  Book.find({}, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      doc.map(item => {
+        //If user has requested books, cancel the requests
+        if (item.requestor === user) {
+          item.requested = false
+          item.requestor = ''
+        }
+        //If user's books have been requested, deny the requests
+        if (item.owner === user && item.requested === true) {
+          item.requested = false
+          item.requestor = ''
+        }
+
+        //Save changes
+        item.save((err, ok) => {
+          if (err) {
+            console.error(err)
+          }
+          console.log('Requests for ' + item + ' canceled or denied.')
+        })
+      })
+    }
+  })
+
+  //If user owns the book, remove the book
+  Book.remove({ owner: user }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      console.log(user + "'s books removed.'")
     }
   })
 }
