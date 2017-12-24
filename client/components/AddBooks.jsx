@@ -88,8 +88,8 @@ export default class AddBooks extends Component {
               id="search"
             />
             <RaisedButton
-              buttonStyle={{ width: '100%' }}
               className="RaisedButtonProfile"
+              fullWidth={true}
               label="Search"
               onClick={searchBooks}
               primary={true}
@@ -97,7 +97,7 @@ export default class AddBooks extends Component {
             {bookSearch.length > 0 ? (
               <RaisedButton
                 className="RaisedButtonProfile"
-                buttonStyle={{ width: '100%' }}
+                fullWidth={true}
                 label="Clear"
                 onClick={clearBooks}
                 secondary={true}
