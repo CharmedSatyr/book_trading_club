@@ -18,7 +18,8 @@ const saltRounds = 10
 
 /*** CONTROLLERS ***/
 //Used to update book ownership when invoking updateProfile function
-import { changeBookOwner } from './bookController.server.js'
+//Or to nullify user's book positions before account deletion
+import { changeBookOwner, purgeUserBooks } from './bookController.server.js'
 
 //View all users in the database
 export const viewUsers = (req, res) => {
@@ -117,8 +118,10 @@ export const saveUser = (req, res, next) => {
       console.error(err)
     }
     if (doc) {
+      //Error if this user already exists
       res.json('NO')
     } else {
+      //Otherwise has the password and save the user information
       bcrypt.hash(user.password, saltRounds, (err, hash) => {
         const newUser = new User({
           username: user.username,
@@ -147,6 +150,9 @@ export const updateProfile = (req, res) => {
     console.log('Update request received from ' + user)
   }
 
+  //response will be NO if either update returns an error, else OK
+  let response
+
   //If user wants to update the username
   if (update.username) {
     //See if the requested username is already taken
@@ -156,7 +162,7 @@ export const updateProfile = (req, res) => {
       }
       //If so, send an error message
       if (doc) {
-        res.json('NO')
+        response = 'NO'
       } else {
         //Else if that name isn't taken, find the existing user
         User.findOneAndUpdate({ username: user }, { username: update.username }, (err, doc2) => {
@@ -165,7 +171,9 @@ export const updateProfile = (req, res) => {
           }
           if (doc2) {
             changeBookOwner(user, update.username)
-            res.json('OK')
+            //If there are no previous errors, return OK, else NO
+            response === 'NO' ? (response = 'NO') : (response = 'OK')
+            console.log('THIS IS IT:', response)
           }
         })
       }
@@ -183,15 +191,30 @@ export const updateProfile = (req, res) => {
       }
       if (ok) {
         console.log(ok)
-        res.json('New location:' + ok.location)
+        response === 'NO' ? (response = 'NO') : (response = 'OK')
+      } else {
+        //This is not expected to happen
+        response = 'NO'
       }
     })
   }
+
+  //This is a sort of hack to wait until response is defined before sending. Possibly improve using async/await, promises...
+  const wait = setInterval(() => {
+    if (response) {
+      //This response should take into account both username and location updates, returning NO or OK
+      if (DEV) {
+        console.log('Response will be:', response)
+      }
+      res.json(response)
+      clearInterval(wait)
+    }
+  }, 500)
 }
 
 //Update password
 export const updatePassword = (req, res) => {
-  const user = req.params.user
+  const { user } = req.params
   const update = JSON.parse(decodeURIComponent(req.params.data))
   User.findOne({ username: user }, (err, doc) => {
     if (err) {
@@ -212,11 +235,32 @@ export const updatePassword = (req, res) => {
             })
           })
         } else {
+          //Else send error
           res.json('NO')
         }
       })
     } else {
+      //No user found - not expected
       res.json('NO')
+    }
+  })
+}
+
+//Delete user and user's books
+export const deleteUser = (req, res) => {
+  const { user } = req.params
+
+  //Cancel user requests, deny requests for user's books, and remove user's books
+  purgeUserBooks(user)
+
+  //Delete the user
+  User.remove({ username: user }, (err, doc) => {
+    if (err) {
+      console.error(err)
+    }
+    if (doc) {
+      console.log('User ' + user + ' deleted...')
+      res.json('User ' + user + ' deleted...')
     }
   })
 }

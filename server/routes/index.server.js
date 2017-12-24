@@ -29,13 +29,14 @@ import { loginUser, root } from '../config/authConfig.js'
 
 //Handle user updates and authentication
 import {
+  deleteUser,
   genocide,
   getLocation,
   jsValidate,
   saveUser,
   viewUsers,
-  updateProfile,
-  updatePassword
+  updatePassword,
+  updateProfile
 } from '../controllers/userController.server.js'
 
 //Handle Add Book searches
@@ -104,7 +105,6 @@ export const routes = (app, passport) => {
   //API - They stop working when I require permissions...
   //Search for a book
   app.route('/api/search/:s').post(searchSubmit)
-
   //User requests a book
   app.route('/api/:user/request/:data').post(requestBook)
   //User cancels their own book request
@@ -113,7 +113,6 @@ export const routes = (app, passport) => {
   app.route('/api/:user/denyRequest/:data').post(denyRequest)
   //User approves request for their book
   app.route('/api/:user/approveRequest/:data').post(approveRequest)
-
   //Update username and location
   app.route('/api/:user/update-profile/:data').post(updateProfile)
   //Update password
@@ -154,6 +153,9 @@ export const routes = (app, passport) => {
 
   //Get user's location
   app.route('/api/:user/location').get(getLocation)
+
+  //Delete user
+  app.route('/api/deleteUser/:user').delete(deleteUser)
 
   /*** DEBUGGING - No UI ***/
   if (DEV) {
