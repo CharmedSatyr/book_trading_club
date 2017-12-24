@@ -14,4 +14,4 @@ export const f = async (method, url, cb1, cb2) => {
   }
 }
 
-const uniq = a => Array.from(new Set(a)) //Deduplicate
+export const uniq = a => Array.from(new Set(a)) //Deduplicate

@@ -54,22 +54,6 @@ export const routes = (app, passport) => {
       }
     })
   }
-  //This is the name that will display in the client view
-  let name_view
-  //Authorization check
-  const permissions = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      name_view = req.user.username
-      return next()
-    } else {
-      if (DEV) {
-        name_view = 'Developer'
-        return next()
-      } else {
-        res.redirect('/welcome')
-      }
-    }
-  }
 
   //Login
   //This route exists because making it seems easier than convincing Passport.js
@@ -88,6 +72,23 @@ export const routes = (app, passport) => {
         failureRedirect: '/welcome'
       })
     )
+
+  //This is the name that will display in the client view
+  let name_view
+  //Authorization check
+  const permissions = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      name_view = req.user.username
+      return next()
+    } else {
+      if (DEV) {
+        name_view = 'Developer'
+        return next()
+      } else {
+        res.redirect('/welcome')
+      }
+    }
+  }
 
   //Root
   app.route('/').get(permissions, (req, res) => {
