@@ -1,1 +1,1435 @@
-!function(e){function o(t){if(n[t])return n[t].exports;var r=n[t]={i:t,l:!1,exports:{}};return e[t].call(r.exports,r,r.exports,o),r.l=!0,r.exports}var n={};o.m=e,o.c=n,o.d=function(e,n,t){o.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:t})},o.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return o.d(n,"a",n),n},o.o=function(e,o){return Object.prototype.hasOwnProperty.call(e,o)},o.p="",o(o.s=9)}([function(e,o){e.exports=require("dotenv")},function(e,o){e.exports=require("mongoose")},function(e,o,n){"use strict";Object.defineProperty(o,"__esModule",{value:!0}),o.changeBookOwner=o.removeBook=o.saveBook=o.denyRequest=o.approveRequest=o.cancelRequest=o.requestBook=o.sternGaze=o.curseOfAlexandria=o.otherShelves=o.userShelves=o.library=void 0;var t=n(5),r=function(e){return e&&e.__esModule?e:{default:e}}(t);o.library=function(e,o){r.default.find({},function(e,n){e&&console.error(e),n&&o.json(n)})},o.userShelves=function(e,o){var n=e.params.user;r.default.find({owner:n},function(e,n){e&&console.error(e),n?o.json(n):o.json("Nope, nothing")})},o.otherShelves=function(e,o){var n=e.params.user;r.default.find({owner:{$ne:n}},function(e,n){e&&console.error(e),n?o.json(n):o.json("Nope, you own the whole library.")})},o.curseOfAlexandria=function(e,o){r.default.remove({},function(e,n){console.log("All books deleted..."),o.json(n)})},o.sternGaze=function(e,o){o.on(e,function(e){setInterval(function(){r.default.find({},function(e,n){o.emit(n)})},e)})},o.requestBook=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));r.default.findOneAndUpdate({olkey:t.olkey},{requested:!0,requestor:n},function(e,n){e&&console.error(e),n&&o.json("Book requested.")})},o.cancelRequest=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));r.default.findOneAndUpdate({olkey:t.olkey,requestor:n,requested:!0},{requested:!1,requestor:""},function(e,n){e&&console.error(e),n&&o.json("Request for book with olkey "+t.olkey+" cancelled.")})},o.approveRequest=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));r.default.findOne({olkey:t.olkey,owner:n,requested:!0},function(e,n){e&&console.error(e),n&&(console.log("Before",n),n.owner=n.requestor,n.requestor="",n.requested=!1,console.log("After",n),n.save(function(e,n){console.log("Saved",n),o.json("You have successfully swapped a book!")}))})},o.denyRequest=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));r.default.findOneAndUpdate({olkey:t.olkey,owner:n,requested:!0},{requested:!1,requestor:""},function(e,n){e&&console.error(e),n&&o.json("Request for book with olkey "+t.olkey+" denied.")})},o.saveBook=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));r.default.findOne({username:n,olkey:t.olkey},function(e,u){if(e&&console.error(e),u)o.json("This book is already in the database");else{new r.default({author:t.author,title:t.title,publication:t.publication,cover:t.cover,olkey:t.olkey,owner:n}).save(function(e,t){e&&console.error(e),o.json("This book has been saved! Praise Jesus! It is owned by "+n+"!")})}})},o.removeBook=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));console.log(t),r.default.remove({owner:n,olkey:t.olkey},function(e,n){e&&console.error(e),n&&(console.log(n+" has been deleted."),o.json(n+" has been deleted."))})},o.changeBookOwner=function(e,o){r.default.find({owner:e},function(e,n){console.log("Updating book ownership to new username..."),e&&console.error(e),n&&n.map(function(e){e.owner=o,e.save(function(e,o){e&&console.error(e),console.log("Book ownership updated:",o)})})})}},function(e,o){e.exports=require("babel-polyfill")},function(e,o){e.exports=require("passport")},function(e,o,n){"use strict";Object.defineProperty(o,"__esModule",{value:!0});var t=n(1),r=function(e){return e&&e.__esModule?e:{default:e}}(t),u=r.default.Schema,s=new u({author:String,cover:String,olkey:String,owner:String,publication:Number,requested:{default:!1,type:Boolean},requestor:String,title:String});o.default=r.default.model("Book",s)},function(e,o,n){"use strict";function t(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(o,"__esModule",{value:!0}),o.authConfig=void 0;var r=n(7),u=t(r),s=n(4),a=(t(s),n(21)),i=n(8),l=t(i);o.authConfig=function(e){e.use(new a.Strategy(function(e,o,n){u.default.findOne({username:e},function(e,t){return e?n(e):t?void l.default.compare(o,t.password,function(e,o){return o?n(null,t):(console.log("Bad password"),n(null,!1))}):(console.log("No such user exists."),n(null,!1))})})),e.serializeUser(function(e,o){o(null,e.id)}),e.deserializeUser(function(e,o){u.default.findById(e,function(e,n){o(e,n)})})}},function(e,o,n){"use strict";function t(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(o,"__esModule",{value:!0});var r=n(20),u=t(r),s=n(1),a=t(s),i=a.default.Schema,l=new i({created:{type:Date,required:!0,default:new Date},location:{match:u.default.location,minlength:1,required:!0,type:String},password:{match:u.default.password,minlength:8,required:!0,type:String},username:{index:{unique:!0},match:u.default.username,minlength:1,required:!0,type:String}});o.default=a.default.model("User",l)},function(e,o){e.exports=require("bcrypt")},function(e,o,n){n(3),e.exports=n(10)},function(e,o,n){"use strict";function t(e){return e&&e.__esModule?e:{default:e}}n(3);var r=n(11),u=t(r);n(12);var s=n(13),a=t(s),i=n(0),l=t(i),c=n(14),d=t(c),f=n(15),p=t(f),v=n(1),m=t(v),h=n(16),g=t(h),y=n(4),w=t(y),q=n(17),b=t(q),k=n(18),_=t(k),O=n(19),j=n(6),x=n(25),S=t(x),R=n(26),U=t(R),P=n(27),N=t(P);u.default.polyfill();var B=(0,a.default)(),M=process.cwd();l.default.load();B.use((0,d.default)("tiny")),B.use((0,p.default)()),B.use("/js",a.default.static(M+"/dist/js")),B.use("/styles",a.default.static(M+"/dist/styles")),B.use("/img",a.default.static(M+"/dist/img"));var A=m.default.connection;m.default.Promise=u.default,m.default.connect(process.env.MONGO_URI,{useMongoClient:!0},function(e,o){e?console.error("Failed to connect to database!"):console.log("Connected to database.")});var C=n(28)(g.default);B.use(b.default.urlencoded({extended:!1})),B.use((0,_.default)());var I={secret:process.env.SECRET,resave:!1,saveUninitialized:!1,cookie:{path:"/",httpOnly:!1,maxAge:18e5},store:new C({mongooseConnection:A},function(e){console.log(e)}),name:"id"};B.set("trust proxy",1),I.cookie.secure=!0,I.cookie.httpOnly=!0,B.use((0,g.default)(I)),B.use(w.default.initialize()),B.use(w.default.session()),(0,j.authConfig)(w.default),(0,O.routes)(B,w.default);var z=S.default.createServer(B),J=(0,U.default)(z);(0,N.default)(J);var L=process.env.PORT;z.listen(L,function(){console.log("Server is listening on port",L+".")})},function(e,o){e.exports=require("es6-promise")},function(e,o){e.exports=require("isomorphic-fetch")},function(e,o){e.exports=require("express")},function(e,o){e.exports=require("morgan")},function(e,o){e.exports=require("compression")},function(e,o){e.exports=require("express-session")},function(e,o){e.exports=require("body-parser")},function(e,o){e.exports=require("cookie-parser")},function(e,o,n){"use strict";Object.defineProperty(o,"__esModule",{value:!0}),o.routes=void 0;var t=n(0),r=function(e){return e&&e.__esModule?e:{default:e}}(t),u=n(2),s=(n(6),n(22)),a=n(23),i=process.cwd();r.default.load();o.routes=function(e,o){e.use("*",function(e,o,n){"https"!==e.headers["x-forwarded-proto"]?(console.log("Redirecting to",process.env.APP_URL+e.url),o.redirect(process.env.APP_URL+e.url)):n()}),e.route("/welcome/jsValidate/:data").post(s.jsValidate),e.route("/welcome").get(function(e,o){o.sendFile(i+"/dist/welcome.html")}).post(o.authenticate("local",{successRedirect:"/",failureRedirect:"/welcome"}));var n=void 0,t=function(e,o,t){if(e.isAuthenticated())return n=e.user.username,t();o.redirect("/welcome")};e.route("/").get(t,function(e,o){o.sendFile(i+"/dist/index.html")}),e.route("/logout").get(t,function(e,o){e.logout(),o.redirect("/welcome")}),e.route("/api/search/:s").post(a.searchSubmit),e.route("/api/:user/request/:data").post(u.requestBook),e.route("/api/:user/cancelRequest/:data").post(u.cancelRequest),e.route("/api/:user/denyRequest/:data").post(u.denyRequest),e.route("/api/:user/approveRequest/:data").post(u.approveRequest),e.route("/api/:user/update-profile/:data").post(s.updateProfile),e.route("/api/:user/update-password/:data").post(s.updatePassword),e.route("/api/:user/save/:data").post(u.saveBook).delete(u.removeBook),e.route("/api/:user/userBooks").get(u.userShelves),e.route("/api/:user/otherBooks").get(u.otherShelves),e.route("/api/users").get(s.viewUsers).post(s.saveUser,o.authenticate("local",{successRedirect:"/",failureRedirect:"/welcome"})),e.route("/api/users/logged").get(function(e,o){o.json(n)}),e.route("/api/:user/location").get(s.getLocation)}},function(e,o,n){"use strict";Object.defineProperty(o,"__esModule",{value:!0});var t={location:/^[a-zA-Z\,\-\.\ ]{1,100}$/,password:/(?=.*[a-zA-Z]+)(?=.*[0-9]+)(?=.*[^a-zA-Z0-9]+).{8,}/,username:/^[A-Za-z0-9\-\.\,\ ]{1,40}$/};o.default=t},function(e,o){e.exports=require("passport-local")},function(e,o,n){"use strict";function t(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(o,"__esModule",{value:!0}),o.updatePassword=o.updateProfile=o.saveUser=o.getLocation=o.jsValidate=o.genocide=o.viewUsers=void 0;var r=n(0),u=t(r),s=n(7),a=t(s),i=n(8),l=t(i),c=n(2);process.cwd();u.default.load();o.viewUsers=function(e,o){a.default.find({},function(e,n){e&&console.error(e),n&&o.json(n)})},o.genocide=function(e,o){a.default.remove({},function(e,n){e&&console.error(e),n&&(console.log("All users deleted..."),o.json("All users deleted..."))})},o.jsValidate=function(e,o){var n=JSON.parse(decodeURIComponent(e.params.data)),t=n.username,r=n.password;a.default.findOne({username:t},function(e,n){e&&console.error(e),r?n?l.default.compare(r,n.password,function(e,n){n?o.json("OK"):o.json("NO")}):o.json("NO"):n?o.json("NO"):o.json("OK")})},o.getLocation=function(e,o){var n=e.params.user;a.default.findOne({username:n},function(e,n){e&&console.error(e),n&&o.json(n.location)})},o.saveUser=function(e,o,n){var t=e.body;a.default.findOne({username:t.username},function(e,r){e&&console.error(e),r?o.json("NO"):l.default.hash(t.password,10,function(e,o){new a.default({username:t.username,password:o,location:t.location}).save(function(e,o){return e&&console.error(e),console.log(t.username+" successfully signed up. Logging in."),n()})})})},o.updateProfile=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));t.username&&a.default.findOne({username:t.username},function(e,r){e&&console.error(e),r?o.json("NO"):a.default.findOneAndUpdate({username:n},{username:t.username},function(e,r){e&&console.error(e),r&&((0,c.changeBookOwner)(n,t.username),o.json("OK"))})}),t.location&&a.default.findOneAndUpdate({username:n},{location:t.location},function(e,n){e&&console.error(e),n&&(console.log(n),o.json("New location:"+n.location))})},o.updatePassword=function(e,o){var n=e.params.user,t=JSON.parse(decodeURIComponent(e.params.data));a.default.findOne({username:n},function(e,n){e&&console.error(e),n?l.default.compare(t.currentPassword,n.password,function(e,r){r?l.default.hash(t.newPassword,10,function(e,t){n.password=t,n.save(function(e,n){e&&console.error(e),o.json("OK")})}):o.json("NO")}):o.json("NO")})}},function(e,o,n){"use strict";Object.defineProperty(o,"__esModule",{value:!0}),o.searchSubmit=void 0;var t=n(24);o.searchSubmit=function(e,o){(0,t.f)("GET","https://openlibrary.org/search.json?q="+e.params.s,function(e){for(var n=[],t=0;t<20;t++){var r=e.docs[t],u=void 0;u=r.author_name?1===r.author_name.length?r.author_name[0]:2===r.author_name.length?r.author_name.join(" and "):r.author_name.length>2?r.author_name[0]+", "+r.author_name[1]+", et al.":"Unlisted":"Unlisted";var s=void 0;s=r.title?r.title:"Unlisted Title";var a=void 0;a=r.first_publish_year?r.first_publish_year:0;var i=void 0;i=r.cover_edition_key?r.cover_edition_key:null;var l=void 0;r.key&&(l=r.key,l=l.split(""),l.splice(0,7),l=l.join(""));var c={author:u,title:s,publication:a,cover:i,olkey:l};if(c.cover&&n.push(c),t===e.docs.length-1)break}o.json(n)})}},function(e,o,n){"use strict";function t(e){return function(){var o=e.apply(this,arguments);return new Promise(function(e,n){function t(r,u){try{var s=o[r](u),a=s.value}catch(e){return void n(e)}if(!s.done)return Promise.resolve(a).then(function(e){t("next",e)},function(e){t("throw",e)});e(a)}return t("next")})}}Object.defineProperty(o,"__esModule",{value:!0});o.f=function(){var e=t(regeneratorRuntime.mark(function e(o,n,t,r){var u,s;return regeneratorRuntime.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return e.prev=0,e.next=3,fetch(n,{method:o});case 3:return u=e.sent,e.next=6,u.json();case 6:s=e.sent,t(s),e.next=13;break;case 10:return e.prev=10,e.t0=e.catch(0),e.abrupt("return",e.t0);case 13:return e.prev=13,r&&r(),e.finish(13);case 16:case"end":return e.stop()}},e,void 0,[[0,10,13,16]])}));return function(o,n,t,r){return e.apply(this,arguments)}}(),o.uniq=function(e){return Array.from(new Set(e))}},function(e,o){e.exports=require("http")},function(e,o){e.exports=require("socket.io")},function(e,o,n){"use strict";Object.defineProperty(o,"__esModule",{value:!0});var t=n(5),r=function(e){return e&&e.__esModule?e:{default:e}}(t),u=(n(2),function(e){e.on("connection",function(o){console.log("Web Sockets connected."),o.on("librarian",function(e){setInterval(function(){r.default.find({owner:[e[1]]},function(e,n){e&&console.error(e),n&&o.emit("librarian",[n,null,null,null,null])}),r.default.find({owner:{$ne:[e[1]]},requested:!1},function(e,n){e&&console.error(e),n&&o.emit("librarian",[null,n,null,null,null])}),r.default.find({requested:!0},function(e,n){e&&console.error(e),n&&o.emit("librarian",[null,null,n,null,null])}),r.default.find({requested:!0,requestor:e[1]},function(e,n){e&&console.error(e),n&&o.emit("librarian",[null,null,null,n,null])}),r.default.find({requested:!0,owner:e[1]},function(e,n){e&&console.error(e),n&&o.emit("librarian",[null,null,null,null,n])})},e[0])}),e.on("disconnect",function(){console.log("Web Sockets disconnected.")})})});o.default=u},function(e,o){e.exports=require("connect-mongo")}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+module.exports = require("dotenv");
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** MODEL ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.changeBookOwner = exports.removeBook = exports.saveBook = exports.denyRequest = exports.approveRequest = exports.cancelRequest = exports.requestBook = exports.sternGaze = exports.curseOfAlexandria = exports.otherShelves = exports.userShelves = exports.library = undefined;
+
+var _Book = __webpack_require__(5);
+
+var _Book2 = _interopRequireDefault(_Book);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//Find every book in the database
+var library = exports.library = function library(req, res) {
+  _Book2.default.find({}, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json(doc);
+    }
+  });
+};
+
+//Search for books owned by a particular user
+var userShelves = exports.userShelves = function userShelves(req, res) {
+  var user = req.params.user;
+
+  _Book2.default.find({ owner: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json(doc);
+    } else {
+      res.json('Nope, nothing');
+    }
+  });
+};
+
+//Search for books NOT owned by a particular user
+var otherShelves = exports.otherShelves = function otherShelves(req, res) {
+  var user = req.params.user;
+
+  _Book2.default.find({ owner: { $ne: user } }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json(doc);
+    } else {
+      res.json('Nope, you own the whole library.');
+    }
+  });
+};
+
+//Remove every book in the database
+var curseOfAlexandria = exports.curseOfAlexandria = function curseOfAlexandria(req, res) {
+  _Book2.default.remove({}, function (err, doc) {
+    console.log('All books deleted...');
+    res.json(doc);
+  });
+};
+
+//Constantly checking
+var sternGaze = exports.sternGaze = function sternGaze(message, socket) {
+  socket.on(message, function (interval) {
+    setInterval(function () {
+      _Book2.default.find({}, function (err, doc) {
+        socket.emit(doc);
+      });
+    }, interval);
+  });
+};
+
+//Mark a book as requested by a user
+var requestBook = exports.requestBook = function requestBook(req, res) {
+  var user = req.params.user;
+
+  var book = JSON.parse(decodeURIComponent(req.params.data));
+
+  _Book2.default.findOneAndUpdate({ olkey: book.olkey }, { requested: true, requestor: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json('Book requested.');
+    }
+  });
+};
+
+//Mark a book as NOT requested
+var cancelRequest = exports.cancelRequest = function cancelRequest(req, res) {
+  var user = req.params.user;
+
+  var book = JSON.parse(decodeURIComponent(req.params.data));
+
+  _Book2.default.findOneAndUpdate({
+    olkey: book.olkey,
+    requestor: user,
+    requested: true
+  }, { requested: false, requestor: '' }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json('Request for book with olkey ' + book.olkey + ' cancelled.');
+    }
+  });
+};
+
+//Approve Request
+var approveRequest = exports.approveRequest = function approveRequest(req, res) {
+  var user = req.params.user;
+
+  var book = JSON.parse(decodeURIComponent(req.params.data));
+
+  _Book2.default.findOne({ olkey: book.olkey, owner: user, requested: true }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      console.log('Before', doc);
+      doc.owner = doc.requestor;
+      doc.requestor = '';
+      doc.requested = false;
+      console.log('After', doc);
+      doc.save(function (err, result) {
+        console.log('Saved', result);
+        res.json('You have successfully swapped a book!');
+      });
+    }
+  });
+};
+
+//Deny request
+var denyRequest = exports.denyRequest = function denyRequest(req, res) {
+  var user = req.params.user;
+
+  var book = JSON.parse(decodeURIComponent(req.params.data));
+
+  _Book2.default.findOneAndUpdate({
+    olkey: book.olkey,
+    owner: user,
+    requested: true
+  }, { requested: false, requestor: '' }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json('Request for book with olkey ' + book.olkey + ' denied.');
+    }
+  });
+};
+
+//Saves a new book to the database
+var saveBook = exports.saveBook = function saveBook(req, res) {
+  var user = req.params.user;
+
+  var book = JSON.parse(decodeURIComponent(req.params.data));
+
+  _Book2.default.findOne({
+    username: user,
+    olkey: book.olkey
+  }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json('This book is already in the database');
+    } else {
+      var newBook = new _Book2.default({
+        author: book.author,
+        title: book.title,
+        publication: book.publication,
+        cover: book.cover,
+        olkey: book.olkey,
+        owner: user
+      });
+      newBook.save(function (err, doc) {
+        if (err) {
+          console.error(err);
+        }
+        res.json('This book has been saved! Praise Jesus! It is owned by ' + user + '!');
+      });
+    }
+  });
+};
+
+//Remove a user's book from the database
+var removeBook = exports.removeBook = function removeBook(req, res) {
+  var user = req.params.user;
+
+  var book = JSON.parse(decodeURIComponent(req.params.data));
+  console.log(book);
+  _Book2.default.remove({
+    owner: user,
+    olkey: book.olkey
+  }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      console.log(doc + ' has been deleted.');
+      res.json(doc + ' has been deleted.');
+    }
+  });
+};
+
+//Update the user's book ownership to their new username
+//Invoked in userController
+var changeBookOwner = exports.changeBookOwner = function changeBookOwner(user, newName) {
+  _Book2.default.find({ owner: user }, function (err, doc) {
+    console.log('Updating book ownership to new username...');
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      doc.map(function (item) {
+        item.owner = newName;
+        item.save(function (err, ok) {
+          if (err) {
+            console.error(err);
+          }
+          console.log('Book ownership updated:', ok);
+        });
+      });
+    }
+  });
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("babel-polyfill");
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(1);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+var Book = new Schema({
+  author: String,
+  cover: String,
+  olkey: String,
+  owner: String,
+  publication: Number,
+  requested: {
+    default: false,
+    type: Boolean
+  },
+  requestor: String,
+  title: String
+});
+
+exports.default = _mongoose2.default.model('Book', Book);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** MODEL ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.authConfig = undefined;
+
+var _User = __webpack_require__(7);
+
+var _User2 = _interopRequireDefault(_User);
+
+var _passport = __webpack_require__(4);
+
+var _passport2 = _interopRequireDefault(_passport);
+
+var _passportLocal = __webpack_require__(21);
+
+var _bcrypt = __webpack_require__(8);
+
+var _bcrypt2 = _interopRequireDefault(_bcrypt);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*** CONTROLLERS ***/
+var authConfig = exports.authConfig = function authConfig(passport) {
+  /*** Configure the local strategy for use by Passport.                      *
+   * The local strategy require a `verify` function which receives the        *
+   * credentials (`username` and `password`) submitted by the user.  The      *
+   * function must verify that the password is correct and then invoke `cb`   *
+   * with a user object, which will be set at `req.user` in route handlers    *
+   * after authentication.                                                  ***/
+  passport.use(new _passportLocal.Strategy(function (username, password, done) {
+    _User2.default.findOne({ username: username }, function (err, user) {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        console.log('No such user exists.');
+        return done(null, false);
+      }
+
+      //Compare the stored hash to a hash of the submitted password
+      _bcrypt2.default.compare(password, user.password, function (err, res) {
+        //res === true if they match
+        if (!res) {
+          console.log('Bad password');
+          return done(null, false);
+        }
+        return done(null, user);
+      });
+    });
+  }));
+
+  /*** Configure Passport authenticated session persistence.                  *
+   * In order to restore authentication state across HTTP requests, Passport  *
+   * needs to serialize users into and deserialize users out of the session.  *
+   * The typical implementation of this is as simple as supplying the user ID *
+   * when serializing, and querying the user record by ID from the database   *
+   * when deserializing.                                                    ***/
+  passport.serializeUser(function (user, done) {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(function (id, done) {
+    _User2.default.findById(id, function (err, user) {
+      done(err, user);
+    });
+  });
+};
+
+/*** BCRYPT ***/
+
+
+/*** PASSPORT ***/
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** REGEX ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regex = __webpack_require__(20);
+
+var _regex2 = _interopRequireDefault(_regex);
+
+var _mongoose = __webpack_require__(1);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Schema = _mongoose2.default.Schema;
+
+/*** MODEL ***/
+
+
+var User = new Schema({
+  created: {
+    type: Date,
+    required: true,
+    default: new Date()
+  },
+  location: {
+    match: _regex2.default.location,
+    minlength: 1,
+    required: true,
+    type: String
+  },
+  password: {
+    match: _regex2.default.password,
+    minlength: 8,
+    required: true,
+    type: String
+  },
+  username: {
+    index: { unique: true },
+    match: _regex2.default.username,
+    minlength: 1,
+    required: true,
+    type: String
+  }
+});
+
+exports.default = _mongoose2.default.model('User', User);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("bcrypt");
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(3);
+module.exports = __webpack_require__(10);
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** ES6+ ***/
+
+__webpack_require__(3);
+
+var _es6Promise = __webpack_require__(11);
+
+var _es6Promise2 = _interopRequireDefault(_es6Promise);
+
+__webpack_require__(12);
+
+var _express = __webpack_require__(13);
+
+var _express2 = _interopRequireDefault(_express);
+
+var _dotenv = __webpack_require__(0);
+
+var _dotenv2 = _interopRequireDefault(_dotenv);
+
+var _morgan = __webpack_require__(14);
+
+var _morgan2 = _interopRequireDefault(_morgan);
+
+var _compression = __webpack_require__(15);
+
+var _compression2 = _interopRequireDefault(_compression);
+
+var _mongoose = __webpack_require__(1);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _expressSession = __webpack_require__(16);
+
+var _expressSession2 = _interopRequireDefault(_expressSession);
+
+var _passport = __webpack_require__(4);
+
+var _passport2 = _interopRequireDefault(_passport);
+
+var _bodyParser = __webpack_require__(17);
+
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
+var _cookieParser = __webpack_require__(18);
+
+var _cookieParser2 = _interopRequireDefault(_cookieParser);
+
+var _indexServer = __webpack_require__(19);
+
+var _authConfig = __webpack_require__(6);
+
+var _http = __webpack_require__(25);
+
+var _http2 = _interopRequireDefault(_http);
+
+var _socket = __webpack_require__(26);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+var _socketServer = __webpack_require__(27);
+
+var _socketServer2 = _interopRequireDefault(_socketServer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_es6Promise2.default.polyfill();
+
+/*** EXPRESS ***/
+
+var app = (0, _express2.default)();
+
+/*** ENVIRONMENT ***/
+var path = process.cwd();
+
+_dotenv2.default.load();
+
+/*** DEVELOPMENT TOOLS ***/
+var DEV = "development" === 'development';
+var PROD = "development" === 'production';
+
+DEV ? app.use((0, _morgan2.default)('dev')) : app.use((0, _morgan2.default)('tiny'));
+
+/*** ENABLE COMPRESSION ***/
+
+if (PROD) {
+  app.use((0, _compression2.default)());
+}
+
+/*** MIDDLEWARE ***/
+app.use('/js', _express2.default.static(path + '/dist/js')); //The first argument creates the virtual directory used in index.html
+app.use('/styles', _express2.default.static(path + '/dist/styles'));
+app.use('/img', _express2.default.static(path + '/dist/img'));
+
+/*** MONGOOSE ***/
+
+var db = _mongoose2.default.connection;
+_mongoose2.default.Promise = _es6Promise2.default;
+_mongoose2.default.connect(process.env.MONGO_URI, { useMongoClient: true }, function (err, db) {
+  if (err) {
+    console.error('Failed to connect to database!');
+  } else {
+    console.log('Connected to database.');
+  }
+});
+
+/*** AUTHENTICATION ***/
+
+
+var MongoStore = __webpack_require__(28)(_expressSession2.default);
+
+app.use(_bodyParser2.default.urlencoded({ extended: false }));
+app.use((0, _cookieParser2.default)());
+
+var sess = {
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    path: '/',
+    httpOnly: false,
+    maxAge: 1800000 //30 minutes
+  },
+  store: new MongoStore({ mongooseConnection: db }, function (err) {
+    console.log(err);
+  }), //defaults to MemoryStore instance, which can cause memory leaks
+  name: 'id'
+};
+
+if (PROD) {
+  app.set('trust proxy', 1);
+  sess.cookie.secure = true; //serve secure cookies in production
+  sess.cookie.httpOnly = true;
+}
+
+app.use((0, _expressSession2.default)(sess));
+app.use(_passport2.default.initialize());
+app.use(_passport2.default.session());
+
+/*** ROUTES ***/
+
+(0, _authConfig.authConfig)(_passport2.default);
+(0, _indexServer.routes)(app, _passport2.default);
+
+/*** WEB SOCKETS ***/
+
+var server = _http2.default.createServer(app);
+
+var io = (0, _socket2.default)(server);
+
+(0, _socketServer2.default)(io);
+
+/*** SERVE ***/
+var port = process.env.PORT;
+server.listen(port, function () {
+  console.log('Server is listening on port', port + '.');
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("es6-promise");
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = require("isomorphic-fetch");
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("express");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = require("morgan");
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("compression");
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("express-session");
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("body-parser");
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = require("cookie-parser");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** ENVIRONMENT ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.routes = undefined;
+
+var _dotenv = __webpack_require__(0);
+
+var _dotenv2 = _interopRequireDefault(_dotenv);
+
+var _bookControllerServer = __webpack_require__(2);
+
+var _authConfig = __webpack_require__(6);
+
+var _userControllerServer = __webpack_require__(22);
+
+var _searchControllerServer = __webpack_require__(23);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var path = process.cwd();
+
+_dotenv2.default.load();
+
+/*** DEVELOPMENT TOOLS ***/
+var DEV = "development" === 'development';
+var PROD = "development" === 'production';
+
+/*** CONTROLLERS ***/
+
+//Handle book additions, ownership updates, swap requests, and deletions
+
+
+//Handle user updates and authentication
+
+
+//Handle Add Book searches
+
+
+/*** ROUTES ***/
+var routes = exports.routes = function routes(app, passport) {
+  //Enforce HTTPS in production
+  if (PROD) {
+    app.use('*', function (req, res, next) {
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+        console.log('Redirecting to', process.env.APP_URL + req.url);
+        res.redirect(process.env.APP_URL + req.url);
+      } else {
+        next(); /* Continue to other routes if we're not redirecting */
+      }
+    });
+  }
+
+  //Login
+  //This route exists because making it seems easier than convincing Passport.js
+  //to send a simple `json` response when there are login errors.
+  app.route('/welcome/jsValidate/:data').post(_userControllerServer.jsValidate);
+
+  //Main login page and validation routes
+  app.route('/welcome').get(function (req, res) {
+    res.sendFile(path + '/dist/welcome.html');
+  }).post(passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/welcome'
+  }));
+
+  //This is the name that will display in the client view
+  var name_view = void 0;
+  //Authorization check
+  var permissions = function permissions(req, res, next) {
+    if (req.isAuthenticated()) {
+      name_view = req.user.username;
+      return next();
+    } else {
+      if (DEV) {
+        name_view = 'Developer';
+        return next();
+      } else {
+        res.redirect('/welcome');
+      }
+    }
+  };
+
+  //Root
+  app.route('/').get(permissions, function (req, res) {
+    res.sendFile(path + '/dist/index.html');
+  });
+
+  //Logout
+  app.route('/logout').get(permissions, function (req, res) {
+    req.logout();
+    res.redirect('/welcome');
+  });
+
+  //API - They stop working when I require permissions...
+  //Search for a book
+  app.route('/api/search/:s').post(_searchControllerServer.searchSubmit);
+
+  //User requests a book
+  app.route('/api/:user/request/:data').post(_bookControllerServer.requestBook);
+  //User cancels their own book request
+  app.route('/api/:user/cancelRequest/:data').post(_bookControllerServer.cancelRequest);
+  //User denies request for their book
+  app.route('/api/:user/denyRequest/:data').post(_bookControllerServer.denyRequest);
+  //User approves request for their book
+  app.route('/api/:user/approveRequest/:data').post(_bookControllerServer.approveRequest);
+
+  //Update username and location
+  app.route('/api/:user/update-profile/:data').post(_userControllerServer.updateProfile);
+  //Update password
+  app.route('/api/:user/update-password/:data').post(_userControllerServer.updatePassword);
+
+  app.route('/api/:user/save/:data')
+  //Save a book to a user
+  .post(_bookControllerServer.saveBook)
+  //Delete a user's book
+  .delete(_bookControllerServer.removeBook);
+  //See a user's books
+  app.route('/api/:user/userBooks').get(_bookControllerServer.userShelves);
+  //See books that do NOT belong to a user
+  app.route('/api/:user/otherBooks').get(_bookControllerServer.otherShelves);
+
+  //Users
+  app.route('/api/users')
+  //See all users
+  .get(_userControllerServer.viewUsers)
+  //Save a new user and log the user in
+  .post(_userControllerServer.saveUser, passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/welcome'
+  }));
+
+  //Get login name
+  app.route('/api/users/logged').get(function (req, res) {
+    if (DEV) {
+      console.log('Client requesting username...');
+    }
+    res.json(name_view);
+  });
+
+  //Get user's location
+  app.route('/api/:user/location').get(_userControllerServer.getLocation);
+
+  /*** DEBUGGING - No UI ***/
+  if (DEV) {
+    //Remove all stored books
+    app.use('/api/burn', _bookControllerServer.curseOfAlexandria);
+    //Remove all users
+    app.use('/api/purge', _userControllerServer.genocide);
+    //See all books
+    app.route('/api/library').get(_bookControllerServer.library);
+  }
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+//The same regex is used in both client and
+//server side validation
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var regex = {
+  //Locations can't include numbers or most special characters and must be 1-100 characters
+  location: /^[a-zA-Z\,\-\.\ ]{1,100}$/,
+  //passwords should include at least 8 letters, numbers, and special characters
+  password: /(?=.*[a-zA-Z]+)(?=.*[0-9]+)(?=.*[^a-zA-Z0-9]+).{8,}/,
+  //Usernames can't include anything that's not a letter, number, or permitted special character and must be 1-40 characters
+  username: /^[A-Za-z0-9\-\.\,\ ]{1,40}$/
+};
+
+exports.default = regex;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-local");
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** ENVIRONMENT ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.updatePassword = exports.updateProfile = exports.saveUser = exports.getLocation = exports.jsValidate = exports.genocide = exports.viewUsers = undefined;
+
+var _dotenv = __webpack_require__(0);
+
+var _dotenv2 = _interopRequireDefault(_dotenv);
+
+var _User = __webpack_require__(7);
+
+var _User2 = _interopRequireDefault(_User);
+
+var _bcrypt = __webpack_require__(8);
+
+var _bcrypt2 = _interopRequireDefault(_bcrypt);
+
+var _bookControllerServer = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var path = process.cwd();
+
+_dotenv2.default.load();
+
+/*** DEVELOPMENT TOOLS ***/
+var DEV = "development" === 'development';
+var PROD = "development" === 'production';
+
+/*** MODELS ***/
+
+
+/*** BCRYPT ***/
+
+var saltRounds = 10;
+
+/*** CONTROLLERS ***/
+//Used to update book ownership when invoking updateProfile function
+
+
+//View all users in the database
+var viewUsers = exports.viewUsers = function viewUsers(req, res) {
+  _User2.default.find({}, function (err, results) {
+    if (err) {
+      console.error(err);
+    }
+    if (results) {
+      res.json(results);
+    }
+  });
+};
+
+//Remove every user in the database
+var genocide = exports.genocide = function genocide(req, res) {
+  _User2.default.remove({}, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      console.log('All users deleted...');
+      res.json('All users deleted...');
+    }
+  });
+};
+
+//Check if user exists - used for login and signup pre-passport validation
+var jsValidate = exports.jsValidate = function jsValidate(req, res) {
+  if (DEV) {
+    console.log('jsValidate');
+  }
+  var data = JSON.parse(decodeURIComponent(req.params.data));
+  var user = data.username;
+  var pass = data.password;
+  if (DEV) {
+    console.log('Validating username ' + user + ' with password ' + pass);
+  }
+
+  _User2.default.findOne({ username: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    //Signup validation
+    //signup validation does not check any password against the database;
+    //it only checks if the requested username is taken.
+    if (!pass) {
+      if (doc) {
+        res.json('NO');
+      } else {
+        res.json('OK');
+      }
+    } else {
+      //Login validation
+      //If there is a password and that user exists
+      if (doc) {
+        //Check current password submission against what's in the database
+        _bcrypt2.default.compare(pass, doc.password, function (err, verdict) {
+          //If it works, validation complete
+          if (verdict) {
+            res.json('OK');
+          } else {
+            //If thse password doesn't work, there's a problem
+            res.json('NO');
+          }
+        });
+      } else {
+        //If there's no such user, there's a problem
+        res.json('NO');
+      }
+    }
+  });
+};
+
+//Get user's location
+var getLocation = exports.getLocation = function getLocation(req, res) {
+  var user = req.params.user;
+
+  _User2.default.findOne({ username: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json(doc.location);
+    } else {
+      if (DEV) {
+        res.json('CodeLand');
+      }
+    }
+  });
+};
+
+//Save a new user to the database
+var saveUser = exports.saveUser = function saveUser(req, res, next) {
+  var user = req.body;
+  _User2.default.findOne({ username: user.username }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      res.json('NO');
+    } else {
+      _bcrypt2.default.hash(user.password, saltRounds, function (err, hash) {
+        var newUser = new _User2.default({
+          username: user.username,
+          password: hash,
+          location: user.location
+        });
+
+        newUser.save(function (err, doc) {
+          if (err) {
+            console.error(err);
+          }
+          console.log(user.username + ' successfully signed up. Logging in.');
+          return next();
+        });
+      });
+    }
+  });
+};
+
+//Update location or username
+var updateProfile = exports.updateProfile = function updateProfile(req, res) {
+  var user = req.params.user;
+
+  var update = JSON.parse(decodeURIComponent(req.params.data));
+
+  if (DEV) {
+    console.log('Update request received from ' + user);
+  }
+
+  //If user wants to update the username
+  if (update.username) {
+    //See if the requested username is already taken
+    _User2.default.findOne({ username: update.username }, function (err, doc) {
+      if (err) {
+        console.error(err);
+      }
+      //If so, send an error message
+      if (doc) {
+        res.json('NO');
+      } else {
+        //Else if that name isn't taken, find the existing user
+        _User2.default.findOneAndUpdate({ username: user }, { username: update.username }, function (err, doc2) {
+          if (err) {
+            console.error(err);
+          }
+          if (doc2) {
+            (0, _bookControllerServer.changeBookOwner)(user, update.username);
+            res.json('OK');
+          }
+        });
+      }
+    });
+  }
+
+  //If user wants to update their location
+  if (update.location) {
+    if (DEV) {
+      console.log('Updating location to', update.location);
+    }
+    _User2.default.findOneAndUpdate({ username: user }, { location: update.location }, function (err, ok) {
+      if (err) {
+        console.error(err);
+      }
+      if (ok) {
+        console.log(ok);
+        res.json('New location:' + ok.location);
+      }
+    });
+  }
+};
+
+//Update password
+var updatePassword = exports.updatePassword = function updatePassword(req, res) {
+  var user = req.params.user;
+  var update = JSON.parse(decodeURIComponent(req.params.data));
+  _User2.default.findOne({ username: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      //Check current password submission against what's in the database
+      _bcrypt2.default.compare(update.currentPassword, doc.password, function (err, verdict) {
+        //If it works, hash and save the new password submission
+        if (verdict) {
+          _bcrypt2.default.hash(update.newPassword, saltRounds, function (err, hash) {
+            doc.password = hash;
+            doc.save(function (err, result) {
+              if (err) {
+                console.error(err);
+              }
+              res.json('OK');
+            });
+          });
+        } else {
+          res.json('NO');
+        }
+      });
+    } else {
+      res.json('NO');
+    }
+  });
+};
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.searchSubmit = undefined;
+
+var _commonFunctions = __webpack_require__(24);
+
+var searchSubmit = exports.searchSubmit = function searchSubmit(req, res) {
+  (0, _commonFunctions.f)('GET', 'https://openlibrary.org/search.json?q=' + req.params.s, function (response) {
+    var books = [];
+    //Only sort through the first 20 responses
+    for (var i = 0; i < 20; i++) {
+      var b = response.docs[i];
+
+      //Validate and Clean Author Entries
+      var author = void 0;
+      if (!b.author_name) {
+        author = 'Unlisted';
+      } else if (b.author_name.length === 1) {
+        author = b.author_name[0];
+      } else if (b.author_name.length === 2) {
+        author = b.author_name.join(' and ');
+      } else if (b.author_name.length > 2) {
+        author = b.author_name[0] + ', ' + b.author_name[1] + ', et al.';
+      } else {
+        author = 'Unlisted';
+      }
+      //Validate and Clean Title
+      var title = void 0;
+      if (!b.title) {
+        title = 'Unlisted Title';
+      } else {
+        title = b.title;
+      }
+
+      //Validate and Clean Publication Date
+      var publication = void 0;
+      if (!b.first_publish_year) {
+        publication = 0;
+      } else {
+        publication = b.first_publish_year;
+      }
+
+      //Validate and Clean Cover Keys
+      var cover = void 0;
+      if (!b.cover_edition_key) {
+        cover = null;
+      } else {
+        cover = b.cover_edition_key;
+      }
+
+      //Validate and Clean olkeys
+      var k = void 0;
+      if (b.key) {
+        k = b.key;
+        k = k.split('');
+        k.splice(0, 7);
+        k = k.join('');
+      }
+
+      //Assemble the book object
+      var book = {
+        author: author,
+        title: title,
+        publication: publication,
+        cover: cover,
+        olkey: k
+
+        //Push the book object to the books array
+      };if (book.cover) {
+        books.push(book);
+      }
+
+      //Handle short responses
+      if (i === response.docs.length - 1) {
+        break;
+      }
+    }
+
+    //Send the array to the client
+    res.json(books);
+  });
+};
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var f = exports.f = function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(method, url, cb1, cb2) {
+    var a, b;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return fetch(url, { method: method });
+
+          case 3:
+            a = _context.sent;
+            _context.next = 6;
+            return a.json();
+
+          case 6:
+            b = _context.sent;
+
+            cb1(b);
+            _context.next = 13;
+            break;
+
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context['catch'](0);
+            return _context.abrupt('return', _context.t0);
+
+          case 13:
+            _context.prev = 13;
+
+            if (cb2) {
+              cb2();
+            }
+            return _context.finish(13);
+
+          case 16:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, undefined, [[0, 10, 13, 16]]);
+  }));
+
+  return function f(_x, _x2, _x3, _x4) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+var uniq = exports.uniq = function uniq(a) {
+  return Array.from(new Set(a));
+}; //Deduplicate
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+module.exports = require("http");
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+module.exports = require("socket.io");
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Book = __webpack_require__(5);
+
+var _Book2 = _interopRequireDefault(_Book);
+
+var _bookControllerServer = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ioEvents = function ioEvents(io) {
+  io.on('connection', function (serverSocket) {
+    console.log('Web Sockets connected.');
+
+    serverSocket.on('librarian', function (received) {
+      setInterval(function () {
+        //User shelves
+        _Book2.default.find({ owner: [received[1]] }, function (err, doc) {
+          if (err) {
+            console.error(err);
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [doc, null, null, null, null]);
+          }
+        });
+
+        //Other shelves
+        _Book2.default.find({ owner: { $ne: [received[1]] }, requested: false }, function (err, doc) {
+          if (err) {
+            console.error(err);
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, doc, null, null, null]);
+          }
+        });
+
+        //Requested books
+        _Book2.default.find({ requested: true }, function (err, doc) {
+          if (err) {
+            console.error(err);
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, null, doc, null, null]);
+          }
+        });
+
+        //Requested by user
+        _Book2.default.find({ requested: true, requestor: received[1] }, function (err, doc) {
+          if (err) {
+            console.error(err);
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, null, null, doc, null]);
+          }
+        });
+
+        //Requests for user's books
+        _Book2.default.find({ requested: true, owner: received[1] }, function (err, doc) {
+          if (err) {
+            console.error(err);
+          }
+          if (doc) {
+            serverSocket.emit('librarian', [null, null, null, null, doc]);
+          }
+        });
+      }, received[0]);
+    });
+    //    sternGaze('librarian', serverSocket)
+
+    io.on('disconnect', function () {
+      console.log('Web Sockets disconnected.');
+    });
+  });
+};
+
+exports.default = ioEvents;
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+module.exports = require("connect-mongo");
+
+/***/ })
+/******/ ]);
+//# sourceMappingURL=server.bundle.js.map
