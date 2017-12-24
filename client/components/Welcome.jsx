@@ -174,19 +174,19 @@ export default class Welcome extends Component {
       <form action="/api/users" id="signupForm" method="post">
         <TextField
           errorText={userErr}
-          hintText="Your username will be public."
           floatingLabelText="Choose your username"
           fullWidth={true}
-          type="text"
-          name="username"
+          hintText="Your username will be public."
           id="username"
+          name="username"
+          type="text"
         />
         <br />
         <TextField
           errorText={passErr}
-          hintText="Use at least 8 letters, numbers, and special characters."
           floatingLabelText="Create a password"
           fullWidth={true}
+          hintText="Use at least 8 letters, numbers, and special characters."
           id="password"
           name="password"
           type="password"
@@ -196,7 +196,7 @@ export default class Welcome extends Component {
           errorText={locErr}
           floatingLabelText="Location"
           fullWidth={true}
-          hintText="Where do you want to swap books?"
+          hintText="City and state or province"
           id="location"
           name="location"
           type="text"
