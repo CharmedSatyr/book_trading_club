@@ -123,7 +123,7 @@ const WhichButton = ({
             })
             snackBar('delete')
           }}
-          tooltip={'Delete ' + reference + ' from Your Books.'}
+          tooltip={'Remove ' + reference + ' from Your Books.'}
         >
           <NavigationCancel color={pinkA200} />
         </IconButton>
