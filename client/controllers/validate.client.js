@@ -59,6 +59,10 @@ export const clearInput = state => {
   //Clear field on login error or on signup if invalid
   if (state.loginErr || state.passErr.length > 0) {
     document.getElementById('password').value = ''
+    //This applies to the new password field in the Profile section
+    if (document.getElementById('passwordN').value) {
+      document.getElementById('passwordN').value = ''
+    }
   }
   //Clear field on login error or on signup if invalid
   if (state.loginErr || state.userErr.length > 0) {
