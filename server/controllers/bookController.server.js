@@ -231,7 +231,6 @@ export const changeBookOwner = (user, newName) => {
             console.error(err)
           }
           console.log('Book ownership updated:', ok)
-          res.json('Book ownership updated.')
         })
       })
     }
