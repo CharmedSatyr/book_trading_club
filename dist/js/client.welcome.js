@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 832);
+/******/ 	return __webpack_require__(__webpack_require__.s = 834);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -47208,8 +47208,113 @@ RenderToLayer.propTypes =  true ? {
 exports.default = RenderToLayer;
 
 /***/ }),
-/* 741 */,
-/* 742 */,
+/* 741 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** REGEX ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.clearInput = exports.userVal = exports.passVal = exports.locVal = exports.errMessage = undefined;
+
+var _regex = __webpack_require__(742);
+
+var _regex2 = _interopRequireDefault(_regex);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*** FUNCTIONS ***/
+var errMessage = exports.errMessage = function errMessage(field, good) {
+  switch (field) {
+    case 'user':
+      return good ? '' : 'Please use 1-40 letters and numbers.';
+      break;
+    case 'pass':
+      return good ? '' : 'Your password must include at least 8 letters, numbers, and special characters.';
+      break;
+    case 'loc':
+      return good ? '' : "Please use 1-100 letters. Don't include your street address or other personal information.";
+      break;
+    default:
+      return '';
+  }
+};
+//location err
+var locVal = exports.locVal = function locVal(loc) {
+  if (loc && loc.match(_regex2.default.location)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//password err
+var passVal = exports.passVal = function passVal(pass) {
+  if (pass && pass.match(_regex2.default.password)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//username err
+var userVal = exports.userVal = function userVal(user) {
+  if (user && user.match(_regex2.default.username)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//Clear input fields on error
+var clearInput = exports.clearInput = function clearInput(state) {
+  //Clear on signup if invalid; not visible during login
+  if (state.locErr.length > 0) {
+    document.getElementById('location').value = '';
+  }
+  //Clear field on login error or on signup if invalid
+  if (state.loginErr || state.passErr.length > 0) {
+    document.getElementById('password').value = '';
+    //This applies to the new password field in the Profile section
+    if (document.getElementById('passwordN').value) {
+      document.getElementById('passwordN').value = '';
+    }
+  }
+  //Clear field on login error or on signup if invalid
+  if (state.loginErr || state.userErr.length > 0) {
+    document.getElementById('username').value = '';
+  }
+};
+
+/***/ }),
+/* 742 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+//The same regex is used in both client and
+//server side validation
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var regex = {
+  //Locations can't include numbers or most special characters and must be 1-100 characters
+  location: /^[a-zA-Z\,\-\.\ ]{1,100}$/,
+  //passwords should include at least 8 letters, numbers, and special characters
+  password: /(?=.*[a-zA-Z]+)(?=.*[0-9]+)(?=.*[^a-zA-Z0-9]+).{8,}/,
+  //Usernames can't include anything that's not a letter, number, or permitted special character and must be 1-40 characters
+  username: /^[A-Za-z0-9\-\.\,\ ]{1,40}$/
+};
+
+exports.default = regex;
+
+/***/ }),
 /* 743 */,
 /* 744 */,
 /* 745 */,
@@ -47299,15 +47404,17 @@ exports.default = RenderToLayer;
 /* 829 */,
 /* 830 */,
 /* 831 */,
-/* 832 */
+/* 832 */,
+/* 833 */,
+/* 834 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(833);
+__webpack_require__(835);
 module.exports = __webpack_require__(206);
 
 
 /***/ }),
-/* 833 */
+/* 835 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47339,7 +47446,7 @@ var _styles = __webpack_require__(694);
 
 var _styles2 = _interopRequireDefault(_styles);
 
-var _Welcome = __webpack_require__(834);
+var _Welcome = __webpack_require__(836);
 
 var _Welcome2 = _interopRequireDefault(_Welcome);
 
@@ -47372,7 +47479,7 @@ _reactDom2.default.render(_react2.default.createElement(
 ), document.getElementById('welcome'));
 
 /***/ }),
-/* 834 */
+/* 836 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47417,7 +47524,7 @@ var _TextField2 = _interopRequireDefault(_TextField);
 
 var _commonFunctions = __webpack_require__(202);
 
-var _validateClient = __webpack_require__(835);
+var _validateClient = __webpack_require__(741);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47671,113 +47778,6 @@ var Welcome = function (_Component) {
 }(_react.Component);
 
 exports.default = Welcome;
-
-/***/ }),
-/* 835 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/*** REGEX ***/
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.clearInput = exports.userVal = exports.passVal = exports.locVal = exports.errMessage = undefined;
-
-var _regex = __webpack_require__(836);
-
-var _regex2 = _interopRequireDefault(_regex);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*** FUNCTIONS ***/
-var errMessage = exports.errMessage = function errMessage(field, good) {
-  switch (field) {
-    case 'user':
-      return good ? '' : 'Please use 1-40 letters and numbers.';
-      break;
-    case 'pass':
-      return good ? '' : 'Your password must include at least 8 letters, numbers, and special characters.';
-      break;
-    case 'loc':
-      return good ? '' : "Please use 1-100 letters. Don't include your street address or other personal information.";
-      break;
-    default:
-      return '';
-  }
-};
-//location err
-var locVal = exports.locVal = function locVal(loc) {
-  if (loc && loc.match(_regex2.default.location)) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-//password err
-var passVal = exports.passVal = function passVal(pass) {
-  if (pass && pass.match(_regex2.default.password)) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-//username err
-var userVal = exports.userVal = function userVal(user) {
-  if (user && user.match(_regex2.default.username)) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-//Clear input fields on error
-var clearInput = exports.clearInput = function clearInput(state) {
-  //Clear on signup if invalid; not visible during login
-  if (state.locErr.length > 0) {
-    document.getElementById('location').value = '';
-  }
-  //Clear field on login error or on signup if invalid
-  if (state.loginErr || state.passErr.length > 0) {
-    document.getElementById('password').value = '';
-    //This applies to the new password field in the Profile section
-    if (document.getElementById('passwordN').value) {
-      document.getElementById('passwordN').value = '';
-    }
-  }
-  //Clear field on login error or on signup if invalid
-  if (state.loginErr || state.userErr.length > 0) {
-    document.getElementById('username').value = '';
-  }
-};
-
-/***/ }),
-/* 836 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-//The same regex is used in both client and
-//server side validation
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var regex = {
-  //Locations can't include numbers or most special characters and must be 1-100 characters
-  location: /^[a-zA-Z\,\-\.\ ]{1,100}$/,
-  //passwords should include at least 8 letters, numbers, and special characters
-  password: /(?=.*[a-zA-Z]+)(?=.*[0-9]+)(?=.*[^a-zA-Z0-9]+).{8,}/,
-  //Usernames can't include anything that's not a letter, number, or permitted special character and must be 1-40 characters
-  username: /^[A-Za-z0-9\-\.\,\ ]{1,40}$/
-};
-
-exports.default = regex;
 
 /***/ })
 /******/ ]);

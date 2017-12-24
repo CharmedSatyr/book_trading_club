@@ -87,9 +87,9 @@ module.exports = require("mongoose");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.changeBookOwner = exports.removeBook = exports.saveBook = exports.denyRequest = exports.approveRequest = exports.cancelRequest = exports.requestBook = exports.sternGaze = exports.curseOfAlexandria = exports.otherShelves = exports.userShelves = exports.library = undefined;
+exports.purgeUserBooks = exports.changeBookOwner = exports.removeBook = exports.saveBook = exports.denyRequest = exports.approveRequest = exports.cancelRequest = exports.requestBook = exports.sternGaze = exports.curseOfAlexandria = exports.otherShelves = exports.userShelves = exports.library = undefined;
 
-var _Book = __webpack_require__(5);
+var _Book = __webpack_require__(3);
 
 var _Book2 = _interopRequireDefault(_Book);
 
@@ -189,7 +189,7 @@ var cancelRequest = exports.cancelRequest = function cancelRequest(req, res) {
       console.error(err);
     }
     if (doc) {
-      res.json('Request for book with olkey ' + book.olkey + ' cancelled.');
+      res.json('Request for book with olkey ' + book.olkey + ' canceled.');
     }
   });
 };
@@ -252,7 +252,7 @@ var saveBook = exports.saveBook = function saveBook(req, res) {
       console.error(err);
     }
     if (doc) {
-      res.json('This book is already in the database');
+      res.json('This book is already in the database.');
     } else {
       var newBook = new _Book2.default({
         author: book.author,
@@ -295,39 +295,79 @@ var removeBook = exports.removeBook = function removeBook(req, res) {
 //Update the user's book ownership to their new username
 //Invoked in userController
 var changeBookOwner = exports.changeBookOwner = function changeBookOwner(user, newName) {
-  _Book2.default.find({ owner: user }, function (err, doc) {
-    console.log('Updating book ownership to new username...');
+  _Book2.default.find({}, function (err, doc) {
     if (err) {
       console.error(err);
     }
     if (doc) {
       doc.map(function (item) {
-        item.owner = newName;
+        //Update book ownership to newName
+        if (item.owner === user) {
+          item.owner = newName;
+        }
+
+        //Update user requests to newName
+        if (item.requestor === user && item.requested === true) {
+          item.requestor = newName;
+        }
+
+        //Save changes
         item.save(function (err, ok) {
           if (err) {
             console.error(err);
           }
           console.log('Book ownership updated:', ok);
+          res.json('Book ownership updated.');
         });
       });
     }
   });
 };
 
+//Purge user's books
+//Invoked when deleting a user's account
+var purgeUserBooks = exports.purgeUserBooks = function purgeUserBooks(user) {
+  _Book2.default.find({}, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      doc.map(function (item) {
+        //If user has requested books, cancel the requests
+        if (item.requestor === user) {
+          item.requested = false;
+          item.requestor = '';
+        }
+        //If user's books have been requested, deny the requests
+        if (item.owner === user && item.requested === true) {
+          item.requested = false;
+          item.requestor = '';
+        }
+
+        //Save changes
+        item.save(function (err, ok) {
+          if (err) {
+            console.error(err);
+          }
+          console.log('Requests for ' + item + ' canceled or denied.');
+        });
+      });
+    }
+  });
+
+  //If user owns the book, remove the book
+  _Book2.default.remove({ owner: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      console.log(user + "'s books removed.'");
+    }
+  });
+};
+
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("babel-polyfill");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("passport");
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -362,6 +402,18 @@ var Book = new Schema({
 exports.default = _mongoose2.default.model('Book', Book);
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("babel-polyfill");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport");
+
+/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -379,7 +431,7 @@ var _User = __webpack_require__(7);
 
 var _User2 = _interopRequireDefault(_User);
 
-var _passport = __webpack_require__(4);
+var _passport = __webpack_require__(5);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -510,7 +562,7 @@ module.exports = require("bcrypt");
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(3);
+__webpack_require__(4);
 module.exports = __webpack_require__(10);
 
 
@@ -523,7 +575,7 @@ module.exports = __webpack_require__(10);
 
 /*** ES6+ ***/
 
-__webpack_require__(3);
+__webpack_require__(4);
 
 var _es6Promise = __webpack_require__(11);
 
@@ -555,7 +607,7 @@ var _expressSession = __webpack_require__(16);
 
 var _expressSession2 = _interopRequireDefault(_expressSession);
 
-var _passport = __webpack_require__(4);
+var _passport = __webpack_require__(5);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -830,7 +882,6 @@ var routes = exports.routes = function routes(app, passport) {
   //API - They stop working when I require permissions...
   //Search for a book
   app.route('/api/search/:s').post(_searchControllerServer.searchSubmit);
-
   //User requests a book
   app.route('/api/:user/request/:data').post(_bookControllerServer.requestBook);
   //User cancels their own book request
@@ -839,7 +890,6 @@ var routes = exports.routes = function routes(app, passport) {
   app.route('/api/:user/denyRequest/:data').post(_bookControllerServer.denyRequest);
   //User approves request for their book
   app.route('/api/:user/approveRequest/:data').post(_bookControllerServer.approveRequest);
-
   //Update username and location
   app.route('/api/:user/update-profile/:data').post(_userControllerServer.updateProfile);
   //Update password
@@ -875,6 +925,9 @@ var routes = exports.routes = function routes(app, passport) {
 
   //Get user's location
   app.route('/api/:user/location').get(_userControllerServer.getLocation);
+
+  //Delete user
+  app.route('/api/deleteUser/:user').delete(_userControllerServer.deleteUser);
 
   /*** DEBUGGING - No UI ***/
   if (DEV) {
@@ -929,7 +982,7 @@ module.exports = require("passport-local");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatePassword = exports.updateProfile = exports.saveUser = exports.getLocation = exports.jsValidate = exports.genocide = exports.viewUsers = undefined;
+exports.deleteUser = exports.updatePassword = exports.updateProfile = exports.saveUser = exports.getLocation = exports.jsValidate = exports.genocide = exports.viewUsers = undefined;
 
 var _dotenv = __webpack_require__(0);
 
@@ -963,6 +1016,10 @@ var PROD = "development" === 'production';
 var saltRounds = 10;
 
 /*** CONTROLLERS ***/
+//Used to update book ownership when invoking updateProfile function
+//Or to nullify user's book positions before account deletion
+
+
 //View all users in the database
 var viewUsers = exports.viewUsers = function viewUsers(req, res) {
   _User2.default.find({}, function (err, results) {
@@ -1061,8 +1118,10 @@ var saveUser = exports.saveUser = function saveUser(req, res, next) {
       console.error(err);
     }
     if (doc) {
+      //Error if this user already exists
       res.json('NO');
     } else {
+      //Otherwise has the password and save the user information
       _bcrypt2.default.hash(user.password, saltRounds, function (err, hash) {
         var newUser = new _User2.default({
           username: user.username,
@@ -1081,8 +1140,6 @@ var saveUser = exports.saveUser = function saveUser(req, res, next) {
     }
   });
 };
-
-//Used to update book ownership when invoking updateProfile function
 
 //Update location or username
 var updateProfile = exports.updateProfile = function updateProfile(req, res) {
@@ -1159,6 +1216,7 @@ var updateProfile = exports.updateProfile = function updateProfile(req, res) {
 //Update password
 var updatePassword = exports.updatePassword = function updatePassword(req, res) {
   var user = req.params.user;
+
   var update = JSON.parse(decodeURIComponent(req.params.data));
   _User2.default.findOne({ username: user }, function (err, doc) {
     if (err) {
@@ -1179,11 +1237,33 @@ var updatePassword = exports.updatePassword = function updatePassword(req, res) 
             });
           });
         } else {
+          //Else send error
           res.json('NO');
         }
       });
     } else {
+      //No user found - not expected
       res.json('NO');
+    }
+  });
+};
+
+//Delete user and user's books
+var deleteUser = exports.deleteUser = function deleteUser(req, res) {
+  var user = req.params.user;
+
+  //Cancel user requests, deny requests for user's books, and remove user's books
+
+  (0, _bookControllerServer.purgeUserBooks)(user);
+
+  //Delete the user
+  _User2.default.remove({ username: user }, function (err, doc) {
+    if (err) {
+      console.error(err);
+    }
+    if (doc) {
+      console.log('User ' + user + ' deleted...');
+      res.json('User ' + user + ' deleted...');
     }
   });
 };
@@ -1368,7 +1448,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Book = __webpack_require__(5);
+var _Book = __webpack_require__(3);
 
 var _Book2 = _interopRequireDefault(_Book);
 
