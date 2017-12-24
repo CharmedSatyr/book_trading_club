@@ -15,7 +15,7 @@ const NavBar = ({ loggedUser }) => {
     <header>
       <AppBar
         title="Charmed Books"
-        iconElementLeft={<AvLibraryBooks className="AppBar" />}
+        iconElementLeft={<AvLibraryBooks className="bookIcon" />}
         iconElementRight={
           <span>
             <div className="welcomeName">Welcome, {loggedUser}</div>

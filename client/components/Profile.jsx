@@ -55,19 +55,26 @@ export default class Profile extends Component {
         console.log(response)
       }
       //Force re-login or error handling
-      if (response === 'Password successfully changed.') {
+      if (response === 'OK') {
         this.setState({ open: true })
-      } else if (response === 'There was a problem changing your password. Please try again.') {
+      } else if (response === 'NO') {
         this.setState({ pwErr: true })
       }
     })
   }
-  submitProfileUpdate(loggedLocation, loggedUser) {
+  submitProfileUpdate(loggedUser, loggedLocation) {
+    if (DEV) {
+      console.log('Submitting update...')
+    }
+
     const username = document.getElementById('username').value
     const location = document.getElementById('location').value
     const update = { username: username, location: location }
     const data = encodeURIComponent(JSON.stringify(update))
     f('POST', '/api/' + loggedUser + '/update-profile/' + data, response => {
+      if (DEV) {
+        console.log('Posting update...')
+      }
       //Clear fields
       document.getElementById('username').value = ''
       document.getElementById('location').value = ''
@@ -75,11 +82,9 @@ export default class Profile extends Component {
         console.log(response)
       }
       //Force re-login or error handling
-      if (response === 'Successfully updated username and associated book ownership.') {
+      if (response === 'OK') {
         this.setState({ open: true })
-      } else if (
-        response === 'A user by this name already exists. Please try a different username.'
-      ) {
+      } else if (response === 'NO') {
         this.setState({ userErr: true })
       }
     })

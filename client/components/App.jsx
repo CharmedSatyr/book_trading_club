@@ -87,6 +87,9 @@ export default class App extends Component {
   //Get the user's login username
   loggedUser() {
     f('GET', '/api/users/logged', response => {
+      if (DEV) {
+        console.log('loggedUser:', response)
+      }
       this.setState({ loggedUser: response })
 
       //Call populate shelves fns and checkLibrary with loggedUser as argument

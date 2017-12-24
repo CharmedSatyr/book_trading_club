@@ -40,7 +40,7 @@ export const genocide = (req, res) => {
     }
     if (doc) {
       console.log('All users deleted...')
-      res.json(doc)
+      res.json('All users deleted...')
     }
   })
 }
@@ -117,7 +117,7 @@ export const saveUser = (req, res, next) => {
       console.error(err)
     }
     if (doc) {
-      res.json('This username is taken. Please choose another.')
+      res.json('NO')
     } else {
       bcrypt.hash(user.password, saltRounds, (err, hash) => {
         const newUser = new User({
@@ -143,6 +143,10 @@ export const updateProfile = (req, res) => {
   const { user } = req.params
   const update = JSON.parse(decodeURIComponent(req.params.data))
 
+  if (DEV) {
+    console.log('Update request received from ' + user)
+  }
+
   //If user wants to update the username
   if (update.username) {
     //See if the requested username is already taken
@@ -152,7 +156,7 @@ export const updateProfile = (req, res) => {
       }
       //If so, send an error message
       if (doc) {
-        res.json('A user by this name already exists. Please try a different username.')
+        res.json('NO')
       } else {
         //Else if that name isn't taken, find the existing user
         User.findOneAndUpdate({ username: user }, { username: update.username }, (err, doc2) => {
@@ -161,7 +165,7 @@ export const updateProfile = (req, res) => {
           }
           if (doc2) {
             changeBookOwner(user, update.username)
-            res.json('Successfully updated username and associated book ownership.')
+            res.json('OK')
           }
         })
       }
@@ -170,6 +174,9 @@ export const updateProfile = (req, res) => {
 
   //If user wants to update their location
   if (update.location) {
+    if (DEV) {
+      console.log('Updating location to', update.location)
+    }
     User.findOneAndUpdate({ username: user }, { location: update.location }, (err, ok) => {
       if (err) {
         console.error(err)
@@ -201,15 +208,15 @@ export const updatePassword = (req, res) => {
               if (err) {
                 console.error(err)
               }
-              res.json('Password successfully changed.')
+              res.json('OK')
             })
           })
         } else {
-          res.json('There was a problem changing your password. Please try again.')
+          res.json('NO')
         }
       })
     } else {
-      res.json('There was a problem changing your password. Please try again.')
+      res.json('NO')
     }
   })
 }
