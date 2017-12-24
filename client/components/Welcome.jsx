@@ -1,13 +1,5 @@
 'use strict'
 
-/*** ENVIRONMENT ***/
-import dotenv from 'dotenv'
-dotenv.load()
-
-/*** DEVELOPMENT TOOLS ***/
-const DEV = process.env.NODE_ENV === 'development'
-const PROD = process.env.NODE_ENV === 'production'
-
 /*** COMPONENTS ***/
 //React
 import React, { Component } from 'react'
@@ -22,23 +14,18 @@ import TextField from 'material-ui/TextField'
 
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
-
-/*** STYLES ***/
-const style = {
-  marginTop: 120,
-  paddingTop: 120
-}
+import { clearInput, errMessage, userVal, passVal, locVal } from '../controllers/validate.client.js'
 
 /*** MAIN ***/
 export default class Welcome extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      locationErr: false,
-      login: false,
+      locErr: '',
+      loginOpen: false,
       loginErr: false,
-      pwErr: '',
-      signup: false,
+      passErr: '',
+      signupOpen: false,
       userErr: ''
     }
     this.loginClick = this.loginClick.bind(this)
@@ -47,101 +34,148 @@ export default class Welcome extends Component {
     this.submitSignup = this.submitSignup.bind(this)
   }
   loginClick() {
-    this.setState({ login: true, signup: false })
+    this.setState({ loginOpen: true, signupOpen: false })
   }
   signupClick() {
-    this.setState({ login: false, signup: true })
+    this.setState({ loginOpen: false, signupOpen: true })
   }
   submitLogin() {
     const username = document.getElementById('username').value
     const password = document.getElementById('password').value
-    const loginInfo = {
-      username: username,
-      password: password
-    }
+
     //Basic client-side validation
-    if (username === '' || password === '') {
-      this.setState({ loginErr: true })
-    } else {
-      this.setState({ loginErr: false })
+    if (userVal(username) && passVal(password)) {
       //More easily configured server-side validation will take place before
       //the form is submitted to Passport. Passport.js documentation doesn't
       //discuss sending or receiving json responses
-      const data = encodeURIComponent(JSON.stringify(loginInfo))
-      if (DEV) {
-        console.log('Validating login...')
+      const loginInfo = {
+        username: username,
+        password: password
       }
+      const data = encodeURIComponent(JSON.stringify(loginInfo))
+      //Check login info on server side
       f('POST', '/welcome/jsValidate/' + data, response => {
-        if (DEV) {
-          console.log(response)
-        }
+        //Submit form if valid login and password
         if (response === 'OK') {
           this.setState({ loginErr: false })
           const loginForm = document.getElementById('loginForm')
           loginForm.submit()
+          //Otherwise something's wrong
+          //For example, the username does not exist or the password is wrong
         } else if (response === 'NO') {
-          this.setState({ loginErr: true })
+          this.setState({ loginErr: true }, () => {
+            //Clear input
+            clearInput(this.state)
+          })
         }
       })
+    } else {
+      //If the username and password don't pass client side validation,
+      //show an error and clear fields
+      this.setState(
+        {
+          loginErr: true
+        },
+        () => {
+          clearInput(this.state)
+        }
+      )
     }
   }
   submitSignup() {
-    if (DEV) {
-      console.log('submitSignup')
-    }
-    const username = document.getElementById('username').value
-    const password = document.getElementById('password').value
     const location = document.getElementById('location').value
-    const signupInfo = {
-      username: username
-    }
-    //Basic client-side validation
-    if (!username) {
-      this.setState({ userErr: 'Please enter a username.' })
-    } else if (!password) {
-      this.setState({ passErr: 'Please enter a password.', userErr: '' })
-    } else if (!location) {
-      this.setState({ locationErr: true, passErr: '' })
-    } else if (username && password && location) {
-      this.setState({ locationErr: '', passErr: '', userErr: '' })
-      //More easily configured server-side validation will take place before
-      //the form is submitted to Passport. Passport.js documentation doesn't
-      //discuss sending or receiving json responses
-      const data = encodeURIComponent(JSON.stringify(signupInfo))
-      if (DEV) {
-        console.log('Validating signup...')
+    const password = document.getElementById('password').value
+    const username = document.getElementById('username').value
+
+    //Validate input and set error messages in state
+    this.setState(
+      {
+        locErr: errMessage('loc', locVal(location)),
+        passErr: errMessage('pass', passVal(password)),
+        userErr: errMessage('user', userVal(username))
+      },
+      () => {
+        //Clear any fields that contain an error
+        clearInput(this.state)
       }
+    )
+    //If all fields are valid
+    if (locVal(location) && passVal(password) && userVal(username)) {
+      //check server side for username duplicate (route takes object because
+      //it's also used for login validation in login function)
+      const signupInfo = { username: username }
+      const data = encodeURIComponent(JSON.stringify(signupInfo))
       f('POST', '/welcome/jsValidate/' + data, response => {
-        if (DEV) {
-          console.log(response)
-        }
+        //If there is no existing user using this username
         if (response === 'OK') {
-          if (DEV) {
-            console.log('Submitting signupForm...')
-          }
+          //Submit the form to go through passport authentication
+          //and be added to the database
           const signupForm = document.getElementById('signupForm')
           signupForm.submit()
+          //else if there *is* an existing user using this username
         } else if (response === 'NO') {
-          this.setState({
-            userErr: 'This username is already in use. Please choose another one.'
-          })
+          //set err
+          this.setState(
+            {
+              userErr: 'This username is already in use. Please choose another one.'
+            },
+            () => {
+              //clear field
+              clearInput(this.state)
+            }
+          )
         }
       })
     }
   }
   render() {
     //constants
-    const { locationErr, loginErr, passErr, userErr } = this.state
+    const { locErr, loginOpen, loginErr, passErr, signupOpen, userErr } = this.state
+
+    //Login button
+    const loginButton = (
+      <FlatButton className="navButtons" label="Login" onClick={this.loginClick} />
+    )
+    //Popup on clicking Login button
+    const loginModal = (
+      <form action="/welcome" id="loginForm" method="post">
+        <TextField
+          errorText={loginErr ? ' ' : ''}
+          floatingLabelText="Username"
+          fullWidth={true}
+          hintText=""
+          id="username"
+          name="username"
+          type="text"
+        />
+        <br />
+        <TextField
+          errorText={loginErr ? 'Something is wrong. Please retype your credentials.' : ''}
+          floatingLabelText="Password"
+          fullWidth={true}
+          hintText=""
+          id="password"
+          name="password"
+          type="password"
+        />
+        <br />
+        <br />
+        <RaisedButton label="Login" onClick={this.submitLogin} primary={true} />
+        <RaisedButton label="Cancel" secondary={true} type="cancel" />
+      </form>
+    )
 
     //Sign Up button
-    const signupButton = <FlatButton label="Sign up" onClick={this.signupClick} />
+    const signupButton = (
+      <FlatButton className="navButtons" label="Sign up" onClick={this.signupClick} />
+    )
     //Popup on clicking Sign Up button
     const signupModal = (
       <form action="/api/users" id="signupForm" method="post">
         <TextField
           errorText={userErr}
           hintText="Your username will be public."
-          floatingLabelText="Username"
+          floatingLabelText="Choose your username"
           fullWidth={true}
           type="text"
           name="username"
@@ -150,8 +184,8 @@ export default class Welcome extends Component {
         <br />
         <TextField
           errorText={passErr}
-          hintText="Use 12-72 letters and numbers."
-          floatingLabelText="Password"
+          hintText="Use at least 8 letters, numbers, and special characters."
+          floatingLabelText="Create a password"
           fullWidth={true}
           id="password"
           name="password"
@@ -159,7 +193,7 @@ export default class Welcome extends Component {
         />
         <br />
         <TextField
-          errorText={locationErr ? 'Please enter your location.' : ''}
+          errorText={locErr}
           floatingLabelText="Location"
           fullWidth={true}
           hintText="Where do you want to swap books?"
@@ -174,53 +208,22 @@ export default class Welcome extends Component {
       </form>
     )
 
-    //Login button
-    const loginButton = <FlatButton label="Login" onClick={this.loginClick} />
-    //Popup on clicking Login button
-    const loginModal = (
-      <form action="/welcome" id="loginForm" method="post">
-        <TextField
-          errorText={loginErr ? ' ' : ''}
-          floatingLabelText="Username"
-          fullWidth={true}
-          hintText="Your username will be public."
-          id="username"
-          name="username"
-          type="text"
-        />
-        <br />
-        <TextField
-          errorText={loginErr ? 'Something is wrong. Please retype your credentials.' : ''}
-          floatingLabelText="Password"
-          fullWidth={true}
-          hintText="Use 12-72 letters and numbers."
-          id="password"
-          name="password"
-          type="password"
-        />
-        <br />
-        <br />
-        <RaisedButton label="Login" onClick={this.submitLogin} primary={true} />
-        <RaisedButton label="Cancel" secondary={true} type="cancel" />
-      </form>
-    )
-
     return (
       <div>
         <AppBar
           title="Charmed Books"
-          iconElementLeft={<AvLibraryBooks className="AvLibraryBooks" />}
+          iconElementLeft={<AvLibraryBooks className="bookIcon" />}
           iconElementRight={
             <div>
-              {signupButton}
               {loginButton}
+              {signupButton}
             </div>
           }
         />
-        <Dialog title="Sign Up" modal={true} open={this.state.signup}>
+        <Dialog title="Sign Up" modal={true} open={signupOpen}>
           {signupModal}
         </Dialog>
-        <Dialog title="Log In" modal={true} open={this.state.login}>
+        <Dialog title="Log In" modal={true} open={loginOpen}>
           {loginModal}
         </Dialog>
       </div>
