@@ -55093,6 +55093,8 @@ var _TextField2 = _interopRequireDefault(_TextField);
 
 var _commonFunctions = __webpack_require__(202);
 
+var _validateClient = __webpack_require__(835);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55125,74 +55127,105 @@ var Profile = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this, props));
 
-    _this.state = { open: false, pwErr: false, userErr: false };
+    _this.state = {
+      deleteOpen: false,
+      locErr: '',
+      logoutOpen: false,
+      passErr: '',
+      userErr: ''
+    };
+    _this.deleteAccount = _this.deleteAccount.bind(_this);
     _this.submitPasswordUpdate = _this.submitPasswordUpdate.bind(_this);
     _this.submitProfileUpdate = _this.submitProfileUpdate.bind(_this);
     return _this;
   }
 
   _createClass(Profile, [{
+    key: 'deleteAccount',
+    value: function deleteAccount() {
+      this.setState({ deleteOpen: true });
+    }
+  }, {
     key: 'submitPasswordUpdate',
     value: function submitPasswordUpdate(loggedUser) {
       var _this2 = this;
 
-      var password1 = document.getElementById('password1').value;
-      var password2 = document.getElementById('password2').value;
+      var password = document.getElementById('password').value;
+      var passwordN = document.getElementById('passwordN').value;
 
-      var bothPasswords = {
-        currentPassword: password1,
-        newPassword: password2
-      };
-
-      var data = encodeURIComponent(JSON.stringify(bothPasswords));
-      if (DEV) {
-        console.log('Sending current and new passwords:', data);
-      }
-      (0, _commonFunctions.f)('POST', '/api/' + loggedUser + '/update-password/' + data, function (response) {
-        //Clear fields
-        document.getElementById('password1').value = '';
-        document.getElementById('password2').value = '';
-        if (DEV) {
-          console.log(response);
-        }
-        //Force re-login or error handling
-        if (response === 'OK') {
-          _this2.setState({ open: true });
-        } else if (response === 'NO') {
-          _this2.setState({ pwErr: true });
-        }
+      //Validate new password input and set error messages in state
+      this.setState({ passErr: (0, _validateClient.errMessage)('pass', (0, _validateClient.passVal)(passwordN)) }, function () {
+        (0, _validateClient.clearInput)(_this2.state);
       });
+
+      //If the new password passes validation
+      if ((0, _validateClient.passVal)(passwordN)) {
+        var bothPasswords = {
+          currentPassword: password,
+          newPassword: passwordN
+        };
+        var data = encodeURIComponent(JSON.stringify(bothPasswords));
+        if (DEV) {
+          console.log('POSTing current and new passwords:', data);
+        }
+        (0, _commonFunctions.f)('POST', '/api/' + loggedUser + '/update-password/' + data, function (response) {
+          if (DEV) {
+            console.log(response);
+          }
+          //Force re-login or error handling
+          if (response === 'OK') {
+            _this2.setState({ logoutOpen: true });
+          } else if (response === 'NO') {
+            _this2.setState({ passErr: 'Something went wrong. Please try again.' }, function () {
+              (0, _validateClient.clearInput)(_this2.state);
+            });
+          }
+        });
+      }
     }
   }, {
     key: 'submitProfileUpdate',
     value: function submitProfileUpdate(loggedUser, loggedLocation) {
       var _this3 = this;
 
-      if (DEV) {
-        console.log('Submitting update...');
-      }
-
       var username = document.getElementById('username').value;
       var location = document.getElementById('location').value;
-      var update = { username: username, location: location };
-      var data = encodeURIComponent(JSON.stringify(update));
-      (0, _commonFunctions.f)('POST', '/api/' + loggedUser + '/update-profile/' + data, function (response) {
-        if (DEV) {
-          console.log('Posting update...');
-        }
-        //Clear fields
-        document.getElementById('username').value = '';
-        document.getElementById('location').value = '';
-        if (DEV) {
-          console.log(response);
-        }
-        //Force re-login or error handling
-        if (response === 'OK') {
-          _this3.setState({ open: true });
-        } else if (response === 'NO') {
-          _this3.setState({ userErr: true });
-        }
+
+      //Basic client-side validation (see Welcome.jsx)
+      this.setState({
+        locErr: (0, _validateClient.errMessage)('loc', (0, _validateClient.locVal)(location)),
+        userErr: (0, _validateClient.errMessage)('user', (0, _validateClient.userVal)(username))
+      }, function () {
+        //Clean any fields that contain an error
+        (0, _validateClient.clearInput)(_this3.state);
       });
+
+      //Submit to server if client-side passes
+      if (!location && (0, _validateClient.userVal)(username) || !username && (0, _validateClient.locVal)(location) || (0, _validateClient.locVal)(location) && (0, _validateClient.userVal)(username)) {
+        //Clear both errors if user or loc passes
+        this.setState({ locErr: '', userErr: '' });
+
+        //POST updates to server
+        var update = { location: location, username: username };
+        var data = encodeURIComponent(JSON.stringify(update));
+        (0, _commonFunctions.f)('POST', '/api/' + loggedUser + '/update-profile/' + data, function (response) {
+          if (DEV) {
+            console.log('Posting update...');
+            console.log(response);
+          }
+          //Force re-login on success
+          if (response === 'OK') {
+            _this3.setState({ logoutOpen: true });
+            //error handling for duplicate username
+            //location error handling not implemented; unclear need
+          } else if (response === 'NO') {
+            _this3.setState({ userErr: 'This username is already in use. Please choose another one.' }, function () {
+              //clear field
+              (0, _validateClient.clearInput)(_this3.state);
+            });
+          }
+        });
+      }
     }
   }, {
     key: 'render',
@@ -55203,26 +55236,59 @@ var Profile = function (_Component) {
           loggedLocation = _props.loggedLocation,
           loggedUser = _props.loggedUser;
       var _state = this.state,
-          open = _state.open,
-          pwErr = _state.pwErr,
+          deleteOpen = _state.deleteOpen,
+          locErr = _state.locErr,
+          logoutOpen = _state.logoutOpen,
+          passErr = _state.passErr,
           userErr = _state.userErr;
 
-      //User will log out after changing location or password
 
+      var deleteBtns = _react2.default.createElement(
+        'span',
+        null,
+        _react2.default.createElement(_FlatButton2.default, {
+          href: '/logout',
+          label: 'I\'m sure',
+          onClick: function onClick() {
+            _this4.setState({ deleteOpen: false });
+          },
+          primary: true
+        }),
+        _react2.default.createElement(_FlatButton2.default, {
+          label: 'Cancel',
+          onClick: function onClick() {
+            _this4.setState({ deleteOpen: false });
+          },
+          secondary: true
+        })
+      );
+
+      var deleteDialog = _react2.default.createElement(
+        _Dialog2.default,
+        {
+          actions: deleteBtns,
+          modal: true,
+          open: deleteOpen,
+          title: 'Are you sure you want to delete your account?'
+        },
+        'All your books and swap requests will be removed.'
+      );
+
+      //User will log out after changing location or password
       var logoutBtn = _react2.default.createElement(_FlatButton2.default, {
         href: '/logout',
         label: 'Logout',
-        primary: true,
         onClick: function onClick() {
-          _this4.setState({ open: false });
-        }
+          _this4.setState({ logoutOpen: false });
+        },
+        primary: true
       });
       var logoutDialog = _react2.default.createElement(
         _Dialog2.default,
         {
           actions: logoutBtn,
           modal: true,
-          open: open,
+          open: logoutOpen,
           title: 'Your infomation was successfully updated'
         },
         'You will now be logged out. Please log in with your new credentials.'
@@ -55231,6 +55297,8 @@ var Profile = function (_Component) {
       return _react2.default.createElement(
         'span',
         null,
+        deleteDialog,
+        logoutDialog,
         _react2.default.createElement(
           'h2',
           null,
@@ -55255,7 +55323,6 @@ var Profile = function (_Component) {
           )
         ),
         _react2.default.createElement(_Divider2.default, null),
-        logoutDialog,
         _react2.default.createElement(
           'div',
           { className: 'formBox' },
@@ -55268,14 +55335,15 @@ var Profile = function (_Component) {
               'Personal details'
             ),
             _react2.default.createElement(_TextField2.default, {
-              floatingLabelText: 'Username',
+              errorText: userErr,
+              floatingLabelText: 'Update your username',
               fullWidth: true,
               hintText: 'Your username will be public.',
-              errorText: userErr ? 'That username is already taken. Please choose another.' : '',
               id: 'username'
             }),
             _react2.default.createElement('br', null),
             _react2.default.createElement(_TextField2.default, {
+              errorText: locErr,
               floatingLabelText: 'Location',
               fullWidth: true,
               hintText: 'City and state or province',
@@ -55283,8 +55351,8 @@ var Profile = function (_Component) {
             }),
             _react2.default.createElement('br', null),
             _react2.default.createElement(_RaisedButton2.default, {
-              buttonStyle: { width: '100%' },
               className: 'RaisedButtonProfile',
+              fullWidth: true,
               label: 'Save Changes',
               onClick: function onClick() {
                 _this4.submitProfileUpdate(loggedUser, loggedLocation);
@@ -55308,30 +55376,56 @@ var Profile = function (_Component) {
               'Change your password'
             ),
             _react2.default.createElement(_TextField2.default, {
-              errorText: pwErr ? ' ' : '',
+              errorText: passErr.length > 0 ? ' ' : '',
               floatingLabelText: 'Current Password',
               fullWidth: true,
               hintText: 'Use 12-72 letters and numbers.',
-              id: 'password1',
+              id: 'password',
               type: 'password'
             }),
             _react2.default.createElement('br', null),
             _react2.default.createElement(_TextField2.default, {
-              errorText: pwErr ? 'Something went wrong. Please try again.' : '',
+              errorText: passErr,
               floatingLabelText: 'New Password',
               fullWidth: true,
               hintText: 'Use 12-72 letters and numbers.',
-              id: 'password2',
+              id: 'passwordN',
               type: 'password'
             }),
             _react2.default.createElement('br', null),
             _react2.default.createElement(_RaisedButton2.default, {
-              label: 'Save Changes',
-              primary: true,
               className: 'RaisedButtonProfile',
+              fullWidth: true,
+              label: 'Save Changes',
               onClick: function onClick() {
                 _this4.submitPasswordUpdate(loggedUser);
-              }
+              },
+              primary: true
+            })
+          )
+        ),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement(_Divider2.default, null),
+        _react2.default.createElement(
+          'div',
+          { className: 'formBox' },
+          _react2.default.createElement(
+            'form',
+            null,
+            _react2.default.createElement(
+              _Subheader2.default,
+              null,
+              'Delete your account'
+            ),
+            _react2.default.createElement(_RaisedButton2.default, {
+              className: 'RaisedButtonProfile',
+              fullWidth: true,
+              label: 'Delete',
+              onClick: function onClick() {
+                _this4.deleteAccount();
+              },
+              secondary: true
             })
           )
         )
@@ -59501,6 +59595,116 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
+
+/***/ }),
+/* 832 */,
+/* 833 */,
+/* 834 */,
+/* 835 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*** REGEX ***/
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.clearInput = exports.userVal = exports.passVal = exports.locVal = exports.errMessage = undefined;
+
+var _regex = __webpack_require__(836);
+
+var _regex2 = _interopRequireDefault(_regex);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*** FUNCTIONS ***/
+var errMessage = exports.errMessage = function errMessage(field, good) {
+  switch (field) {
+    case 'user':
+      return good ? '' : 'Please use 1-40 letters and numbers.';
+      break;
+    case 'pass':
+      return good ? '' : 'Your password must include at least 8 letters, numbers, and special characters.';
+      break;
+    case 'loc':
+      return good ? '' : "Please use 1-100 letters. Don't include your street address or other personal information.";
+      break;
+    default:
+      return '';
+  }
+};
+//location err
+var locVal = exports.locVal = function locVal(loc) {
+  if (loc && loc.match(_regex2.default.location)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//password err
+var passVal = exports.passVal = function passVal(pass) {
+  if (pass && pass.match(_regex2.default.password)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//username err
+var userVal = exports.userVal = function userVal(user) {
+  if (user && user.match(_regex2.default.username)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+//Clear input fields on error
+var clearInput = exports.clearInput = function clearInput(state) {
+  //Clear on signup if invalid; not visible during login
+  if (state.locErr.length > 0) {
+    document.getElementById('location').value = '';
+  }
+  //Clear field on login error or on signup if invalid
+  if (state.loginErr || state.passErr.length > 0) {
+    document.getElementById('password').value = '';
+    //This applies to the new password field in the Profile section
+    if (document.getElementById('passwordN').value) {
+      document.getElementById('passwordN').value = '';
+    }
+  }
+  //Clear field on login error or on signup if invalid
+  if (state.loginErr || state.userErr.length > 0) {
+    document.getElementById('username').value = '';
+  }
+};
+
+/***/ }),
+/* 836 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+//The same regex is used in both client and
+//server side validation
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var regex = {
+  //Locations can't include numbers or most special characters and must be 1-100 characters
+  location: /^[a-zA-Z\,\-\.\ ]{1,100}$/,
+  //passwords should include at least 8 letters, numbers, and special characters
+  password: /(?=.*[a-zA-Z]+)(?=.*[0-9]+)(?=.*[^a-zA-Z0-9]+).{8,}/,
+  //Usernames can't include anything that's not a letter, number, or permitted special character and must be 1-40 characters
+  username: /^[A-Za-z0-9\-\.\,\ ]{1,40}$/
+};
+
+exports.default = regex;
 
 /***/ })
 /******/ ]);

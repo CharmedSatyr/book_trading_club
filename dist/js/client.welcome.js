@@ -47607,19 +47607,19 @@ var Welcome = function (_Component) {
         { action: '/api/users', id: 'signupForm', method: 'post' },
         _react2.default.createElement(_TextField2.default, {
           errorText: userErr,
-          hintText: 'Your username will be public.',
           floatingLabelText: 'Choose your username',
           fullWidth: true,
-          type: 'text',
+          hintText: 'Your username will be public.',
+          id: 'username',
           name: 'username',
-          id: 'username'
+          type: 'text'
         }),
         _react2.default.createElement('br', null),
         _react2.default.createElement(_TextField2.default, {
           errorText: passErr,
-          hintText: 'Use at least 8 letters, numbers, and special characters.',
           floatingLabelText: 'Create a password',
           fullWidth: true,
+          hintText: 'Use at least 8 letters, numbers, and special characters.',
           id: 'password',
           name: 'password',
           type: 'password'
@@ -47629,7 +47629,7 @@ var Welcome = function (_Component) {
           errorText: locErr,
           floatingLabelText: 'Location',
           fullWidth: true,
-          hintText: 'Where do you want to swap books?',
+          hintText: 'City and state or province',
           id: 'location',
           name: 'location',
           type: 'text'
@@ -47744,6 +47744,10 @@ var clearInput = exports.clearInput = function clearInput(state) {
   //Clear field on login error or on signup if invalid
   if (state.loginErr || state.passErr.length > 0) {
     document.getElementById('password').value = '';
+    //This applies to the new password field in the Profile section
+    if (document.getElementById('passwordN').value) {
+      document.getElementById('passwordN').value = '';
+    }
   }
   //Clear field on login error or on signup if invalid
   if (state.loginErr || state.userErr.length > 0) {

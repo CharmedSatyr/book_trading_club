@@ -963,9 +963,6 @@ var PROD = "development" === 'production';
 var saltRounds = 10;
 
 /*** CONTROLLERS ***/
-//Used to update book ownership when invoking updateProfile function
-
-
 //View all users in the database
 var viewUsers = exports.viewUsers = function viewUsers(req, res) {
   _User2.default.find({}, function (err, results) {
@@ -1085,6 +1082,8 @@ var saveUser = exports.saveUser = function saveUser(req, res, next) {
   });
 };
 
+//Used to update book ownership when invoking updateProfile function
+
 //Update location or username
 var updateProfile = exports.updateProfile = function updateProfile(req, res) {
   var user = req.params.user;
@@ -1095,6 +1094,9 @@ var updateProfile = exports.updateProfile = function updateProfile(req, res) {
     console.log('Update request received from ' + user);
   }
 
+  //response will be NO if either update returns an error, else OK
+  var response = void 0;
+
   //If user wants to update the username
   if (update.username) {
     //See if the requested username is already taken
@@ -1104,7 +1106,7 @@ var updateProfile = exports.updateProfile = function updateProfile(req, res) {
       }
       //If so, send an error message
       if (doc) {
-        res.json('NO');
+        response = 'NO';
       } else {
         //Else if that name isn't taken, find the existing user
         _User2.default.findOneAndUpdate({ username: user }, { username: update.username }, function (err, doc2) {
@@ -1113,7 +1115,9 @@ var updateProfile = exports.updateProfile = function updateProfile(req, res) {
           }
           if (doc2) {
             (0, _bookControllerServer.changeBookOwner)(user, update.username);
-            res.json('OK');
+            //If there are no previous errors, return OK, else NO
+            response === 'NO' ? response = 'NO' : response = 'OK';
+            console.log('THIS IS IT:', response);
           }
         });
       }
@@ -1131,10 +1135,25 @@ var updateProfile = exports.updateProfile = function updateProfile(req, res) {
       }
       if (ok) {
         console.log(ok);
-        res.json('New location:' + ok.location);
+        response === 'NO' ? response = 'NO' : response = 'OK';
+      } else {
+        //This is not expected to happen
+        response = 'NO';
       }
     });
   }
+
+  //This is a sort of hack to wait until response is defined before sending. Possibly improve using async/await, promises...
+  var wait = setInterval(function () {
+    if (response) {
+      //This response should take into account both username and location updates, returning NO or OK
+      if (DEV) {
+        console.log('Response will be:', response);
+      }
+      res.json(response);
+      clearInterval(wait);
+    }
+  }, 500);
 };
 
 //Update password
