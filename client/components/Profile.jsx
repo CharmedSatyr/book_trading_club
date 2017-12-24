@@ -136,29 +136,29 @@ export default class Profile extends Component {
     const { loggedLocation, loggedUser } = this.props
     const { deleteOpen, locErr, logoutOpen, passErr, userErr } = this.state
 
-    const deleteBtns = (
-      <span>
-        <FlatButton
-          href="/logout"
-          label="I'm sure"
-          onClick={() => {
-            this.deleteUser(loggedUser)
-          }}
-          primary={true}
-        />
-        <FlatButton
-          label="Cancel"
-          onClick={() => {
-            this.setState({ deleteOpen: false })
-          }}
-          secondary={true}
-        />
-      </span>
+    const deleteBtn = (
+      <RaisedButton
+        label="I'm sure"
+        onClick={() => {
+          this.deleteUser(loggedUser)
+          window.location = '/logout'
+        }}
+        primary={true}
+      />
     )
-
+    const cancelDelete = (
+      <RaisedButton
+        className="rightBtn"
+        label="Cancel"
+        onClick={() => {
+          this.setState({ deleteOpen: false })
+        }}
+        secondary={true}
+      />
+    )
     const deleteDialog = (
       <Dialog
-        actions={deleteBtns}
+        actions={[deleteBtn, cancelDelete]}
         modal={true}
         open={deleteOpen}
         title="Are you sure you want to delete your account?"
@@ -170,7 +170,7 @@ export default class Profile extends Component {
 
     //User will log out after changing location or password
     const logoutBtn = (
-      <FlatButton
+      <RaisedButton
         href="/logout"
         label="Logout"
         onClick={() => {

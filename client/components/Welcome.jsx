@@ -161,7 +161,7 @@ export default class Welcome extends Component {
         <br />
         <br />
         <RaisedButton label="Login" onClick={this.submitLogin} primary={true} />
-        <RaisedButton label="Cancel" secondary={true} type="cancel" />
+        <RaisedButton className="rightBtn" label="Cancel" secondary={true} type="cancel" />
       </form>
     )
 
@@ -204,7 +204,7 @@ export default class Welcome extends Component {
         <br />
         <br />
         <RaisedButton label="Sign Up" onClick={this.submitSignup} primary={true} />
-        <RaisedButton label="Cancel" secondary={true} type="cancel" />
+        <RaisedButton className="rightBtn" label="Cancel" secondary={true} type="cancel" />
       </form>
     )
 
