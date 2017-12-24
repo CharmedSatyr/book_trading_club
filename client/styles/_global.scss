@@ -2,7 +2,6 @@
 
 * {
   font-family: 'Roboto', sans-serif;
-  user-select: none;
 }
 
 body,
@@ -17,6 +16,7 @@ h2 {
   font-size: 24px;
   font-weight: 500;
   text-align: center;
+  user-select: none;
 }
 
 h4 {
@@ -25,4 +25,5 @@ h4 {
   font-weight: 500px;
   margin: 2px;
   text-align: center;
+  user-select: none;
 }
