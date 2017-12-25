@@ -45,7 +45,12 @@ export default class Profile extends Component {
     //This will delete the user and all associated books and requests
     this.setState({ deleteOpen: false })
     f('DELETE', '/api/deleteUser/' + loggedUser, response => {
-      console.log(response)
+      if (DEV) {
+        console.log(response)
+      }
+      if (response === 'BYE') {
+        window.location = '/logout'
+      }
     })
   }
   submitPasswordUpdate(loggedUser) {
@@ -141,7 +146,6 @@ export default class Profile extends Component {
         label="I'm sure"
         onClick={() => {
           this.deleteUser(loggedUser)
-          window.location = '/logout'
         }}
         primary={true}
       />
