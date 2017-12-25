@@ -235,7 +235,7 @@ export default class Welcome extends Component {
         </Dialog>
         <div className="welcomeContent">
           <section className="welcomeChild">
-            <img src={book} />
+            <img alt="Read to Live, Live to Read" src={book} />
           </section>
           <main className="welcomeChild">
             <h2>
