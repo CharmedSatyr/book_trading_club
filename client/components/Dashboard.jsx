@@ -23,6 +23,7 @@ import { f } from '../../common/common.functions.js'
 const Dashboard = ({
   location,
   loggedUser,
+  requestor,
   requestsForYou,
   snackBar,
   yourRequests,
@@ -51,6 +52,7 @@ const Dashboard = ({
           <Library
             location={requestsForYou}
             loggedUser={loggedUser}
+            requestor={requestor}
             snackBar={snackBar}
             whichButton="approveDeny"
           />

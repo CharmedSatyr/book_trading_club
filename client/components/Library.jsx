@@ -16,7 +16,7 @@ const Library = ({ location, whichButton, requestor, snackBar, loggedUser }) => 
         olkey={item.olkey}
         owner={item.owner}
         publication={item.publication}
-        requestor={requestor}
+        requestor={requestor || item.requestor}
         snackBar={snackBar}
         title={item.title}
         whichButton={whichButton}
