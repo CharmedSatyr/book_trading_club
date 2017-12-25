@@ -83,7 +83,7 @@ export default class WhichButton extends Component {
               })
               snackBar('add')
             }}
-            tooltip={'Add ' + reference + ' to Your Books.'}
+            tooltip={'Add ' + reference + ' to Your books.'}
           >
             <ContentAddCircle color={greenA700} />
           </IconButton>
@@ -137,7 +137,7 @@ export default class WhichButton extends Component {
               })
               snackBar('delete')
             }}
-            tooltip={'Remove ' + reference + ' from Your Books.'}
+            tooltip={'Remove ' + reference + ' from Your books.'}
           >
             <NavigationCancel color={pinkA200} />
           </IconButton>
@@ -264,7 +264,7 @@ export default class WhichButton extends Component {
             iconStyle={iconStyle}
             style={{ marginRight: -15 }}
             onClick={() => this.setState({ approveOpen: true })}
-            tooltip={'Confirm swap of ' + reference + ' with ' + requestor}
+            tooltip={'Accept request from ' + requestor + ' for ' + reference}
           >
             <ActionCheckCircle color={greenA700} />
           </IconButton>
