@@ -27,7 +27,8 @@ const Community = ({ loggedUser, otherShelves, requestedBooks, requestor, snackB
   )
 
   //Books that have been requested by *anyone*, if request not yet evaluated
-  const requested = <Library location={requestedBooks} loggedUser={loggedUser} />
+  const requested = <Library location={requestedBooks} loggedUser={loggedUser} whichButton={null} />
+
   return (
     <span>
       <h2>Community Books</h2>

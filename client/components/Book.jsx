@@ -44,29 +44,23 @@ const Book = ({
       }}
     />
   )
+  const reference = title + ' (' + publication + ') by ' + author
 
   const description = whichButton => {
     switch (whichButton) {
       case 'cancel':
-        return (
-          'Cancel your request from ' +
-          owner +
-          ' for ' +
-          title +
-          ' (' +
-          publication +
-          ') by ' +
-          author
-        )
+        return 'You have requested ' + reference + ' from ' + owner
         break
       case 'swap':
-        return owner + ' owns ' + title + ' (' + publication + ') by ' + author
+        return owner + ' owns ' + reference
         break
       case 'approveDeny':
-        return requestor + ' has requested ' + title + ' (' + publication + ') by ' + author
+        return requestor + ' has requested ' + reference
         break
+      case null:
+        return requestor + ' has requested ' + reference + ' from ' + owner
       default:
-        return title + ' (' + publication + ') by ' + author
+        return reference
     }
   }
 
