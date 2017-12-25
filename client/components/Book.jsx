@@ -45,6 +45,19 @@ const Book = ({
     />
   )
 
+  const description = whichButton => {
+    switch (whichButton) {
+      case 'swap':
+        return title + ' (' + publication + ') by ' + author + ' is owned by ' + owner
+        break
+      case 'approveDeny':
+        return requestor + ' has requested ' + title + ' (' + publication + ') by ' + author
+        break
+      default:
+        return title + ' (' + publication + ') by ' + author
+    }
+  }
+
   return (
     <div className="book">
       <Paper
@@ -75,11 +88,7 @@ const Book = ({
             title={title + ' (' + publication + ') by ' + author}
           />
           <div className="img__description_layer">
-            <p className="img__description">
-              {whichButton === 'swap'
-                ? title + ' (' + publication + ') by ' + author + ' is owned by ' + owner
-                : title + ' (' + publication + ') by ' + author}
-            </p>
+            <p className="img__description">{description(whichButton)}</p>
           </div>
         </div>
       </Paper>
