@@ -16,6 +16,11 @@ import TextField from 'material-ui/TextField'
 import { f } from '../../common/common.functions.js'
 import { clearInput, errMessage, userVal, passVal, locVal } from '../controllers/validate.client.js'
 
+/*** RESOURCES ***/
+import book from '../img/art-book-drawing-illustration-Favim.com-729779.jpg'
+//import book from '../img/single-book.jpg'
+//import book from '../img/images.duckduckgo.com.png'
+
 /*** MAIN ***/
 export default class Welcome extends Component {
   constructor(props) {
@@ -136,8 +141,9 @@ export default class Welcome extends Component {
     const loginButton = (
       <FlatButton className="navButtons" label="Login" onClick={this.loginClick} />
     )
-    //Popup on clicking Login button
-    const loginModal = (
+    //This goes inside the loginDialog
+    //that becomes visible on clicking //the Login button
+    const loginForm = (
       <form action="/welcome" id="loginForm" method="post">
         <TextField
           errorText={loginErr ? ' ' : ''}
@@ -169,8 +175,9 @@ export default class Welcome extends Component {
     const signupButton = (
       <FlatButton className="navButtons" label="Sign up" onClick={this.signupClick} />
     )
-    //Popup on clicking Sign Up button
-    const signupModal = (
+    //This goes inside the signupDialog
+    //that becomes visible on clicking //the Sign Up button
+    const signupForm = (
       <form action="/api/users" id="signupForm" method="post">
         <TextField
           errorText={userErr}
@@ -221,11 +228,28 @@ export default class Welcome extends Component {
           }
         />
         <Dialog title="Sign Up" modal={true} open={signupOpen}>
-          {signupModal}
+          {signupForm}
         </Dialog>
         <Dialog title="Log In" modal={true} open={loginOpen}>
-          {loginModal}
+          {loginForm}
         </Dialog>
+        <div className="welcomeContent">
+          <section className="welcomeChild">
+            <img src={book} />
+          </section>
+          <main className="welcomeChild">
+            <h2>
+              Welcome to Charmed Books
+              <h4>a book swapping app</h4>
+            </h2>
+            <ol>
+              <li>Form a book club with your friends.</li>
+              <li>Sign up for Charmed Books.</li>
+              <li>Add the books you own to your collection.</li>
+              <li>Request books and manage swaps with your community!</li>
+            </ol>
+          </main>
+        </div>
       </div>
     )
   }
