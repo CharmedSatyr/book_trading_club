@@ -60,7 +60,7 @@ export const clearInput = state => {
   if (state.loginErr || state.passErr.length > 0) {
     document.getElementById('password').value = ''
     //This applies to the new password field in the Profile section
-    if (document.getElementById('passwordN').value) {
+    if (document.getElementById('passwordN')) {
       document.getElementById('passwordN').value = ''
     }
   }
