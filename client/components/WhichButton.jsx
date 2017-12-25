@@ -76,7 +76,11 @@ export default class WhichButton extends Component {
               }
               const data = encodeURIComponent(JSON.stringify(obj))
               console.log('Saving ' + title + ' by ' + author)
-              f('POST', '/api/' + loggedUser + '/save/' + data, response => console.log(response))
+              f('POST', '/api/' + loggedUser + '/save/' + data, response => {
+                if (DEV) {
+                  console.log(response)
+                }
+              })
               snackBar('add')
             }}
             tooltip={'Add ' + reference + ' to Your Books.'}
