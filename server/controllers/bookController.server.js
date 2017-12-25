@@ -56,6 +56,7 @@ export const otherShelves = (req, res) => {
 //Remove every book in the database
 export const curseOfAlexandria = (req, res) => {
   Book.remove({}, (err, doc) => {
+    console.log('All books deleted...')
     res.json('All books deleted...')
   })
 }
@@ -184,7 +185,7 @@ export const saveBook = (req, res) => {
           if (err) {
             console.error(err)
           }
-          res.json('This book has been saved! Praise Jesus! It is owned by ' + user + '!')
+          res.json('This book has been saved to your collection.')
         })
       }
     }
