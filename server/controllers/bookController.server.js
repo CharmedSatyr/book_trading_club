@@ -56,8 +56,7 @@ export const otherShelves = (req, res) => {
 //Remove every book in the database
 export const curseOfAlexandria = (req, res) => {
   Book.remove({}, (err, doc) => {
-    console.log('All books deleted...')
-    res.json(doc)
+    res.json('All books deleted...')
   })
 }
 
