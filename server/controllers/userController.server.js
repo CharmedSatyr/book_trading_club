@@ -1,13 +1,11 @@
 'use strict'
 
 /*** ENVIRONMENT ***/
-const path = process.cwd()
 import dotenv from 'dotenv'
 dotenv.load()
 
 /*** DEVELOPMENT TOOLS ***/
 const DEV = process.env.NODE_ENV === 'development'
-const PROD = process.env.NODE_ENV === 'production'
 
 /*** MODELS ***/
 import User from '../models/User.js'
@@ -259,8 +257,10 @@ export const deleteUser = (req, res) => {
       console.error(err)
     }
     if (doc) {
-      console.log('User ' + user + ' deleted...')
-      res.json('User ' + user + ' deleted...')
+      if (DEV) {
+        console.log('User ' + user + ' deleted...')
+      }
+      res.json('BYE')
     }
   })
 }

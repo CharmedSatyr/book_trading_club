@@ -1,8 +1,16 @@
 'use strict'
 
+/*** ENVIRONMENT ***/
+import dotenv from 'dotenv'
+dotenv.load()
+
+/*** DEVELOPMENT TOOLS ***/
+const DEV = process.env.NODE_ENV === 'development'
+
 /*** MODEL ***/
 import Book from '../models/Book.js'
 
+/*** CONTROLLERS ***/
 //Find every book in the database
 export const library = (req, res) => {
   Book.find({}, (err, doc) => {
@@ -199,7 +207,9 @@ export const removeBook = (req, res) => {
         console.error(err)
       }
       if (doc) {
-        console.log(doc + ' has been deleted.')
+        if (DEV) {
+          console.log(doc + ' has been deleted.')
+        }
         res.json(doc + ' has been deleted.')
       }
     }
@@ -230,7 +240,9 @@ export const changeBookOwner = (user, newName) => {
           if (err) {
             console.error(err)
           }
-          console.log('Book ownership updated:', ok)
+          if (DEV) {
+            console.log('Book ownership updated:', ok)
+          }
         })
       })
     }
@@ -262,7 +274,9 @@ export const purgeUserBooks = user => {
           if (err) {
             console.error(err)
           }
-          console.log('Requests for ' + item + ' canceled or denied.')
+          if (DEV) {
+            console.log('Requests for ' + item + ' canceled or denied.')
+          }
         })
       })
     }
@@ -274,7 +288,9 @@ export const purgeUserBooks = user => {
       console.error(err)
     }
     if (doc) {
-      console.log(user + "'s books removed.'")
+      if (DEV) {
+        console.log(user + "'s books removed.'")
+      }
     }
   })
 }
