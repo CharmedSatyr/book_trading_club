@@ -6,7 +6,6 @@ dotenv.load()
 
 /*** DEVELOPMENT TOOLS ***/
 const DEV = process.env.NODE_ENV === 'development'
-const PROD = process.env.NODE_ENV === 'production'
 
 /*** COMPONENTS ***/
 //React
