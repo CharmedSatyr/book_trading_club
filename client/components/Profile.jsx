@@ -6,7 +6,6 @@ dotenv.load()
 
 /*** DEVELOPMENT TOOLS ***/
 const DEV = process.env.NODE_ENV === 'development'
-const PROD = process.env.NODE_ENV === 'production'
 
 /*** COMPONENTS ***/
 //React
@@ -188,7 +187,7 @@ export default class Profile extends Component {
         actions={logoutBtn}
         modal={true}
         open={logoutOpen}
-        title="Your infomation was successfully updated"
+        title="Your information was successfully updated"
       >
         You will now be logged out. Please log in with your new credentials.
       </Dialog>
@@ -249,7 +248,7 @@ export default class Profile extends Component {
               errorText={passErr.length > 0 ? ' ' : ''}
               floatingLabelText="Current Password"
               fullWidth={true}
-              hintText="Use 12-72 letters and numbers."
+              hintText="Use at least 8 letters, numbers, and special characters."
               id="password"
               type="password"
             />
@@ -258,7 +257,7 @@ export default class Profile extends Component {
               errorText={passErr}
               floatingLabelText="New Password"
               fullWidth={true}
-              hintText="Use 12-72 letters and numbers."
+              hintText="Use at least 8 letters, numbers, and special characters."
               id="passwordN"
               type="password"
             />
