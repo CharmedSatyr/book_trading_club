@@ -11,13 +11,15 @@ dotenv.load()
 const PROD = process.env.NODE_ENV === 'production'
 
 /*** COMMON CONFIGURATIONS ***/
+//https://webpack.js.org/configuration/node/
 const nodeConfig = {
-  //console: false,
+  console: false, //default
   //global: false,
   //process: false,
   //Buffer: false,
-  //  __filename: false,
-  //__dirname: false,
+  //false __filename and __dirname prevents undesired *.min.js output
+  __filename: false, //use regular Node __filename behavior instead of 'mock'
+  __dirname: false, //use regular Node __dirname behavior instead of 'mock'
   fs: 'empty' //Prevents webpack error "Cannot resolve module 'fs'..."
 }
 
@@ -31,7 +33,7 @@ const compConfig = new CompressionPlugin({
   test: /\.(js|html|css|json|ico|eot|otf|ttf)$/, //Defaults to all plugins, but using this: https://www.fastly.com/blog/new-gzip-settings-and-deciding-what-compress/
   algorithm: 'gzip',
   threshold: 10240,
-  minRatio: 0.8,
+  minRatio: 0.8, //Can reach this compression ratio ? compress : don't bother
   deleteOriginalAssets: false
 })
 
@@ -171,7 +173,7 @@ const server = {
     ]
   },
   target: 'node',
-  //  node: nodeConfig,
+  node: nodeConfig,
   externals: [nodeExternals()],
   plugins: PROD ? [environmentConfig, compConfig, uglyConfig] : [environmentConfig]
 }
