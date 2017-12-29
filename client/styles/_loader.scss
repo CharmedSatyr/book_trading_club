@@ -1,0 +1,45 @@
+/* Inspired by https://codepen.io/RRoberts/full/pEXWEp/ */
+
+.loader-container {
+  border-radius: 100%;
+  bottom: 0;
+  height: 100px;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100px;
+}
+
+.loader {
+  &:after,
+  &:before {
+    border: 12px solid transparent;
+    border-radius: 100%;
+    border-top-color: $themePrimary;
+    content: '';
+    height: 100%;
+    position: absolute;
+    width: 100%;
+  }
+
+  &:after {
+    border: 12px solid $hDarker;
+  }
+
+  &:before {
+    z-index: 100;
+    animation: spin 1s infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
