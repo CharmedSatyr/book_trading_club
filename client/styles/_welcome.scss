@@ -1,12 +1,14 @@
 .welcomeContent {
   align-items: center;
   display: flex;
+  height: 70vh;
   justify-content: center;
   margin: 10px 0;
-  width: 95%;
+  width: 100%;
 
   .welcomeChild {
-    //border: 1px solid red;
-    //margin-bottom: 10px;
+    img {
+      height: 350px;
+    }
   }
 }
