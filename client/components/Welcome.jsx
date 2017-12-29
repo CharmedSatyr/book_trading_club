@@ -233,11 +233,11 @@ export default class Welcome extends Component {
         <Dialog title="Log In" modal={true} open={loginOpen}>
           {loginForm}
         </Dialog>
-        <div className="welcomeContent">
+        <main className="welcomeContent">
           <section className="welcomeChild">
             <img alt="Read to Live, Live to Read" src={book} />
           </section>
-          <main className="welcomeChild">
+          <section className="welcomeChild">
             <h2>
               Welcome to Charmed Books
               <h4>a book swapping app</h4>
@@ -248,8 +248,8 @@ export default class Welcome extends Component {
               <li>Add the books you own to your collection.</li>
               <li>Request books and manage swaps with your community!</li>
             </ol>
-          </main>
-        </div>
+          </section>
+        </main>
       </div>
     )
   }
