@@ -239,8 +239,8 @@ export default class Welcome extends Component {
           </section>
           <section className="welcomeChild">
             <h2>
-              Welcome to Charmed Books
-              <h4>a book swapping app</h4>
+              Welcome to Charmed Books <br />
+              <small>a book swapping app</small>
             </h2>
             <ol>
               <li>Form a book club with your friends.</li>
