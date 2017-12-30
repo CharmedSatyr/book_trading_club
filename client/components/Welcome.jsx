@@ -33,10 +33,14 @@ export default class Welcome extends Component {
       signupOpen: false,
       userErr: ''
     }
+    this.cancel = this.cancel.bind(this)
     this.loginClick = this.loginClick.bind(this)
     this.signupClick = this.signupClick.bind(this)
     this.submitLogin = this.submitLogin.bind(this)
     this.submitSignup = this.submitSignup.bind(this)
+  }
+  cancel() {
+    this.setState({ loginOpen: false, signupOpen: false }, () => clearInput(this.state))
   }
   loginClick() {
     this.setState({ loginOpen: true, signupOpen: false })
@@ -68,10 +72,10 @@ export default class Welcome extends Component {
           //Otherwise something's wrong
           //For example, the username does not exist or the password is wrong
         } else if (response === 'NO') {
-          this.setState({ loginErr: true }, () => {
+          this.setState({ loginErr: true }, () =>
             //Clear input
             clearInput(this.state)
-          })
+          )
         }
       })
     } else {
@@ -81,9 +85,7 @@ export default class Welcome extends Component {
         {
           loginErr: true
         },
-        () => {
-          clearInput(this.state)
-        }
+        () => clearInput(this.state)
       )
     }
   }
@@ -99,10 +101,9 @@ export default class Welcome extends Component {
         passErr: errMessage('pass', passVal(password)),
         userErr: errMessage('user', userVal(username))
       },
-      () => {
+      () =>
         //Clear any fields that contain an error
         clearInput(this.state)
-      }
     )
     //If all fields are valid
     if (locVal(location) && passVal(password) && userVal(username)) {
@@ -124,10 +125,9 @@ export default class Welcome extends Component {
             {
               userErr: 'This username is already in use. Please choose another one.'
             },
-            () => {
+            () =>
               //clear field
               clearInput(this.state)
-            }
           )
         }
       })
@@ -167,7 +167,7 @@ export default class Welcome extends Component {
         <br />
         <br />
         <RaisedButton label="Login" onClick={this.submitLogin} primary={true} />
-        <RaisedButton className="rightBtn" label="Cancel" secondary={true} type="cancel" />
+        <RaisedButton className="rightBtn" label="Cancel" onClick={this.cancel} secondary={true} />
       </form>
     )
 
@@ -211,7 +211,7 @@ export default class Welcome extends Component {
         <br />
         <br />
         <RaisedButton label="Sign Up" onClick={this.submitSignup} primary={true} />
-        <RaisedButton className="rightBtn" label="Cancel" secondary={true} type="cancel" />
+        <RaisedButton className="rightBtn" label="Cancel" onClick={this.cancel} secondary={true} />
       </form>
     )
 
