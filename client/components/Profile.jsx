@@ -57,9 +57,7 @@ export default class Profile extends Component {
     const passwordN = document.getElementById('passwordN').value
 
     //Validate new password input and set error messages in state
-    this.setState({ passErr: errMessage('pass', passVal(passwordN)) }, () => {
-      clearInput(this.state)
-    })
+    this.setState({ passErr: errMessage('pass', passVal(passwordN)) }, () => clearInput(this.state))
 
     //If the new password passes validation
     if (passVal(passwordN)) {
@@ -79,9 +77,9 @@ export default class Profile extends Component {
         if (response === 'OK') {
           this.setState({ logoutOpen: true })
         } else if (response === 'NO') {
-          this.setState({ passErr: 'Something went wrong. Please try again.' }, () => {
+          this.setState({ passErr: 'Something went wrong. Please try again.' }, () =>
             clearInput(this.state)
-          })
+          )
         }
       })
     }
@@ -96,10 +94,9 @@ export default class Profile extends Component {
         locErr: errMessage('loc', locVal(location)),
         userErr: errMessage('user', userVal(username))
       },
-      () => {
+      () =>
         //Clean any fields that contain an error
         clearInput(this.state)
-      }
     )
 
     //Submit to server if client-side passes
@@ -127,10 +124,9 @@ export default class Profile extends Component {
         } else if (response === 'NO') {
           this.setState(
             { userErr: 'This username is already in use. Please choose another one.' },
-            () => {
+            () =>
               //clear field
               clearInput(this.state)
-            }
           )
         }
       })
