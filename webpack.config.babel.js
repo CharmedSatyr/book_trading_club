@@ -17,7 +17,6 @@ const nodeConfig = {
   //global: false,
   //process: false,
   //Buffer: false,
-  //false __filename and __dirname prevents undesired *.min.js output
   __filename: false, //use regular Node __filename behavior instead of 'mock'
   __dirname: false, //use regular Node __dirname behavior instead of 'mock'
   fs: 'empty' //Prevents webpack error "Cannot resolve module 'fs'..."
