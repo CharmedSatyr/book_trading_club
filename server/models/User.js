@@ -1,7 +1,7 @@
 'use strict'
 
 /*** REGEX ***/
-import regex from '../../common/regex.js'
+import validation from '../../common/validation.js'
 
 /*** MODEL ***/
 import mongoose from 'mongoose'
@@ -14,20 +14,20 @@ const User = new Schema({
     default: new Date()
   },
   location: {
-    match: regex.location,
+    match: validation.location.regex,
     minlength: 1,
     required: true,
     type: String
   },
   password: {
-    match: regex.password,
+    match: validation.password.regex,
     minlength: 8,
     required: true,
     type: String
   },
   username: {
     index: { unique: true },
-    match: regex.username,
+    match: validation.username.regex,
     minlength: 1,
     required: true,
     type: String
