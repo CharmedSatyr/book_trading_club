@@ -3,7 +3,7 @@ import 'babel-polyfill'
 
 //high-level libraries
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 //used by Material UI for screen tap events
@@ -23,7 +23,7 @@ import sass from './styles/styles.scss'
 import App from './components/App.jsx'
 
 //render
-ReactDOM.render(
+render(
   <MuiThemeProvider>
     <App />
   </MuiThemeProvider>,
