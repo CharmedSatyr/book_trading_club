@@ -12,5 +12,15 @@
       height: 300px;
       margin-bottom: -20px;
     }
+
+    a {
+      color: $hLighter;
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        color: $themeSecondary;
+      }
+    }
   }
 }
