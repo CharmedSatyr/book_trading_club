@@ -15,6 +15,7 @@ import TextField from 'material-ui/TextField'
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 import { clearInput, errMessage, userVal, passVal, locVal } from '../controllers/validate.client.js'
+import validation from '../../common/validation.js'
 
 /*** RESOURCES ***/
 import book from '../img/art-book-drawing-illustration-Favim.com-729779.jpg'
@@ -40,7 +41,17 @@ export default class Welcome extends Component {
     this.submitSignup = this.submitSignup.bind(this)
   }
   cancel() {
-    this.setState({ loginOpen: false, signupOpen: false }, () => clearInput(this.state))
+    this.setState(
+      {
+        locErr: '',
+        loginOpen: false,
+        loginErr: false,
+        passErr: '',
+        signupOpen: false,
+        userErr: ''
+      },
+      () => clearInput(this.state)
+    )
   }
   loginClick() {
     this.setState({ loginOpen: true, signupOpen: false })
@@ -123,7 +134,7 @@ export default class Welcome extends Component {
           //set err
           this.setState(
             {
-              userErr: 'This username is already in use. Please choose another one.'
+              userErr: validation.username.err.used
             },
             () =>
               //clear field
@@ -147,7 +158,7 @@ export default class Welcome extends Component {
       <form action="/welcome" id="loginForm" method="post">
         <TextField
           errorText={loginErr ? ' ' : ''}
-          floatingLabelText="Username"
+          floatingLabelText={validation.username.label}
           fullWidth={true}
           hintText=""
           id="username"
@@ -156,8 +167,8 @@ export default class Welcome extends Component {
         />
         <br />
         <TextField
-          errorText={loginErr ? 'Something is wrong. Please retype your credentials.' : ''}
-          floatingLabelText="Password"
+          errorText={loginErr ? validation.password.err.vague : ''}
+          floatingLabelText={validation.password.label.first}
           fullWidth={true}
           hintText=""
           id="password"
@@ -181,9 +192,9 @@ export default class Welcome extends Component {
       <form action="/api/users" id="signupForm" method="post">
         <TextField
           errorText={userErr}
-          floatingLabelText="Choose your username"
+          floatingLabelText={validation.username.label}
           fullWidth={true}
-          hintText="Your username will be public."
+          hintText={validation.username.hint}
           id="username"
           name="username"
           type="text"
@@ -191,9 +202,9 @@ export default class Welcome extends Component {
         <br />
         <TextField
           errorText={passErr}
-          floatingLabelText="Create a password"
+          floatingLabelText={validation.password.label.first}
           fullWidth={true}
-          hintText="Use at least 8 letters, numbers, and special characters."
+          hintText={validation.password.hint}
           id="password"
           name="password"
           type="password"
@@ -201,9 +212,9 @@ export default class Welcome extends Component {
         <br />
         <TextField
           errorText={locErr}
-          floatingLabelText="Location"
+          floatingLabelText={validation.location.label}
           fullWidth={true}
-          hintText="City and state or province"
+          hintText={validation.location.hint}
           id="location"
           name="location"
           type="text"
@@ -247,6 +258,16 @@ export default class Welcome extends Component {
               <li>Sign up for Charmed Books.</li>
               <li>Add the books you own to your collection.</li>
               <li>Request books and manage swaps with your community!</li>
+              <li>
+                If you're a developer, be sure to check out our feature wish list&nbsp;
+                <a
+                  href="https://github.com/CharmedSatyr/book_trading_club/blob/master/README.md#feature-wish-list"
+                  rel="noopener"
+                  target="_blank"
+                >
+                  here
+                </a>.
+              </li>
             </ol>
           </section>
         </main>

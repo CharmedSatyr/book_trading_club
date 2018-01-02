@@ -1,31 +1,28 @@
 'use strict'
 
 /*** REGEX ***/
-import regex from '../../common/regex.js'
+import validation from '../../common/validation.js'
 
 /*** FUNCTIONS ***/
 export const errMessage = (field, good) => {
   switch (field) {
-    case 'user':
-      return good ? '' : 'Please use 1-40 letters and numbers.'
+    case 'loc':
+      return good ? '' : validation.location.err
       break
     case 'pass':
-      return good
-        ? ''
-        : 'Your password must include at least 8 letters, numbers, and special characters.'
+      return good ? '' : validation.password.err.description
       break
-    case 'loc':
-      return good
-        ? ''
-        : "Please use 1-100 letters. Don't include your street address or other personal information."
+    case 'user':
+      return good ? '' : validation.username.err.first
       break
+
     default:
       return ''
   }
 }
 //location err
 export const locVal = loc => {
-  if (loc && loc.match(regex.location)) {
+  if (loc && loc.match(validation.location.regex)) {
     return true
   } else {
     return false
@@ -34,7 +31,7 @@ export const locVal = loc => {
 
 //password err
 export const passVal = pass => {
-  if (pass && pass.match(regex.password)) {
+  if (pass && pass.match(validation.password.regex)) {
     return true
   } else {
     return false
@@ -43,7 +40,7 @@ export const passVal = pass => {
 
 //username err
 export const userVal = user => {
-  if (user && user.match(regex.username)) {
+  if (user && user.match(validation.username.regex)) {
     return true
   } else {
     return false

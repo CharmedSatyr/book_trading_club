@@ -24,6 +24,7 @@ import TextField from 'material-ui/TextField'
 /*** FUNCTIONS ***/
 import { f } from '../../common/common.functions.js'
 import { clearInput, errMessage, userVal, passVal, locVal } from '../controllers/validate.client.js'
+import validation from '../../common/validation.js'
 
 /*** MAIN ***/
 export default class Profile extends Component {
@@ -77,9 +78,7 @@ export default class Profile extends Component {
         if (response === 'OK') {
           this.setState({ logoutOpen: true })
         } else if (response === 'NO') {
-          this.setState({ passErr: 'Something went wrong. Please try again.' }, () =>
-            clearInput(this.state)
-          )
+          this.setState({ passErr: validation.password.err.vague }, () => clearInput(this.state))
         }
       })
     }
@@ -88,17 +87,28 @@ export default class Profile extends Component {
     const username = document.getElementById('username').value
     const location = document.getElementById('location').value
 
-    //Basic client-side validation (see Welcome.jsx)
-    this.setState(
-      {
-        locErr: errMessage('loc', locVal(location)),
-        userErr: errMessage('user', userVal(username))
-      },
-      () =>
-        //Clean any fields that contain an error
-        clearInput(this.state)
-    )
-
+    //Client-side location validation
+    if (location) {
+      this.setState(
+        {
+          locErr: errMessage('loc', locVal(location))
+        },
+        () =>
+          //Clean any fields that contain an error
+          clearInput(this.state)
+      )
+    }
+    //Client-side username validation
+    if (username) {
+      this.setState(
+        {
+          userErr: errMessage('user', userVal(username))
+        },
+        () =>
+          //Clean any fields that contain an error
+          clearInput(this.state)
+      )
+    }
     //Submit to server if client-side passes
     if (
       (!location && userVal(username)) ||
@@ -122,11 +132,9 @@ export default class Profile extends Component {
           //error handling for duplicate username
           //location error handling not implemented; unclear need
         } else if (response === 'NO') {
-          this.setState(
-            { userErr: 'This username is already in use. Please choose another one.' },
-            () =>
-              //clear field
-              clearInput(this.state)
+          this.setState({ userErr: validation.username.err.used }, () =>
+            //clear field
+            clearInput(this.state)
           )
         }
       })
@@ -209,17 +217,18 @@ export default class Profile extends Component {
             {/* Change username TextField with error handling */}
             <TextField
               errorText={userErr}
-              floatingLabelText="Update your username"
+              floatingLabelText={validation.username.label}
               fullWidth={true}
-              hintText="Your username will be public."
+              hintText={validation.username.hint}
               id="username"
             />
             <br />
+            {/* Change location TextField with error handling */}
             <TextField
               errorText={locErr}
-              floatingLabelText="Location"
+              floatingLabelText={validation.location.label}
               fullWidth={true}
-              hintText="City and state or province"
+              hintText={validation.location.hint}
               id="location"
             />
             <br />
@@ -244,7 +253,6 @@ export default class Profile extends Component {
               errorText={passErr.length > 0 ? ' ' : ''}
               floatingLabelText="Current Password"
               fullWidth={true}
-              hintText="Use at least 8 letters, numbers, and special characters."
               id="password"
               type="password"
             />
@@ -253,7 +261,7 @@ export default class Profile extends Component {
               errorText={passErr}
               floatingLabelText="New Password"
               fullWidth={true}
-              hintText="Use at least 8 letters, numbers, and special characters."
+              hintText={validation.password.hint}
               id="passwordN"
               type="password"
             />

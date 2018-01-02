@@ -1,22 +1,19 @@
 import { errMessage, locVal, passVal, userVal } from './validate.client.js'
+import validation from '../../common/validation.js'
 
 describe('errMessage', () => {
   it('should return proper messages for "user", "pass", and "loc" or else return an empty String', () => {
     expect(errMessage(null)).toEqual('')
     expect(errMessage('user', true)).toEqual('')
     expect(errMessage('random #*')).toEqual('')
-    expect(errMessage('user', false)).toEqual('Please use 1-40 letters and numbers.')
-    expect(errMessage('pass', false)).toEqual(
-      'Your password must include at least 8 letters, numbers, and special characters.'
-    )
-    expect(errMessage('loc', false)).toEqual(
-      "Please use 1-100 letters. Don't include your street address or other personal information."
-    )
+    expect(errMessage('loc', false)).toEqual(validation.location.err)
+    expect(errMessage('pass', false)).toEqual(validation.password.err.description)
+    expect(errMessage('user', false)).toEqual(validation.username.err)
   })
 })
 
 describe('locVal', () => {
-  it('should return `true` if the input matches `regex.location` and `false` otherwise.', () => {
+  it('should return `true` if the input matches `validation.location.regex` and `false` otherwise.', () => {
     expect(locVal(null)).toBe(false)
     expect(locVal('')).toBe(false)
     expect(locVal('Capitol Hill 20515')).toBe(false)
@@ -28,7 +25,7 @@ describe('locVal', () => {
 })
 
 describe('passVal', () => {
-  it('should return `true` if the input matches `regex.password` and `false` otherwise.', () => {
+  it('should return `true` if the input matches `validation.password.regex` and `false` otherwise.', () => {
     expect(passVal(null)).toBe(false)
     expect(passVal('')).toBe(false)
     expect(passVal('VeryVeryLongString')).toBe(false)
@@ -39,7 +36,7 @@ describe('passVal', () => {
 })
 
 describe('userVal', () => {
-  it('should return `true` if the input matches `regex.username` and `false` otherwise.', () => {
+  it('should return `true` if the input matches `validation.username.regex` and `false` otherwise.', () => {
     expect(userVal(null)).toBe(false)
     expect(userVal('')).toBe(false)
     expect(userVal('$Charmed (Satyr)')).toBe(false)
