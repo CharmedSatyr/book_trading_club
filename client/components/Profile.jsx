@@ -263,8 +263,6 @@ export default class Profile extends Component {
               fullWidth={true}
               hintText={validation.password.hint}
               id="passwordN"
-              multiline={true}
-              rows={2}
               type="password"
             />
             <br />
