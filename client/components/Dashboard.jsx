@@ -7,12 +7,9 @@ import React from 'react'
 //Material UI
 import ActionDashboard from 'material-ui/svg-icons/action/dashboard'
 import Divider from 'material-ui/Divider'
-import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
-import TextField from 'material-ui/TextField'
 
 //App
-import Book from './Book.jsx'
 import Library from './Library.jsx'
 import RequestsBadge from './RequestsBadge.jsx'
 
