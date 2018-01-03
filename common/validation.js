@@ -28,14 +28,14 @@ const validation = {
   password: {
     err: {
       description:
-        'Your password must include at least 8 letters, numbers, and special characters.',
+        'Your password must include at least 8 characters, including a number, a letter, and a special character.',
       vague: 'Something went wrong. Please try again.'
     },
     label: {
       first: 'Create a password',
       change: ''
     },
-    hint: 'Use at least 8 letters, numbers, and special characters.',
+    hint: 'Use at least 8 characters, including a number, a letter, and a special character.',
     //passwords should include at least 8 letters, numbers, and special characters
     regex: /(?=.*[a-zA-Z]+)(?=.*[0-9]+)(?=.*[^a-zA-Z0-9]+).{8,}/
   },
