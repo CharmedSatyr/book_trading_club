@@ -187,6 +187,8 @@ export default class WhichButton extends Component {
             if (DEV) {
               console.log(response)
             }
+            //Close dialog
+            this.setState({ approveOpen: false })
           })
           snackBar('approve')
         }}
