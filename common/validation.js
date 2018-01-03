@@ -32,8 +32,9 @@ const validation = {
       vague: 'Something went wrong. Please try again.'
     },
     label: {
+      change: '',
       first: 'Create a password',
-      change: ''
+      login: 'Enter your password'
     },
     hint: 'Use at least 8 characters, including a number, a letter, and a punctuation character.',
     //passwords should include at least 8 letters, numbers, and special characters
@@ -44,7 +45,10 @@ const validation = {
       first: 'Please use 1-40 letters and numbers.',
       used: 'This username is already in use. Please choose another one.'
     },
-    label: 'Choose your username',
+    label: {
+      first: 'Choose your username',
+      login: 'Enter your username'
+    },
     hint: 'Your username will be public.',
     //Usernames can't include anything that's not a letter, number, or permitted special character and must be 1-40 characters
     regex: /^[A-Za-z0-9\-\.\,\ ]{1,40}$/

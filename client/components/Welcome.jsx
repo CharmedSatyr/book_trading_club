@@ -158,7 +158,7 @@ export default class Welcome extends Component {
       <form action="/welcome" id="loginForm" method="post">
         <TextField
           errorText={loginErr ? ' ' : ''}
-          floatingLabelText={validation.username.label}
+          floatingLabelText={validation.username.label.login}
           fullWidth={true}
           hintText=""
           id="username"
@@ -168,7 +168,7 @@ export default class Welcome extends Component {
         <br />
         <TextField
           errorText={loginErr ? validation.password.err.vague : ''}
-          floatingLabelText={validation.password.label.first}
+          floatingLabelText={validation.password.label.login}
           fullWidth={true}
           hintText=""
           id="password"
@@ -192,7 +192,7 @@ export default class Welcome extends Component {
       <form action="/api/users" id="signupForm" method="post">
         <TextField
           errorText={userErr}
-          floatingLabelText={validation.username.label}
+          floatingLabelText={validation.username.label.first}
           fullWidth={true}
           hintText={validation.username.hint}
           id="username"

@@ -217,7 +217,7 @@ export default class Profile extends Component {
             {/* Change username TextField with error handling */}
             <TextField
               errorText={userErr}
-              floatingLabelText={validation.username.label}
+              floatingLabelText={validation.username.label.first}
               fullWidth={true}
               hintText={validation.username.hint}
               id="username"
