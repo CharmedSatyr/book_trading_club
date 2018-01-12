@@ -132,15 +132,15 @@ const client = {
       ]
     : [
         new HTMLWebpackPlugin({
-          title: 'Login',
-          template: __dirname + '/client/' + 'welcome.html',
-          filename: __dirname + '/dist/' + 'welcome.html',
-          inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
-        }),
-        new HTMLWebpackPlugin({
           title: 'App',
           template: __dirname + '/client/' + 'index.html',
           filename: __dirname + '/dist/' + 'index.html',
+          inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
+        }),
+        new HTMLWebpackPlugin({
+          title: 'Welcome',
+          template: __dirname + '/client/' + 'welcome.html',
+          filename: __dirname + '/dist/' + 'welcome.html',
           inject: false //'body' -- Injects *all* scripts (bad) and *css* (necessary) into *all* html files by default. How to prevent?
         }),
         new ExtractTextPlugin({
