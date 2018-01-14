@@ -8,7 +8,7 @@ describe('errMessage', () => {
     expect(errMessage('random #*')).toEqual('')
     expect(errMessage('loc', false)).toEqual(validation.location.err)
     expect(errMessage('pass', false)).toEqual(validation.password.err.description)
-    expect(errMessage('user', false)).toEqual(validation.username.err)
+    expect(errMessage('user', false)).toEqual(validation.username.err.first)
   })
 })
 
