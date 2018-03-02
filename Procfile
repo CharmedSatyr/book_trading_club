@@ -1,1 +1,1 @@
-web: node ./dist/server.bundle.js
+web: yarn build; node ./dist/server.bundle.js
