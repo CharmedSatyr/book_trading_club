@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 dotenv.load()
 
 /*** DEVELOPMENT TOOLS ***/
+const PROD = process.env.NODE_ENV === 'production'
 const DEV = process.env.NODE_ENV === 'development'
 
 /*** COMPONENTS ***/
@@ -146,6 +147,12 @@ export default class App extends Component {
   }
   //Start Up
   componentWillMount() {
+    if (PROD) {
+      console.log(
+        'Thanks for visiting my website! I am available for hire. Please check out https://charmed.tech to get in touch!'
+      )
+    }
+
     this.loggedUser()
   }
   render() {
