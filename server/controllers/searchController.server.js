@@ -4,15 +4,20 @@
 import { f } from '../../common/common.functions.js'
 
 /*** CONTROLLERS ***/
-//This Open Library search is used in the Add Books section and returns an array
+// This Open Library search is used in the Add Books section and returns an array
 export const searchSubmit = (req, res) => {
   f('GET', 'https://openlibrary.org/search.json?q=' + req.params.s, response => {
     const books = []
-    //Only sort through the first 20 responses
+    // Only sort through the first 20 responses
     for (let i = 0; i < 20; i++) {
       const b = response.docs[i]
 
-      //Validate and Clean Author Entries
+      // Handle an empty response immediately
+      if (!b) {
+        res.json('No results.')
+      }
+
+      // Validate and Clean Author Entries
       let author
       if (!b.author_name) {
         author = 'Unlisted'
@@ -25,7 +30,7 @@ export const searchSubmit = (req, res) => {
       } else {
         author = 'Unlisted'
       }
-      //Validate and Clean Title
+      // Validate and Clean Title
       let title
       if (!b.title) {
         title = 'Unlisted Title'
@@ -33,7 +38,7 @@ export const searchSubmit = (req, res) => {
         title = b.title
       }
 
-      //Validate and Clean Publication Date
+      // Validate and Clean Publication Date
       let publication
       if (!b.first_publish_year) {
         publication = 0
@@ -41,7 +46,7 @@ export const searchSubmit = (req, res) => {
         publication = b.first_publish_year
       }
 
-      //Validate and Clean Cover Keys
+      // Validate and Clean Cover Keys
       let cover
       if (!b.cover_edition_key) {
         cover = null
@@ -49,7 +54,7 @@ export const searchSubmit = (req, res) => {
         cover = b.cover_edition_key
       }
 
-      //Validate and Clean olkeys
+      // Validate and Clean olkeys
       let k
       if (b.key) {
         k = b.key
@@ -58,7 +63,7 @@ export const searchSubmit = (req, res) => {
         k = k.join('')
       }
 
-      //Assemble the book object
+      // Assemble the book object
       const book = {
         author: author,
         title: title,
@@ -67,18 +72,18 @@ export const searchSubmit = (req, res) => {
         olkey: k
       }
 
-      //Push the book object to the books array
+      // Push the book object to the books array
       if (book.cover) {
         books.push(book)
       }
 
-      //Handle short responses
+      // Handle short responses
       if (i === response.docs.length - 1) {
         break
       }
     }
 
-    //Send the array to the client
+    // Send the array to the client
     res.json(books)
   })
 }
