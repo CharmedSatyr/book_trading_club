@@ -144,6 +144,11 @@ export default class Welcome extends Component {
       })
     }
   }
+  componentWillMount() {
+    console.log(
+      'Thanks for visiting my website! I am available for hire. Please check out https://charmed.tech to get in touch.'
+    )
+  }
   render() {
     //constants
     const { locErr, loginOpen, loginErr, passErr, signupOpen, userErr } = this.state
