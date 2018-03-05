@@ -264,13 +264,13 @@ export default class Welcome extends Component {
               <li>Add the books you own to your collection.</li>
               <li>Request books and manage swaps with your community!</li>
               <li>
-                If you're a developer, be sure to check out our feature wish list&nbsp;
+                If you're a developer, be sure to check out our&nbsp;
                 <a
                   href="https://github.com/CharmedSatyr/book_trading_club/blob/master/README.md#feature-wish-list"
                   rel="noopener"
                   target="_blank"
                 >
-                  here
+                  feature wish list
                 </a>.
               </li>
             </ol>
