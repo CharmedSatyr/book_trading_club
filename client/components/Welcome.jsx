@@ -18,7 +18,7 @@ import { clearInput, errMessage, userVal, passVal, locVal } from '../controllers
 import validation from '../../common/validation.js'
 
 /*** RESOURCES ***/
-import book from '../img/art-book-drawing-illustration-Favim.com-729779.jpg'
+import book from '../img/art-book-drawing-illustration-Favim.com-729779.png'
 //import book from '../img/single-book.jpg'
 //import book from '../img/images.duckduckgo.com.png'
 
